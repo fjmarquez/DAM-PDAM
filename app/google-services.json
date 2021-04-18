@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "973100078110",
+    "project_id": "fit-bda0d",
+    "storage_bucket": "fit-bda0d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973100078110:android:85be5917402fe42c794a0f",
+        "android_client_info": {
+          "package_name": "iesnervion.fjmarquez.pdam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973100078110-iiep4ihbs3dtfrcmf83ucf3tm300a17g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0W258e4uwQz9qdxZ10C82JLT2a7-c7sY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973100078110-iiep4ihbs3dtfrcmf83ucf3tm300a17g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

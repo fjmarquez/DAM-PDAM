@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">4Fit</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Fragment Login -->
+    <string name="usuario">Usuario</string>
+    <string name="contraseña">Contraseña</string>
+    <string name="iniciar_sesion">Entrar</string>
+    <string name="registrarse">Crear cuenta</string>
+    <string name="registrarse_google">Entrar con Google</string>
+    <string name="contraseña_olvidada">¿Has olvidado tu contraseña?</string>
+    <string name="error_inicio_sesion">Datos incorrectos</string>
+    <string name="usuario_no_introducido">Debe introducir el usuario</string>
+    <string name="contraseña_no_introducida">Debe introducir la contraseña</string>
+    <string name="no_email">No has introducido un correo electronico</string>
+    <string name="contraseña_no_segura">La contraseña no es segura</string>
 </resources>
