@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "973100078110-qt98u0m0hf1bl1h1g8h84i5eb7k76vjk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "iesnervion.fjmarquez.pdam",
+            "certificate_hash": "0ac5eb0d27a998a6944b3ed3b5b52378eebaef67"
+          }
+        },
+        {
           "client_id": "973100078110-iiep4ihbs3dtfrcmf83ucf3tm300a17g.apps.googleusercontent.com",
           "client_type": 3
         }

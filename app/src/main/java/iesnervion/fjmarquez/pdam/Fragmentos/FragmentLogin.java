@@ -1,20 +1,34 @@
 package iesnervion.fjmarquez.pdam.Fragmentos;
 
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
 
 import java.util.regex.Pattern;
 
 import iesnervion.fjmarquez.pdam.R;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelPrincipal;
+
+import static android.content.ContentValues.TAG;
 
 public class FragmentLogin extends Fragment implements View.OnClickListener{
 
@@ -29,9 +43,12 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     private String mUsuario;
     private String mContraseña;
+    private final int CODE_GOOGLE_SIGN = 1;
 
     private Pattern mRegexMail = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private Pattern mRegexContraseña = Pattern.compile("((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#._$,:;?¿¡)(*^<>%!]).{8,40})");
+
+    private ViewModelPrincipal mViewModel;
 
     public FragmentLogin() {
 
@@ -49,6 +66,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
         super.onCreate(savedInstanceState);
         //Inicializo el ViewModel
+        mViewModel = new ViewModelProvider(getActivity()).get(ViewModelPrincipal.class);
 
     }
 
@@ -86,10 +104,22 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
                     break;
                 case R.id.BTNRegistrarse:
                     if(comprobarCampos(false, true)){
-                        Toast.makeText(getContext(), "registro correcto", Toast.LENGTH_SHORT).show();
+                        mViewModel.registrarNuevoUsuario(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()){
+                                    Toast.makeText(getContext(), "registro correcto("+mUsuario+", "+mContraseña+")", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getContext(), "Fallo al registrar", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }
                     break;
                 case R.id.BTNRegistrarseGoogle:
+                    //getString(R.string.default_web_client_id)
+                    Intent i = mViewModel.autenticacionGoogle(getString(R.string.default_web_client_id), getContext());
+                    startActivityForResult(i, CODE_GOOGLE_SIGN);
                     Toast.makeText(getContext(), "registrar con google", Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.BTNRecordarContraseña:
@@ -98,6 +128,34 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
                     }
                     break;
             }
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == CODE_GOOGLE_SIGN){
+
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount acount = task.getResult(ApiException.class);
+                mViewModel.accederMedianteGoogle(acount.getIdToken()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(getContext(), "Acceso con Google Correcto", Toast.LENGTH_SHORT).show();
+                            //mETUsuario.getEditText().setText(acount.getEmail());
+                        }else {
+                            Toast.makeText(getContext(), "Error al acceder con Google", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            } catch (ApiException e) {
+                e.printStackTrace();
+            }
+
+        }
 
     }
 
