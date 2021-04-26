@@ -1,5 +1,6 @@
 package iesnervion.fjmarquez.pdam.Fragmentos;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -8,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,13 +26,15 @@ import com.google.firebase.auth.AuthResult;
 import java.util.regex.Pattern;
 
 import iesnervion.fjmarquez.pdam.R;
+import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelPrincipal;
 
-import static android.content.ContentValues.TAG;
-
+/**
+ * Fragment destinado a contener lo necesario para el logeo/registro de la app.
+ */
 public class FragmentLogin extends Fragment implements View.OnClickListener{
 
-    //Atributos
+    /* ATRIBUTOS */
     private Button mBtnInciarSesion;
     private Button mBtnRegistrar;
     private Button mBtnRegistrarGoogle;
@@ -93,44 +95,74 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     }
 
+    /**
+     * Eventos onClick de los elementos del Fragment.
+     * @param v Vista que contiene los elementos del Fragment.
+     */
     @Override
     public void onClick(View v) {
 
             switch (v.getId()){
+
                 case R.id.BTNIniciarSesion:
                     if(comprobarCampos(false, false)){
-                        Toast.makeText(getContext(), "iniciar sesion", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                case R.id.BTNRegistrarse:
-                    if(comprobarCampos(false, true)){
-                        mViewModel.registrarNuevoUsuario(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        mViewModel.iniciarSesionConUsuarioYContraseña(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()){
-                                    Toast.makeText(getContext(), "registro correcto("+mUsuario+", "+mContraseña+")", Toast.LENGTH_SHORT).show();
+                                if(task.isSuccessful()){
+                                    mViewModel.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
                                 }else{
-                                    Toast.makeText(getContext(), "Fallo al registrar", Toast.LENGTH_SHORT).show();
+                                    mostrarDialogError(false, true, false);
                                 }
                             }
                         });
                     }
                     break;
+
+                case R.id.BTNRegistrarse:
+                    if(comprobarCampos(false, true)){
+                        mViewModel.registrarNuevoUsuario(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()){
+                                    mViewModel.setmTipoFragmento(TipoFragmento.POST_REGISTRO);
+                                }else{
+                                    mostrarDialogError(true, false, false);
+                                }
+                            }
+                        });
+                    }
+                    break;
+
                 case R.id.BTNRegistrarseGoogle:
-                    //getString(R.string.default_web_client_id)
                     Intent i = mViewModel.autenticacionGoogle(getString(R.string.default_web_client_id), getContext());
                     startActivityForResult(i, CODE_GOOGLE_SIGN);
-                    Toast.makeText(getContext(), "registrar con google", Toast.LENGTH_SHORT).show();
                     break;
+
                 case R.id.BTNRecordarContraseña:
                     if (comprobarCampos(true, false)){
-                        Toast.makeText(getContext(), "recordar contraseña", Toast.LENGTH_SHORT).show();
+                        mViewModel.mandarMailRecuperarContraseña(mUsuario).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(getContext(), getText(R.string.correo_recuperacion_enviado), Toast.LENGTH_SHORT).show();
+                                }else{
+                                    mostrarDialogError(false, false, true);
+                                }
+                            }
+                        });
                     }
                     break;
             }
 
     }
 
+    /**
+     * Obtiene el resultado de un intent lanzado.
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -144,10 +176,10 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(getContext(), "Acceso con Google Correcto", Toast.LENGTH_SHORT).show();
-                            //mETUsuario.getEditText().setText(acount.getEmail());
+                            Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
                         }else {
-                            Toast.makeText(getContext(), "Error al acceder con Google", Toast.LENGTH_SHORT).show();
+                            mostrarDialogError(false, true, false);
+                            Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -159,6 +191,14 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     }
 
+    /**
+     * Comprueba que los diferentes campos del formulario cumplen las expresiones regulares dependiendo de la
+     * accion que se vaya a realizar.
+     * @param esRecordarContraseña Booleano que indica que la accion a realizar en enviar un correo para
+     *                             reestablecer la contraseña del usuario.
+     * @param esRegistro Booleano que indica que la accion a realizar es el registro de un nuevo usuario.
+     * @return
+     */
     public boolean regexCampos(boolean esRecordarContraseña, boolean esRegistro){
 
         boolean respuesta = false;
@@ -189,6 +229,15 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     }
 
+    /**
+     * Comprueba los diferentes campos del formulario de login segun la accion que se quiera llevar a cabo y
+     * muestra los errores correspondientes.
+     * @param esRecordarContraseña Booleano que indica que la accion a realizar en enviar un correo para
+     *                             reestablecer la contraseña del usuario.
+     * @param esRegistro Booleano que indica que la accion a realizar es un nuevo registro.
+     * @return Devuelve true en el caso de que no se encuentren errores en los datos introducidos o false para el
+     * caso contrario.
+     */
     public boolean comprobarCampos(boolean esRecordarContraseña, boolean esRegistro){
 
         boolean respuesta = false;
@@ -224,21 +273,66 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     }
 
+    /**
+     * Comprueba mendiante una Expresion Regular que el email introducido por el usuario es valido.
+     * @return
+     */
     public boolean esMail(){
 
         return mRegexMail.matcher(mUsuario).matches();
 
     }
 
+    /**
+     * Comprueba mediante una Expresion Regular que la contraseña introducida por el usuario es segura.
+     * @return
+     */
     public boolean esContraseñaSegura(){
 
         return mRegexContraseña.matcher(mContraseña).matches();
 
     }
 
+    /**
+     * Limpia los EditText que contienen los errores.
+     */
     public void limpiarErroresFormulario(){
+
         mETUsuario.setError(null);
         mETContraseña.setError(null);
+
     }
+
+    /**
+     * Muestra un dialogo con un mensaje de error si durante el registro/logeo se produce algun error.
+     * @param esRegistro Booleano que indica si el error que vamos a mostrar esta relacionado con el registro de usuarios.
+     * @param esLogin Booleano que inidica si el error que vamos a mostrar esta relacionado con el logeo.
+     * @param esContraseñaOlvidada Booleano que indica si el error que vamos a mostrar esta relacionado
+     *                             con el reestablecimiento de contraseñas
+     */
+    public void mostrarDialogError(boolean esRegistro, boolean esLogin, boolean esContraseñaOlvidada){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        if (esRegistro){
+            builder.setTitle(R.string.fallo_registro);
+            builder.setMessage(R.string.no_se_pudo_registrar);
+            builder.setPositiveButton(R.string.volver_login, null);
+        }else if (esLogin){
+            builder.setTitle(R.string.fallo_inicio_sesion);
+            builder.setMessage(R.string.no_se_pudo_iniciar_sesion);
+            builder.setPositiveButton(R.string.volver_login, null);
+        }else if (esContraseñaOlvidada){
+            builder.setTitle(R.string.fallo_contraseña_olvidada);
+            builder.setMessage(R.string.no_se_pudo_recuperar_contraseña);
+            builder.setPositiveButton(R.string.volver_login, null);
+        }
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+
 
 }

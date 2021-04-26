@@ -13,4 +13,26 @@
     <string name="contraseña_no_introducida">Debe introducir la contraseña</string>
     <string name="no_email">No has introducido un correo electronico</string>
     <string name="contraseña_no_segura">La contraseña no es segura</string>
+    <string name="fallo_inicio_sesion">Fallo al iniciar sesion</string>
+    <string name="no_se_pudo_iniciar_sesion">No se pudo iniciar sesion.</string>
+    <string name="fallo_registro">Fallo al registrar</string>
+    <string name="no_se_pudo_registrar">No se pudo registrar el nuevo usuario.</string>
+    <string name="fallo_contraseña_olvidada">Fallo al intentar recuperar contraseña</string>
+    <string name="no_se_pudo_recuperar_contraseña">No se pudo enviar el correo de recuperacion de contraseña.</string>
+    <string name="correo_recuperacion_enviado">Se ha enviado el correo de recuperacion.</string>
+    <string name="inicio_con_google_correcto">Acceso con Google Correcto</string>
+    <string name="inicio_con_google_fallido">Error al acceder con Google</string>
+    <string name="volver_login">Volver</string>
+
+    <!-- Fragment Post Registro -->
+    <string name="nombre">Nombre</string>
+    <string name="apellidos">Apellidos</string>
+    <string name="altura">Altura</string>
+    <string name="peso">Peso</string>
+    <string name="edad">Edad</string>
+    <string name="bienvenido_post_registro">Bienvenido/a a 4Fit, antes de empezar necesitamos algunos datos.</string>
+    <string name="continuar">Continuar</string>
+    <string name="años">Años</string>
+    <string name="kilos">Kg.</string>
+    <string name="centimetros">Cm.</string>
 </resources>
