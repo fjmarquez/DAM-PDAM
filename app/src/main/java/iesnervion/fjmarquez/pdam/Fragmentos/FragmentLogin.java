@@ -20,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 
@@ -111,6 +112,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
                                     mViewModel.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                                    //mViewModel.setmTipoFragmento(TipoFragmento.POST_REGISTRO);
                                 }else{
                                     mostrarDialogError(false, true, false);
                                 }
@@ -145,7 +147,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
-                                    Toast.makeText(getContext(), getText(R.string.correo_recuperacion_enviado), Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(getView(), R.string.correo_recuperacion_enviado, Snackbar.LENGTH_SHORT).show();
                                 }else{
                                     mostrarDialogError(false, false, true);
                                 }
@@ -176,10 +178,11 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
+                            mViewModel.setmTipoFragmento(TipoFragmento.POST_REGISTRO);
+                            Snackbar.make(getView(), R.string.inicio_con_google_correcto, Snackbar.LENGTH_SHORT).show();
                         }else {
                             mostrarDialogError(false, true, false);
-                            Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(getView(), R.string.inicio_con_google_fallido, Snackbar.LENGTH_SHORT).show();
                         }
                     }
                 });

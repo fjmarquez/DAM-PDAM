@@ -6,12 +6,22 @@
         <item name="colorPrimaryVariant">@color/color_oscuro_principal</item>
         <item name="colorOnPrimary">@color/blanco</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/negro</item>
+        <item name="colorSecondary">@color/blanco</item>
         <item name="colorSecondaryVariant">@color/gris</item>
         <item name="colorOnSecondary">@color/blanco</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="checkboxStyle">@style/Widget.App.CheckBox</item>
+    </style>
+
+    <style name="Widget.App.CheckBox" parent="Widget.MaterialComponents.CompoundButton.CheckBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.CheckBox</item>
+    </style>
+
+    <style name="ThemeOverlay.App.CheckBox" parent="">
+        <item name="colorSecondary">@color/gris</item>
     </style>
     <style name="Splash_Theme" parent="Theme.Pdam">
         <item name="android:windowBackground">

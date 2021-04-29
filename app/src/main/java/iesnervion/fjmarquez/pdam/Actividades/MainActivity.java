@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
+import iesnervion.fjmarquez.pdam.Fragmentos.FragmentDiasRutina;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentInicial;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentLogin;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentPostRegistro;
@@ -34,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
                 case PANTALLA_INICIO:
                     cambiarFragment(mFragmentoInicial);
                     break;
+                case DIAS_RUTINA:
+                    cambiarFragment(mFragmentoDiasRutina);
+                    break;
             }
 
         }
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentLogin mFragmentLogin;
     private FragmentPostRegistro mFragmentPostRegistro;
     private FragmentInicial mFragmentoInicial;
+    private FragmentDiasRutina mFragmentoDiasRutina;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mFragmentLogin = new FragmentLogin();
         mFragmentPostRegistro = new FragmentPostRegistro();
         mFragmentoInicial = new FragmentInicial();
+        mFragmentoDiasRutina = new FragmentDiasRutina();
 
     }
 

@@ -2,8 +2,11 @@
 <resources>
     <color name="color_principal">#FF5733</color>
     <color name="color_oscuro_principal">#FF3F14</color>
+    <color name="color_claro_principal">#FF6C4B</color>
+    <color name="color_muy_claro_principal">#D0FF5733</color>
     <color name="color_btn">#FF6340</color>
     <color name="gris">#525252</color>
     <color name="negro">#FF000000</color>
     <color name="blanco">#FFFFFFFF</color>
+    <color name="rojo">#E31111</color>
 </resources>

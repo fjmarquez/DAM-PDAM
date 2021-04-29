@@ -35,4 +35,23 @@
     <string name="años">Años</string>
     <string name="kilos">Kg.</string>
     <string name="centimetros">Cm.</string>
+    <string name="nombre_vacio">El campo nombre es obligatorio</string>
+    <string name="apellidos_vacios">El campo apellidos es obligatorio</string>
+    <string name="edad_vacio">El campo edad es obligatorio</string>
+    <string name="altura_vacio">El campo altura es obligatorio</string>
+    <string name="peso_vacio">El campo peso es obligatorio</string>
+
+
+    <!-- Dialog dias de la semana -->
+    <string name="titulo_dialog_dias_semana">¿Qué dias quieres entrenar?</string>
+    <string name="boton_negativo_dialog">Volver</string>
+    <string name="boton_positivo_dialog">Seguir</string>
+    <string name="error_dias">Debes seleccionar al menos un dia</string>
+    <string name="lunes">Lunes</string>
+    <string name="martes">Martes</string>
+    <string name="miercoles">Miercoles</string>
+    <string name="jueves">Jueves</string>
+    <string name="viernes">Viernes</string>
+    <string name="sabado">Sabado</string>
+    <string name="domingo">Domingo</string>
 </resources>

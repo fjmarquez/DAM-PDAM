@@ -6,5 +6,6 @@ package iesnervion.fjmarquez.pdam.Utiles;
 public enum TipoFragmento {
     LOGIN,
     POST_REGISTRO,
-    PANTALLA_INICIO
+    PANTALLA_INICIO,
+    DIAS_RUTINA
 }

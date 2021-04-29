@@ -15,12 +15,12 @@ public class Usuario {
     private String Nombre;
     private String Apellidos;
     private String Email;
-    private Double Altura;
+    private Integer Altura;
     private Double Peso;
     private int Edad;
 
     /* CONSTRUCTORES */
-    public Usuario(String uid, String nombre, String apellidos, String email, Double altura, Double peso, int edad) {
+    public Usuario(String uid, String nombre, String apellidos, String email, Integer altura, Double peso, Integer edad) {
         this.Uid = uid;
         this.Nombre = nombre;
         this.Apellidos = apellidos;
@@ -30,7 +30,7 @@ public class Usuario {
         this.Edad = edad;
     }
 
-    public Usuario(FirebaseUser usuario, String nombre, String apellidos, Double altura, Double  peso, int edad){
+    public Usuario(FirebaseUser usuario, String nombre, String apellidos, Integer altura, Double  peso, Integer edad){
         this.Uid = usuario.getUid();
         this.Nombre = nombre;
         this.Apellidos = apellidos;
@@ -53,7 +53,7 @@ public class Usuario {
         return this.Email;
     }
 
-    public Double getAltura() {
+    public Integer getAltura() {
         return this.Altura;
     }
 
@@ -78,7 +78,7 @@ public class Usuario {
         this.Email = email;
     }
 
-    public void setAltura(Double altura) {
+    public void setAltura(Integer altura) {
         this.Altura = altura;
     }
 
