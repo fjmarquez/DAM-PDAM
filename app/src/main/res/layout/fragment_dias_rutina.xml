@@ -7,36 +7,5 @@
     tools:context=".Fragmentos.FragmentDiasRutina"
     android:orientation="vertical">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cvLunes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:checkable="true"
-        android:backgroundTint="@color/color_muy_claro_principal"
-        android:layout_margin="5dp"
-        app:cardCornerRadius="15dp"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_margin="10dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Lunes"
-                android:textSize="20dp"
-                android:textColor="@color/negro">
-
-            </TextView>
-
-        </LinearLayout>
-
-
-</com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>
