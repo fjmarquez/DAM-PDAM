@@ -54,4 +54,10 @@
     <string name="viernes">Viernes</string>
     <string name="sabado">Sabado</string>
     <string name="domingo">Domingo</string>
+
+    <!-- CARD DIAS -->
+    <string name="añadir_ejercicio_dia">Añadir</string>
+    <string name="ver_ejercicios_dia">Mostrar</string>
+    <string name="ejercicios_dia"> ejercicios añadidos.</string>
+
 </resources>

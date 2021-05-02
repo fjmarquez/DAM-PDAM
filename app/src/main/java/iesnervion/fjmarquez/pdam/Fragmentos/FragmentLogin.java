@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -28,7 +27,7 @@ import java.util.regex.Pattern;
 
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelPrincipal;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelLogin;
 
 /**
  * Fragment destinado a contener lo necesario para el logeo/registro de la app.
@@ -51,7 +50,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
     private Pattern mRegexMail = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private Pattern mRegexContraseña = Pattern.compile("((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#._$,:;?¿¡)(*^<>%!]).{8,40})");
 
-    private ViewModelPrincipal mViewModel;
+    private ViewModelLogin mViewModel;
 
     public FragmentLogin() {
 
@@ -69,7 +68,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
         super.onCreate(savedInstanceState);
         //Inicializo el ViewModel
-        mViewModel = new ViewModelProvider(getActivity()).get(ViewModelPrincipal.class);
+        mViewModel = new ViewModelProvider(getActivity()).get(ViewModelLogin.class);
 
     }
 

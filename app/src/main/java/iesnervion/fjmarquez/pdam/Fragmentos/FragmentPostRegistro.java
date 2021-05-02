@@ -12,17 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
+import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 import iesnervion.fjmarquez.pdam.R;
+import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelPrincipal;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelLogin;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 
 /**
  * Fragment destinado a recopilar informacion sobre el usuario despues de que este se haya
@@ -48,7 +53,8 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
     private View mDialogDiasView;
     private View mFragmentView;
 
-    private ViewModelPrincipal mViewModel;
+    private ViewModelLogin mViewModelLogin;
+    private ViewModelRutina mViewModelRutina;
 
     private String mNombre;
     private String mApellidos;
@@ -69,7 +75,8 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mViewModel = new ViewModelProvider(getActivity()).get(ViewModelPrincipal.class);
+        mViewModelLogin = new ViewModelProvider(getActivity()).get(ViewModelLogin.class);
+        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelRutina.class);
 
     }
 
@@ -140,7 +147,7 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
                 if(recopilarCheckBoxesDias()){
                     recopilarDatosUsuario();
                     alertDialog.cancel();
-                    mViewModel.setmTipoFragmento(TipoFragmento.DIAS_RUTINA);
+                    mViewModelLogin.setmTipoFragmento(TipoFragmento.DIAS_RUTINA);
                 }
                 else {
                     Snackbar.make(getView(), R.string.error_dias, Snackbar.LENGTH_SHORT).show();
@@ -159,7 +166,7 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
         mAltura = Integer.parseInt(mETAltura.getEditText().getText().toString());
         mPeso = Double.parseDouble(mETPeso.getEditText().getText().toString());
 
-        mViewModel.setmUsuario(new Usuario(mViewModel.usuarioActual(), mNombre, mApellidos, mAltura, mPeso, mEdad));
+        mViewModelLogin.setmUsuario(new Usuario(mViewModelLogin.usuarioActual(), mNombre, mApellidos, mAltura, mPeso, mEdad));
 
     }
 
@@ -168,32 +175,36 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
         boolean respuesta = false;
 
         if(mCBLunes.isChecked()){
-            respuesta = true;
+            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.LUNES, new ArrayList<>()));
             Toast.makeText(getContext(), "Lunes", Toast.LENGTH_SHORT).show();
         }
         if(mCBMartes.isChecked()){
-            respuesta = true;
+            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.MARTES, new ArrayList<>()));
             Toast.makeText(getContext(), "Martes", Toast.LENGTH_SHORT).show();
         }
         if(mCBMiercoles.isChecked()){
-            respuesta = true;
+            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.MIERCOLES, new ArrayList<>()));
             Toast.makeText(getContext(), "Miercoles", Toast.LENGTH_SHORT).show();
         }
         if(mCBJueves.isChecked()){
-            respuesta = true;
+            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.JUEVES, new ArrayList<>()));
             Toast.makeText(getContext(), "Jueves", Toast.LENGTH_SHORT).show();
         }
         if(mCBViernes.isChecked()){
-            respuesta = true;
+            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.VIERNES, new ArrayList<>()));
             Toast.makeText(getContext(), "Viernes", Toast.LENGTH_SHORT).show();
         }
         if(mCBSabado.isChecked()){
-            respuesta = true;
+            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.SABADO, new ArrayList<>()));
             Toast.makeText(getContext(), "Sabado", Toast.LENGTH_SHORT).show();
         }
         if(mCBDomingo.isChecked()){
-            respuesta = true;
+            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.DOMINGO, new ArrayList<>()));
             Toast.makeText(getContext(), "Domingo", Toast.LENGTH_SHORT).show();
+        }
+
+        if(mViewModelRutina.getDiasRutina().getValue().size() > 0){
+            respuesta = true;
         }
 
         return respuesta;

@@ -14,13 +14,13 @@ import iesnervion.fjmarquez.pdam.Fragmentos.FragmentLogin;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentPostRegistro;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelPrincipal;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelLogin;
 
 public class MainActivity extends AppCompatActivity {
 
     /* ATRIBUTOS */
     private FragmentContainerView mContenedorGeneral;
-    private ViewModelPrincipal mViewModel;
+    private ViewModelLogin mViewModel;
     //Observer que se encargara de la navegacion entre fragmentos.
     private Observer<TipoFragmento> mTipoFragmentoObserver = new Observer<TipoFragmento>() {
         @Override
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void inicializar(){
 
-        mViewModel = new ViewModelProvider(this).get(ViewModelPrincipal.class);
+        mViewModel = new ViewModelProvider(this).get(ViewModelLogin.class);
         //Observacion de la variable que se encargara de almacenar el fragment en el cual debe encontrarse la app
         mViewModel.getmTipoFragmento().observe(this, mTipoFragmentoObserver);
         mContenedorGeneral = findViewById(R.id.contenedorGeneral);

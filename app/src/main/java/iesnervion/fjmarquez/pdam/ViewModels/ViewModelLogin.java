@@ -14,7 +14,7 @@ import iesnervion.fjmarquez.pdam.Repositorios.RepositorioLoginFirebase;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 
 
-public class ViewModelPrincipal extends androidx.lifecycle.ViewModel{
+public class ViewModelLogin extends androidx.lifecycle.ViewModel {
 
     /* ATRIBUTOS */
     private RepositorioLoginFirebase mRepositorioLogin;
@@ -44,7 +44,7 @@ public class ViewModelPrincipal extends androidx.lifecycle.ViewModel{
     }
 
     /* CONSTRUCTOR */
-    public ViewModelPrincipal() {
+    public ViewModelLogin() {
         mRepositorioLogin = new RepositorioLoginFirebase();
     }
 
@@ -53,9 +53,10 @@ public class ViewModelPrincipal extends androidx.lifecycle.ViewModel{
     /**
      * Mediante la clase RepositorioLoginFirebase obtiene el usuario que actualmente esta logeado en la app (puede obtener
      * un usuario o no).
+     *
      * @return Devuelve un FirebaseUser con toda la informacion del usuario logeado o null.
      */
-    public FirebaseUser usuarioActual(){
+    public FirebaseUser usuarioActual() {
 
         return mRepositorioLogin.usuarioActual();
 
@@ -64,11 +65,12 @@ public class ViewModelPrincipal extends androidx.lifecycle.ViewModel{
     /**
      * Mediante la clase RespositorioLoginFirebase se registra a traves de Firebase Authentication usando un email
      * y una contraseña.
-     * @param Email Email introducido por el usuario en el formulario de login.
+     *
+     * @param Email      Email introducido por el usuario en el formulario de login.
      * @param Contraseña Contraseña introducida por el usuario en el formulario de login.
      * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
      */
-    public Task<AuthResult> registrarNuevoUsuario(String Email, String Contraseña){
+    public Task<AuthResult> registrarNuevoUsuario(String Email, String Contraseña) {
 
         return mRepositorioLogin.registrarNuevoUsuario(Email, Contraseña);
 
@@ -77,11 +79,12 @@ public class ViewModelPrincipal extends androidx.lifecycle.ViewModel{
     /**
      * Mediante la clase RepositorioLoginFirebase se logea a traves de Firebase Authentication
      * usando un email y una contraseña.
-     * @param Email Email introducido por el usuario en el formulario del login
+     *
+     * @param Email      Email introducido por el usuario en el formulario del login
      * @param Contraseña Contraseña introducida por el usuario en el formulario del login.
      * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
      */
-    public Task<AuthResult> iniciarSesionConUsuarioYContraseña(String Email, String Contraseña){
+    public Task<AuthResult> iniciarSesionConUsuarioYContraseña(String Email, String Contraseña) {
 
         return mRepositorioLogin.iniciarSesionConUsuarioYContraseña(Email, Contraseña);
 
@@ -89,11 +92,12 @@ public class ViewModelPrincipal extends androidx.lifecycle.ViewModel{
 
     /**
      * Mediante la clase RepositorioLoginFirebase se autentica en Google.
+     *
      * @param idToken Token necesario para autenticarse en Google.
      * @param context Contexto desde donde lanzaremos en Intent necesario para autenticarse con Google.
      * @return Devuelve un intent, el cual sera lanzado y controlado en el Fragment correspondiente.
      */
-    public Intent autenticacionGoogle(String idToken, Context context){
+    public Intent autenticacionGoogle(String idToken, Context context) {
 
         return mRepositorioLogin.autenticacionGoogle(idToken, context);
 
@@ -102,10 +106,11 @@ public class ViewModelPrincipal extends androidx.lifecycle.ViewModel{
     /**
      * Mediante la clase RepositorioLoginFirebase se registra/logea usando Firebase Authentication
      * en la app usando una cuenta de Google.
+     *
      * @param idToken Token de la cuenta de Google mediante la que el usuario se ha autenticado en Google.
      * @return Devuelve una tarea, la cual controlaremos en el Frament correspondiente.
      */
-    public Task<AuthResult> accederMedianteGoogle(String idToken){
+    public Task<AuthResult> accederMedianteGoogle(String idToken) {
 
         return mRepositorioLogin.accederMedianteGoogle(idToken);
 
@@ -114,10 +119,11 @@ public class ViewModelPrincipal extends androidx.lifecycle.ViewModel{
     /**
      * Mediante la clase RepositorioLoginFirebase envia un correo a traves de Firebase Authentication
      * al mail indicado para reestablecer su contraseña.
+     *
      * @param Email Email introducido por el usuario en el formulario de login.
      * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
      */
-    public Task<Void> mandarMailRecuperarContraseña(String Email){
+    public Task<Void> mandarMailRecuperarContraseña(String Email) {
         return mRepositorioLogin.mandarMailRecuperarContraseña(Email);
     }
 

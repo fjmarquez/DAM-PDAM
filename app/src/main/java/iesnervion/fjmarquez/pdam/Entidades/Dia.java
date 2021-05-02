@@ -9,13 +9,11 @@ public class Dia {
     /* ATRIBUTOS */
     private DiaSemana Dia;
     private ArrayList<Ejercicio> Ejercicios;
-    private boolean Descanso;
 
     /* CONSTRUCTORES */
-    public Dia(DiaSemana dia, ArrayList<Ejercicio> ejercicios, boolean descanso) {
+    public Dia(DiaSemana dia, ArrayList<Ejercicio> ejercicios) {
         Dia = dia;
         Ejercicios = ejercicios;
-        Descanso = descanso;
     }
 
     /* GETTERS */
@@ -27,10 +25,6 @@ public class Dia {
         return Ejercicios;
     }
 
-    public boolean isDescanso() {
-        return Descanso;
-    }
-
     /* SETTERS */
     public void setDia(DiaSemana dia) {
         Dia = dia;
@@ -38,10 +32,6 @@ public class Dia {
 
     public void setEjercicios(ArrayList<Ejercicio> ejercicios) {
         Ejercicios = ejercicios;
-    }
-
-    public void setDescanso(boolean descanso) {
-        Descanso = descanso;
     }
 
 }

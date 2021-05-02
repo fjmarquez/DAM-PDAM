@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvDia"
+    android:layout_margin="5dp"
+    android:layout_gravity="fill_vertical"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/color_principal"
+    android:backgroundTint="@color/color_principal_transparente"
+    app:cardElevation="2dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:cardCornerRadius="5dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginLeft="10dp">
+
+                <TextView
+                    android:id="@+id/tvDia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Prueba"
+                    android:textSize="18dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/blanco">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/tvNumeroEjercicios"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ejercicios_dia"
+                    android:textColor="@color/blanco">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAñadirEjercicioDia"
+                    android:layout_width="100dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/añadir_ejercicio_dia"
+                    android:textSize="11dp"
+                    android:clickable="true"
+                    android:backgroundTint="@color/blanco"
+                    android:textColor="@color/color_principal">
+
+                </com.google.android.material.button.MaterialButton>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnVerEjerciciosDia"
+                    android:layout_width="100dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/ver_ejercicios_dia"
+                    android:clickable="true"
+                    android:textSize="11dp"
+                    android:backgroundTint="@color/blanco"
+                    android:textColor="@color/color_principal">
+
+                </com.google.android.material.button.MaterialButton>
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
