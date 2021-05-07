@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="transparente">#00FF5733</color>
     <color name="color_principal">#FF5733</color>
-    <color name="color_principal_transparente">#E6FF5733</color>
+    <color name="color_principal_transparente">#2AFF5733</color>
+    <color name="color_principal_muy_transparente">#0AFF5733</color>
     <color name="color_oscuro_principal">#FF3F14</color>
     <color name="color_claro_principal">#FF6C4B</color>
     <color name="color_muy_claro_principal">#D0FF5733</color>

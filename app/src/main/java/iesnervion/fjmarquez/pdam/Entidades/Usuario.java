@@ -40,6 +40,10 @@ public class Usuario {
         this.Edad = edad;
     }
 
+    public Usuario(){
+
+    }
+
     /* GETTERS */
     public String getUid() {
         return this.Uid;

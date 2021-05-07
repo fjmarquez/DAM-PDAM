@@ -8,16 +8,17 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import iesnervion.fjmarquez.pdam.Entidades.Usuario;
-import iesnervion.fjmarquez.pdam.Repositorios.RepositorioLoginFirebase;
+import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirebaseLogin;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 
 
 public class ViewModelLogin extends androidx.lifecycle.ViewModel {
 
     /* ATRIBUTOS */
-    private RepositorioLoginFirebase mRepositorioLogin;
+    private RepositorioFirebaseLogin mRepositorioLogin;
     private MutableLiveData<TipoFragmento> mTipoFragmento = new MutableLiveData<TipoFragmento>();
     private Usuario mUsuario;
 
@@ -45,7 +46,7 @@ public class ViewModelLogin extends androidx.lifecycle.ViewModel {
 
     /* CONSTRUCTOR */
     public ViewModelLogin() {
-        mRepositorioLogin = new RepositorioLoginFirebase();
+        mRepositorioLogin = new RepositorioFirebaseLogin();
     }
 
     /* FUNCIONES */
@@ -59,6 +60,18 @@ public class ViewModelLogin extends androidx.lifecycle.ViewModel {
     public FirebaseUser usuarioActual() {
 
         return mRepositorioLogin.usuarioActual();
+
+    }
+
+    public Task<DocumentSnapshot> usuarioExisteFirebase(){
+
+        return mRepositorioLogin.usuarioExisteFirestore();
+
+    }
+
+    public Task añadirUsuarioFirestore(Usuario usuario){
+
+        return mRepositorioLogin.añadirUsuarioFirestore(usuario);
 
     }
 

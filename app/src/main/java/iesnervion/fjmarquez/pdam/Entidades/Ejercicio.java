@@ -1,10 +1,18 @@
 package iesnervion.fjmarquez.pdam.Entidades;
 
+import android.graphics.Bitmap;
+import android.text.BoringLayout;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import iesnervion.fjmarquez.pdam.Utiles.DificultadEjercicio;
 import iesnervion.fjmarquez.pdam.Utiles.GrupoMuscular;
 
+/**
+ * Clase destinada a organizar y facilitar la informacion necesaria de cada ejercicio.
+ * Despues de la clase Serie sera la segunda "unidad de medida". Un ejericicio tendra una o varias series.
+ */
 public class Ejercicio {
 
     /* ATRIBUTOS*/
@@ -15,9 +23,15 @@ public class Ejercicio {
     private DificultadEjercicio Dificultad;
     private ArrayList<Serie> Series;
     private Boolean Material;
+    private Boolean BandasElasticas;
+    private String Gif;
 
     /* CONSTRUCTORES */
-    public Ejercicio(String uid, String nombre, String descripcion, GrupoMuscular grupoMuscular, DificultadEjercicio dificultad, ArrayList<Serie> series, Boolean material) {
+
+    public Ejercicio() {
+    }
+
+    public Ejercicio(String uid, String nombre, String descripcion, iesnervion.fjmarquez.pdam.Utiles.GrupoMuscular grupoMuscular, DificultadEjercicio dificultad, ArrayList<Serie> series, Boolean material, Boolean bandasElasticas, String gif) {
         Uid = uid;
         Nombre = nombre;
         Descripcion = descripcion;
@@ -25,6 +39,8 @@ public class Ejercicio {
         Dificultad = dificultad;
         Series = series;
         Material = material;
+        BandasElasticas = bandasElasticas;
+        Gif = gif;
     }
 
     /* GETTERS */
@@ -56,6 +72,14 @@ public class Ejercicio {
         return Material;
     }
 
+    public Boolean getBandasElasticas() {
+        return BandasElasticas;
+    }
+
+    public String getGif() {
+        return Gif;
+    }
+
     /* SETTERS */
     public void setUid(String uid) {
         Uid = uid;
@@ -83,5 +107,13 @@ public class Ejercicio {
 
     public void setMaterial(Boolean material) {
         Material = material;
+    }
+
+    public void setBandasElasticas(Boolean bandasElasticas) {
+        BandasElasticas = bandasElasticas;
+    }
+
+    public void setGif(String gif) {
+        Gif = gif;
     }
 }

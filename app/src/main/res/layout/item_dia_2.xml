@@ -4,11 +4,11 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cvDia"
-    android:layout_margin="10dp"
+    android:layout_margin="5dp"
     android:layout_gravity="fill_vertical"
     app:strokeWidth="1.5dp"
     app:strokeColor="@color/color_principal_transparente"
-    android:backgroundTint="@color/blanco"
+    android:backgroundTint="@color/color_principal_muy_transparente"
     app:cardElevation="2dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     app:cardCornerRadius="5dp">

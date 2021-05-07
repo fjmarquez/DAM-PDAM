@@ -1,5 +1,9 @@
 package iesnervion.fjmarquez.pdam.Entidades;
 
+/**
+ * Es la clase destinada a facilitar el manejo de datos en el historico los registros del dia en cada serie de un ejercicio.
+ * Seria la "unidad de medida" mas basica del proyecto
+ */
 public class Serie {
 
     /* ATRIBUTOS */
@@ -10,6 +14,9 @@ public class Serie {
     public Serie(int repeticiones, double peso) {
         Repeticiones = repeticiones;
         Peso = peso;
+    }
+
+    public Serie() {
     }
 
     /* GETTERS */

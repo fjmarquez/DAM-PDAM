@@ -1,5 +1,6 @@
 package iesnervion.fjmarquez.pdam.Actividades;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -8,12 +9,18 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentDiasRutina;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentInicial;
+import iesnervion.fjmarquez.pdam.Fragmentos.FragmentListaEjercicios;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentLogin;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentPostRegistro;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
+import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelLogin;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
                 case DIAS_RUTINA:
                     cambiarFragment(mFragmentoDiasRutina);
                     break;
+                case EJERCICIOS:
+                    cambiarFragment(mFragmentoListaEjercicios);
+                    break;
             }
 
         }
@@ -47,12 +57,15 @@ public class MainActivity extends AppCompatActivity {
     private FragmentPostRegistro mFragmentPostRegistro;
     private FragmentInicial mFragmentoInicial;
     private FragmentDiasRutina mFragmentoDiasRutina;
+    private FragmentListaEjercicios mFragmentoListaEjercicios;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Pdam);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Utiles.pruebaFirebase();
 
         inicializar();
 
@@ -72,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         mFragmentPostRegistro = new FragmentPostRegistro();
         mFragmentoInicial = new FragmentInicial();
         mFragmentoDiasRutina = new FragmentDiasRutina();
+        mFragmentoListaEjercicios = new FragmentListaEjercicios();
 
     }
 
@@ -81,11 +95,25 @@ public class MainActivity extends AppCompatActivity {
      * Establece el fragment que debe ser el primero en mostrarse y lo carga en el fragment container.
      */
     public void fragmentInicial(){
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(mContenedorGeneral.getId(), mFragmentLogin)
-                .commit();
+
+        if (mViewModel.usuarioActual() != null) {
+            mViewModel.usuarioExisteFirebase().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()){
+                        DocumentSnapshot documento = task.getResult();
+                        if (documento.exists()){
+                            cambiarFragment(mFragmentoInicial);
+                        } else {
+                            cambiarFragment(mFragmentPostRegistro);
+                        }
+                    }
+                }
+            });
+        }else {
+            cambiarFragment(mFragmentLogin);
+        }
+
     }
 
     /**
@@ -93,12 +121,14 @@ public class MainActivity extends AppCompatActivity {
      * @param fragment Fragment hacia el que se desea navegar.
      */
     public void cambiarFragment(Fragment fragment){
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .setReorderingAllowed(true)
                 .replace(mContenedorGeneral.getId(), fragment)
                 .addToBackStack(null)
                 .commit();
+
     }
 
 }

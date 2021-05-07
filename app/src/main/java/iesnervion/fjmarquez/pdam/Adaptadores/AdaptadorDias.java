@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.R;
+import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 
 public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasViewHolder>{
 
@@ -38,16 +39,34 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
     @NonNull
     @Override
     public AdaptadorDias.RVDiasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia, parent, false);
+        View v;
+        if (getItemViewType(viewType) == 0){
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia, parent, false);
+        }else {
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia_2, parent, false);
+        }
+
         RVDiasViewHolder vh = new RVDiasViewHolder(v, mListener);
         return vh;
     }
 
     @Override
+    public int getItemViewType(int position) {
+
+        if (position % 2 == 0) {
+            return 0;
+        }
+        else {
+            return 1;
+        }
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull AdaptadorDias.RVDiasViewHolder holder, int position) {
+
         Dia diaActual = this.listaDias.get(position);
-        holder.tvDia.setText(diaActual.getDia().name());
-        holder.tvNumeroEjercicios.setText(diaActual.getEjercicios().size() + " " + holder.tvNumeroEjercicios.getText());
+        holder.tvDia.setText(Utiles.capitalizar(diaActual.getDia().name()));
+        holder.tvNumeroEjercicios.setText(diaActual.getEjercicios().size() + " ejercicios añadidos");
 
     }
 

@@ -2,6 +2,11 @@ package iesnervion.fjmarquez.pdam.Entidades;
 
 import java.util.ArrayList;
 
+/**
+ * Esta clase facilita el manejo de los datos relacionados con cada dia, ejericio o series, contiene informacion sobre todo
+ * lo comentado anteriormente. Es la "unidad de medida" de mas alto nivel en el proyecto.
+ * Una rutina tendra uno o varios dias.
+ */
 public class Rutina {
 
     /* ATRIBUTOS */
@@ -12,6 +17,10 @@ public class Rutina {
     public Rutina(String uid, ArrayList<Dia> dias) {
         Uid = uid;
         Dias = dias;
+    }
+
+    public Rutina(){
+
     }
 
     /* GETTERS */

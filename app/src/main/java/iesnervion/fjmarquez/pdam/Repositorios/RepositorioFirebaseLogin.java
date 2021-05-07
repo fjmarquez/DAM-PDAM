@@ -3,26 +3,39 @@ package iesnervion.fjmarquez.pdam.Repositorios;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
-public class RepositorioLoginFirebase {
+import iesnervion.fjmarquez.pdam.Entidades.Usuario;
+
+public class RepositorioFirebaseLogin {
 
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
+    FirebaseFirestore mFirestoreDB;
+    CollectionReference mUsuariosColRef;
 
     /**
-     * Obtiene nuestra instancia de Firebase Authentication.
+     * Constuctor de la clase.
      */
-    public RepositorioLoginFirebase() {
+    public RepositorioFirebaseLogin() {
         this.mAuth = FirebaseAuth.getInstance();
+        this.mFirestoreDB = FirebaseFirestore.getInstance();
+        this.mUsuariosColRef = mFirestoreDB.collection("usuarios");
     }
 
     /**
@@ -32,6 +45,27 @@ public class RepositorioLoginFirebase {
      */
     public FirebaseUser usuarioActual(){
         return mAuth.getCurrentUser();
+    }
+
+    /**
+     * Comprueba si el usuario actual completo el formulario post-registro.
+     * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
+     * correctamente o no).
+     */
+    public Task<DocumentSnapshot> usuarioExisteFirestore(){
+
+        DocumentReference mUsuarioDocRef = mUsuariosColRef.document(usuarioActual().getUid());
+
+        return mUsuarioDocRef.get();
+
+    }
+
+    public Task añadirUsuarioFirestore(Usuario usuario){
+
+        DocumentReference mUsuarioDocRef = mUsuariosColRef.document(usuarioActual().getUid());
+
+        return mUsuarioDocRef.set(usuario);
+
     }
 
     /**
