@@ -11,14 +11,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import iesnervion.fjmarquez.pdam.Entidades.Usuario;
-import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirebaseLogin;
+import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirebaseUsuario;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 
 
-public class ViewModelLogin extends androidx.lifecycle.ViewModel {
+public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     /* ATRIBUTOS */
-    private RepositorioFirebaseLogin mRepositorioLogin;
+    private RepositorioFirebaseUsuario mRepositorioLogin;
     private MutableLiveData<TipoFragmento> mTipoFragmento = new MutableLiveData<TipoFragmento>();
     private Usuario mUsuario;
 
@@ -45,8 +45,8 @@ public class ViewModelLogin extends androidx.lifecycle.ViewModel {
     }
 
     /* CONSTRUCTOR */
-    public ViewModelLogin() {
-        mRepositorioLogin = new RepositorioFirebaseLogin();
+    public ViewModelUsuario() {
+        mRepositorioLogin = new RepositorioFirebaseUsuario();
     }
 
     /* FUNCIONES */

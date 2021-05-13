@@ -20,14 +20,13 @@ import iesnervion.fjmarquez.pdam.Fragmentos.FragmentLogin;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentPostRegistro;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
-import iesnervion.fjmarquez.pdam.Utiles.Utiles;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelLogin;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
 public class MainActivity extends AppCompatActivity {
 
     /* ATRIBUTOS */
     private FragmentContainerView mContenedorGeneral;
-    private ViewModelLogin mViewModel;
+    private ViewModelUsuario mViewModel;
     //Observer que se encargara de la navegacion entre fragmentos.
     private Observer<TipoFragmento> mTipoFragmentoObserver = new Observer<TipoFragmento>() {
         @Override
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void inicializar(){
 
-        mViewModel = new ViewModelProvider(this).get(ViewModelLogin.class);
+        mViewModel = new ViewModelProvider(this).get(ViewModelUsuario.class);
         //Observacion de la variable que se encargara de almacenar el fragment en el cual debe encontrarse la app
         mViewModel.getmTipoFragmento().observe(this, mTipoFragmentoObserver);
         mContenedorGeneral = findViewById(R.id.contenedorGeneral);
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         DocumentSnapshot documento = task.getResult();
                         if (documento.exists()){
-                            cambiarFragment(mFragmentoInicial);
+                            cambiarFragment(mFragmentoDiasRutina);
                         } else {
                             cambiarFragment(mFragmentPostRegistro);
                         }

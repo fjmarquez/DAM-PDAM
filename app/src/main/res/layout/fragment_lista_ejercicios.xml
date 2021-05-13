@@ -5,9 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".Fragmentos.FragmentListaEjercicios">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Lista Ejercicios" />
+        android:layout_height="wrap_content"
+        android:id="@+id/rvEjercicios"
+        android:minHeight="400dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </FrameLayout>

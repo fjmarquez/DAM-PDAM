@@ -1,10 +1,8 @@
 package iesnervion.fjmarquez.pdam.Fragmentos;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -12,23 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.ArrayList;
-
-import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 import iesnervion.fjmarquez.pdam.R;
-import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelLogin;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 
 /**
@@ -47,7 +37,7 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
 
     private View mFragmentView;
 
-    private ViewModelLogin mViewModelLogin;
+    private ViewModelUsuario mViewModelLogin;
     private ViewModelRutina mViewModelRutina;
 
     private String mNombre;
@@ -69,7 +59,7 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mViewModelLogin = new ViewModelProvider(getActivity()).get(ViewModelLogin.class);
+        mViewModelLogin = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
 
     }
@@ -98,7 +88,6 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
             case R.id.BTNEnviarDatosUsuario:
                 if(comprobarCampos()) {
                     recopilarYAlmacenarDatosUsuario();
-                    mViewModelLogin.setmTipoFragmento(TipoFragmento.DIAS_RUTINA);
                 }
                 break;
         }
@@ -114,18 +103,16 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
 
         Usuario usuario = new Usuario(mViewModelLogin.usuarioActual(), mNombre, mApellidos, mAltura, mPeso, mEdad);
         mViewModelLogin.setmUsuario(usuario);
-        /*
-        //--------------------- MIRAR -------------------
+
         mViewModelLogin.añadirUsuarioFirestore(usuario).addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
                 if (task.isSuccessful()){
-
-                    mostrarDialogDias();
+                    mViewModelLogin.setmTipoFragmento(TipoFragmento.DIAS_RUTINA);
                 }
             }
         });
-*/
+
     }
 
     public boolean comprobarCampos(){

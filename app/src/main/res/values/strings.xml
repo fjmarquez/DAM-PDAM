@@ -55,9 +55,18 @@
     <string name="sabado">Sabado</string>
     <string name="domingo">Domingo</string>
 
+    <!-- DIALOG SERIES -->
+    <string name="titulo_dialogo_series">Especifica las series</string>
+    <string name="nombre_serie">Serie</string>
+    <string name="repeticiones">Repeticiones</string>
+    <string name="ud_reps">Rep.</string>
+    <string name="boton_añadir">Añadir</string>
+    <string name="boton_quitar">Quitar</string>
+
     <!-- CARD DIAS -->
     <string name="añadir_ejercicio_dia">Añadir</string>
     <string name="ver_ejercicios_dia">Mostrar</string>
     <string name="ejercicios_dia"> ejercicios añadidos.</string>
+    <string name="eleccion_dias_rutina">¡Muy bien! Ya tenemos los dias que entrenaras, ahora veamos los ejercicios.</string>
 
 </resources>

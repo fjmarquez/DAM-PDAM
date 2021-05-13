@@ -23,15 +23,60 @@ import java.util.List;
 import java.util.Map;
 
 import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
+import iesnervion.fjmarquez.pdam.Entidades.Serie;
+import iesnervion.fjmarquez.pdam.R;
 
 import static android.content.ContentValues.TAG;
 
 public class Utiles {
 
+    public static ArrayList<Serie> seriesPorDefecto(){
+        ArrayList<Serie> seriesDefecto = new ArrayList<>();
+
+        for(int i = 0; i < 4; i++){
+            seriesDefecto.add(new Serie());
+        }
+
+        return seriesDefecto;
+    }
+
     public static String capitalizar(String cadena){
 
         String capitalizado = cadena.substring(0, 1).toUpperCase() + cadena.substring(1).toLowerCase();
         return capitalizado;
+
+    }
+
+    public static String descripcionCorta(String descripcion) {
+
+        String[] arrayDescripcion = descripcion.split(" ");
+        String descripcionCorta = "";
+
+        for (int i=0; i <= 10; i++){
+            descripcionCorta += arrayDescripcion[i] + " ";
+        }
+
+        return descripcionCorta += descripcionCorta + "...";
+
+    }
+
+    public static int colorDificultad (DificultadEjercicio dificultad){
+
+        int color = R.color.negro;
+
+        switch (dificultad){
+            case PRINCIPIANTE:
+                color = R.color.principiante;
+                break;
+            case INTERMEDIO:
+                color = R.color.intermedio;
+                break;
+            case EXPERTO:
+                color = R.color.experto;
+                break;
+        }
+
+        return color;
 
     }
 

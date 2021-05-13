@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 
-public class RepositorioFirebaseLogin {
+public class RepositorioFirebaseUsuario {
 
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
@@ -32,7 +32,7 @@ public class RepositorioFirebaseLogin {
     /**
      * Constuctor de la clase.
      */
-    public RepositorioFirebaseLogin() {
+    public RepositorioFirebaseUsuario() {
         this.mAuth = FirebaseAuth.getInstance();
         this.mFirestoreDB = FirebaseFirestore.getInstance();
         this.mUsuariosColRef = mFirestoreDB.collection("usuarios");
@@ -60,6 +60,12 @@ public class RepositorioFirebaseLogin {
 
     }
 
+    /**
+     * Añade al usuario a la base de datos de Firestore una vez este rellena el formulario post-registro.
+     * @param usuario Objeto Usuario con la informacion del usuario registrado.
+     * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
+     * correctamente o no).
+     */
     public Task añadirUsuarioFirestore(Usuario usuario){
 
         DocumentReference mUsuarioDocRef = mUsuariosColRef.document(usuarioActual().getUid());

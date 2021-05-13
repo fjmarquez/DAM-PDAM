@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
 
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelLogin;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
 /**
  * Fragment destinado a contener lo necesario para el logeo/registro de la app.
@@ -50,7 +50,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
     private Pattern mRegexMail = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private Pattern mRegexContraseña = Pattern.compile("((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#._$,:;?¿¡)(*^<>%!]).{8,40})");
 
-    private ViewModelLogin mViewModel;
+    private ViewModelUsuario mViewModel;
 
     public FragmentLogin() {
 
@@ -68,7 +68,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
         super.onCreate(savedInstanceState);
         //Inicializo el ViewModel
-        mViewModel = new ViewModelProvider(getActivity()).get(ViewModelLogin.class);
+        mViewModel = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
     }
 

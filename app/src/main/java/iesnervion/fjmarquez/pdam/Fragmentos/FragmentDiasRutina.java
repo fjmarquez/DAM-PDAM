@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -21,11 +22,12 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 
 import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorDias;
+import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorEjerciciosSimple;
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelLogin;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 
 public class FragmentDiasRutina extends Fragment {
@@ -35,6 +37,8 @@ public class FragmentDiasRutina extends Fragment {
     private RecyclerView mRVDiasSeleccionados;
     private AdaptadorDias mAdaptadorDias;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private TextView mTVDiasEjercicios;
 
     private CheckBox mCBLunes;
     private CheckBox mCBMartes;
@@ -47,7 +51,7 @@ public class FragmentDiasRutina extends Fragment {
     private View mDialogDiasView;
 
     private ViewModelRutina mViewModelRutina;
-    private ViewModelLogin mViewModelLogin;
+    private ViewModelUsuario mViewModelLogin;
 
     public FragmentDiasRutina() {
 
@@ -65,7 +69,7 @@ public class FragmentDiasRutina extends Fragment {
 
         super.onCreate(savedInstanceState);
         mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelRutina.class);
-        mViewModelLogin = new ViewModelProvider(getActivity()).get(ViewModelLogin.class);
+        mViewModelLogin = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
     }
 
@@ -75,6 +79,8 @@ public class FragmentDiasRutina extends Fragment {
 
         mFragmentView = inflater.inflate(R.layout.fragment_dias_rutina, container, false);
         mDialogDiasView = View.inflate(getContext(), R.layout.dialog_dias_layout, null);
+
+        mTVDiasEjercicios = mFragmentView.findViewById(R.id.TVDiasRutina);
 
         mCBLunes = mDialogDiasView.findViewById(R.id.cbLunes);
         mCBMartes = mDialogDiasView.findViewById(R.id.cbMartes);
@@ -141,8 +147,9 @@ public class FragmentDiasRutina extends Fragment {
             @Override
             public void añadirListener(int position) {
                 Snackbar.make(getView(), "añadir " + mViewModelRutina.getDiasRutina().getValue().get(position).getDia(), Snackbar.LENGTH_SHORT).show();
+                mViewModelRutina.setDiaSemanaSeleccionado(position);
                 mViewModelLogin.setmTipoFragmento(TipoFragmento.EJERCICIOS);
-                // TODO: 02/05/2021 Navega hacia el fragment donde este la lista de ejercicios
+
             }
 
             @Override

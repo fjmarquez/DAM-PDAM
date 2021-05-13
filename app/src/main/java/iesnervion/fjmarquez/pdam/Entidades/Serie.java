@@ -17,6 +17,8 @@ public class Serie {
     }
 
     public Serie() {
+        Repeticiones = 10;
+        Peso = 0.0;
     }
 
     /* GETTERS */

@@ -8,9 +8,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -40,11 +43,11 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
     @Override
     public AdaptadorDias.RVDiasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v;
-        if (getItemViewType(viewType) == 0){
+        //if (getItemViewType(viewType) == 0){
             v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia, parent, false);
-        }else {
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia_2, parent, false);
-        }
+       // }else {
+        //    v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia_2, parent, false);
+       // }
 
         RVDiasViewHolder vh = new RVDiasViewHolder(v, mListener);
         return vh;
@@ -68,6 +71,11 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
         holder.tvDia.setText(Utiles.capitalizar(diaActual.getDia().name()));
         holder.tvNumeroEjercicios.setText(diaActual.getEjercicios().size() + " ejercicios añadidos");
 
+        AdaptadorEjerciciosSimple adaptadorEjerciciosSimple = new AdaptadorEjerciciosSimple(diaActual.getEjercicios());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(holder.rvEjerciciosSimple.getContext());
+        holder.rvEjerciciosSimple.setLayoutManager(linearLayoutManager);
+        holder.rvEjerciciosSimple.setAdapter(adaptadorEjerciciosSimple);
+
     }
 
     @Override
@@ -82,6 +90,7 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
         private TextView tvNumeroEjercicios;
         private Button btnAñadir;
         private Button btnMostrar;
+        private RecyclerView rvEjerciciosSimple;
 
         /* CONSTRUCTOR */
         public RVDiasViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
@@ -90,9 +99,16 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
             tvDia = itemView.findViewById(R.id.tvDia);
             tvNumeroEjercicios = itemView.findViewById(R.id.tvNumeroEjercicios);
             btnMostrar = itemView.findViewById(R.id.btnVerEjerciciosDia);
+            rvEjerciciosSimple = itemView.findViewById(R.id.rvEjerciciosSimple);
             btnMostrar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if(rvEjerciciosSimple.getVisibility() == View.GONE){
+                        rvEjerciciosSimple.setVisibility(View.VISIBLE);
+                    }else{
+                        rvEjerciciosSimple.setVisibility(View.GONE);
+                    }
+
                     if(listener != null){
                         int postition = getAdapterPosition();
                         if (postition != RecyclerView.NO_POSITION){
@@ -111,6 +127,7 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
                             listener.añadirListener(postition);
                         }
                     }
+
                 }
             });
 
