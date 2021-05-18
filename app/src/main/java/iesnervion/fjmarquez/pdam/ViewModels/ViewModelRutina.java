@@ -18,6 +18,7 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
     /* ATRIBUTOS */
     private MutableLiveData<ArrayList<Dia>> DiasRutina;
     private int DiaSemanaSeleccionado;
+    private Ejercicio EjercicioSeleccionado;
     private ArrayList<Ejercicio> ListadoEjercicios;
     private RepositorioFirestoreEjercicios mRepositorioFirestoreEjercicios;
 
@@ -28,6 +29,7 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
         DiasRutina = new MutableLiveData<>();
         DiasRutina.postValue(new ArrayList<>());
         DiaSemanaSeleccionado = -1;
+        EjercicioSeleccionado = null;
         mRepositorioFirestoreEjercicios = new RepositorioFirestoreEjercicios();
 
     }
@@ -44,6 +46,10 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
 
     public void setListadoEjercicios(ArrayList<Ejercicio> listadoEjercicios) {
         ListadoEjercicios = listadoEjercicios;
+    }
+
+    public void setEjercicioSeleccionado(Ejercicio ejercicioSeleccionado) {
+        EjercicioSeleccionado = ejercicioSeleccionado;
     }
 
     /* GETTERS*/
@@ -63,6 +69,10 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
 
         return mRepositorioFirestoreEjercicios.obtenerEjerciciosFirestore();
 
+    }
+
+    public Ejercicio getEjercicioSeleccionado() {
+        return EjercicioSeleccionado;
     }
 
 }

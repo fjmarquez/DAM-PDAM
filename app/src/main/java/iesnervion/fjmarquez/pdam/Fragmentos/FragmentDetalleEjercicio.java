@@ -11,18 +11,20 @@ import android.view.ViewGroup;
 import iesnervion.fjmarquez.pdam.R;
 
 /**
- * Fragment principal de la aplicacion.
+ * En este fragment se podra visualizar una vista detallada de un ejercicio, ademas desde este fragment tambien
+ * se podra añadir dicho ejercicio a la rutina.
  */
-public class FragmentInicial extends Fragment {
+public class FragmentDetalleEjercicio extends Fragment {
 
     /* ATRIBUTOS */
+    private View mFragmentView;
 
-    public FragmentInicial() {
+    public FragmentDetalleEjercicio() {
 
     }
 
-    public static FragmentInicial newInstance() {
-        FragmentInicial fragment = new FragmentInicial();
+    public static FragmentDetalleEjercicio newInstance(String param1, String param2) {
+        FragmentDetalleEjercicio fragment = new FragmentDetalleEjercicio();
 
         return fragment;
     }
@@ -36,8 +38,7 @@ public class FragmentInicial extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_inicial, container, false);
-
-        return v;
+        mFragmentView = inflater.inflate(R.layout.fragment_detalle_ejercicio, container, false);
+        return mFragmentView;
     }
 }

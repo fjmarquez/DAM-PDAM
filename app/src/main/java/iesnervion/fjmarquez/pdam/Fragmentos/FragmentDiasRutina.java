@@ -30,6 +30,10 @@ import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 
+/**
+ * Este fragmento se encargara de mostrar un listado de dias, los cuales ha especificado el usuario previamente,
+ * desde este fragmento se podran añadir ejercicios a cada dia asi como visualizar los ejercicios ya añadidos a un dia.
+ */
 public class FragmentDiasRutina extends Fragment {
 
     /* ATRIBUTOS */
@@ -103,6 +107,9 @@ public class FragmentDiasRutina extends Fragment {
 
     }
 
+    /**
+     * Muestra un Dialog personalizado, el cual permite al usuario seleccionar los dias de entreno que desea.
+     */
     public void mostrarDialogDias(){
 
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
@@ -136,6 +143,10 @@ public class FragmentDiasRutina extends Fragment {
 
     }
 
+    /**
+     * Rellena un RecyclerView con los dias especificados por el usuario mediante el usuario.
+     * Permite añadir ejercicios a cada dia del listado, asi como visualizar los ejercicios añadidos a cada dia.
+     */
     public void rellenarRecyclerViewDias(){
 
         mLayoutManager =  new LinearLayoutManager(getActivity());
@@ -143,13 +154,14 @@ public class FragmentDiasRutina extends Fragment {
         mRVDiasSeleccionados.setLayoutManager(mLayoutManager);
         mRVDiasSeleccionados.setAdapter(mAdaptadorDias);
 
+        //Listeners disponibles en el Adaptador, uno para controlar los clicks destinados a añadir ejercicios
+        //y otro destinado a mostrar otro RecyclerView con los ejercicios añadidos a un dia.
         mAdaptadorDias.setOnItemClickListener(new AdaptadorDias.OnItemClickListener() {
             @Override
             public void añadirListener(int position) {
                 Snackbar.make(getView(), "añadir " + mViewModelRutina.getDiasRutina().getValue().get(position).getDia(), Snackbar.LENGTH_SHORT).show();
                 mViewModelRutina.setDiaSemanaSeleccionado(position);
                 mViewModelLogin.setmTipoFragmento(TipoFragmento.EJERCICIOS);
-
             }
 
             @Override
@@ -161,6 +173,11 @@ public class FragmentDiasRutina extends Fragment {
 
     }
 
+    /**
+     * Recopila los valores de los CheckBoxes del dialogo destinado a seleccionar los dias de entreno.
+     * @return Devuelve un valor Boolean, el cual sera false si no se selecciona ningun CheckBox o true
+     * si se ha seleccionado al menos un CheckBox.
+     */
     public boolean recopilarCheckBoxesDias(){
 
         boolean respuesta = false;

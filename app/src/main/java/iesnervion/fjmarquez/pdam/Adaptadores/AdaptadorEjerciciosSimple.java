@@ -18,6 +18,11 @@ import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 
+/**
+ * Clase usada como adaptador para un RecyclerView, la cual mediante su constructor recibira un ArrayList de Ejercicios.
+ * A diferencia de la clase AdaptadorEjercicios esta clase muestra una informacion mas simplificada en cada elemento
+ * de la lista.
+ */
 public class AdaptadorEjerciciosSimple extends RecyclerView.Adapter<AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder> {
 
     private ArrayList<Ejercicio> listaEjercicios;

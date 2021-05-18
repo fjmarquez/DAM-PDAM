@@ -82,6 +82,10 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
 
     }
 
+    /**
+     * Eventos onClick de los elementos del Fragment.
+     * @param v Vista que contiene los elementos del Fragment.
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -93,6 +97,9 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
         }
     }
 
+    /**
+     * Obtiene toda la informacion del formulario, despues la persiste en Firestore.
+     */
     public void recopilarYAlmacenarDatosUsuario(){
 
         mNombre = mETNombre.getEditText().getText().toString();
@@ -115,6 +122,10 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
 
     }
 
+    /**
+     * Comprueba que los EditText presentes en el formulario han sido rellenados.
+     * @return Devuelve un valor Boolean, si todos los campos estan rellenos devolvera true, en caso contrario false.
+     */
     public boolean comprobarCampos(){
 
         boolean respuesta = true;
@@ -146,6 +157,9 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
 
     }
 
+    /**
+     * Limpia/Vacia los campos disponibles para mostrar los errores de los EditText usados en el formulario.
+     */
     public void limpiarErrores(){
         mETNombre.setError(null);
         mETApellidos.setError(null);

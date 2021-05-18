@@ -20,6 +20,9 @@ import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.DificultadEjercicio;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 
+/**
+ * Clase usada como adaptador para un RecyclerView, la cual mediante su constructor recibira un ArrayList de Ejercicios.
+ */
 public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicios.RVEjerciciosViewHolder> {
 
     private ArrayList<Ejercicio> listaEjercicios;

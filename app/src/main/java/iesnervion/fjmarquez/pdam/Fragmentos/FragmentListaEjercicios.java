@@ -33,8 +33,13 @@ import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 
+/**
+ * Fragment donde se mostrar un listado de los ejercicios disponibles, desde este fragment se podra acceder
+ * a una vista detallada de cada ejercicio asi como añadir ese ejercicio a la rutina.
+ */
 public class FragmentListaEjercicios extends Fragment {
 
+    /* ATRIBUTOS */
     private View mFragmentView;
     private View mDialogSeriesView;
     private ViewModelRutina mViewModelRutina;
@@ -85,6 +90,9 @@ public class FragmentListaEjercicios extends Fragment {
 
     }
 
+    /**
+     * Rellena un RecyclerView con todos los ejercicios obtenidos desde Firestore.
+     */
     public void rellenarRecyclerViewEjercicios(){
 
         mViewModelRutina.obtenerEjerciciosFirestore().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -105,6 +113,7 @@ public class FragmentListaEjercicios extends Fragment {
                     mRVEjercicios.setLayoutManager(mLayoutManager);
                     mRVEjercicios.setAdapter(mRVEjerciciosAdaptador);
 
+                    //Listener para eventos de Click de cada elemento de la lista
                     mRVEjerciciosAdaptador.setOnItemClickListener(new AdaptadorEjercicios.OnItemClickListener() {
                         @Override
                         public void añadirListener(int position) {
@@ -116,7 +125,8 @@ public class FragmentListaEjercicios extends Fragment {
                             if (!mViewModelRutina.getDiasRutina().getValue()
                                     .get(mViewModelRutina.getDiaSemanaSeleccionado())
                                     .getEjercicios().contains(mViewModelRutina.getListadoEjercicios().get(position))){
-                                mostrarDialogoSeries(mViewModelRutina.getListadoEjercicios().get(position));
+                                mViewModelRutina.setEjercicioSeleccionado(mViewModelRutina.getListadoEjercicios().get(position));
+                                mostrarDialogoSeries();
                             }else {
                                 Snackbar.make(getView(), "Ya has añadido este ejercicio", Snackbar.LENGTH_LONG).show();
                             }
@@ -131,6 +141,11 @@ public class FragmentListaEjercicios extends Fragment {
 
     }
 
+    /**
+     * Rellena un RecyclerView con una lista de Series (4 series por defecto con 10 repeticiones cada una,
+     * aunque se pueden añadir hasta 6 o eliminar hasta que solo quede 1, tambien se pueden modificar las repeticiones
+     * correspondientes a cada serie).
+     */
     public void rellenarRecyclerViewSeries(){
 
             mSeriesDialog = Utiles.seriesPorDefecto();
@@ -141,8 +156,12 @@ public class FragmentListaEjercicios extends Fragment {
 
     }
 
-    public void mostrarDialogoSeries(Ejercicio ejercicioSeries) {
+    /**
+     * Crea y muestra un Dialog personalizado que mostrar una lista de Series editables.
+     */
+    public void mostrarDialogoSeries() {
 
+        //Si ya ha sido creado evitamos crearlo otra vez y solamente lo mostramos usando .show()
         if (mAlertDialogSeries == null){
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
             builder.setTitle(getText(R.string.titulo_dialogo_series))
@@ -174,7 +193,7 @@ public class FragmentListaEjercicios extends Fragment {
             mAlertDialogSeries.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mViewModelRutina.getDiasRutina().getValue().get(mViewModelRutina.getDiaSemanaSeleccionado()).getEjercicios().add(ejercicioSeries);
+                    mViewModelRutina.getDiasRutina().getValue().get(mViewModelRutina.getDiaSemanaSeleccionado()).getEjercicios().add(mViewModelRutina.getEjercicioSeleccionado());
                     mAlertDialogSeries.dismiss();
                 }
             });
@@ -201,6 +220,7 @@ public class FragmentListaEjercicios extends Fragment {
             mAlertDialogSeries.show();
         }
 
+        //Esta linea permite desplegar el teclado al poner el foco sobre un EditText dentro del Dialog
         mAlertDialogSeries.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
     }

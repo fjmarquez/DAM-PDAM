@@ -22,6 +22,11 @@ import iesnervion.fjmarquez.pdam.Entidades.Serie;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 
+/**
+ * Clase usada como adaptador para un RecyclerView, la cual mediante su constructor recibira un ArrayList de Series.
+ * Dicho listado de series podra aumentar o disminuir de tamaño (Min. 1 - Max. 6) y permitira cambiar el numero de
+ * Repeticiones de cada objeto Serie.
+ */
 public class AdaptadorSeriesDialogo extends RecyclerView.Adapter<AdaptadorSeriesDialogo.RVSeriesViewHolder> {
 
     private static ArrayList<Serie> listaSeries;

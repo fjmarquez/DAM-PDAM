@@ -36,16 +36,16 @@ public class MainActivity extends AppCompatActivity {
                 case LOGIN:
                     break;
                 case POST_REGISTRO:
-                    cambiarFragment(mFragmentPostRegistro);
+                    cambiarFragment(mFragmentPostRegistro, false);
                     break;
                 case PANTALLA_INICIO:
-                    cambiarFragment(mFragmentoInicial);
+                    cambiarFragment(mFragmentoInicial, false);
                     break;
                 case DIAS_RUTINA:
-                    cambiarFragment(mFragmentoDiasRutina);
+                    cambiarFragment(mFragmentoDiasRutina, false);
                     break;
                 case EJERCICIOS:
-                    cambiarFragment(mFragmentoListaEjercicios);
+                    cambiarFragment(mFragmentoListaEjercicios, true);
                     break;
             }
 
@@ -102,15 +102,15 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         DocumentSnapshot documento = task.getResult();
                         if (documento.exists()){
-                            cambiarFragment(mFragmentoDiasRutina);
+                            cambiarFragment(mFragmentoDiasRutina, false);
                         } else {
-                            cambiarFragment(mFragmentPostRegistro);
+                            cambiarFragment(mFragmentPostRegistro, false);
                         }
                     }
                 }
             });
         }else {
-            cambiarFragment(mFragmentLogin);
+            cambiarFragment(mFragmentLogin, false);
         }
 
     }
@@ -119,14 +119,23 @@ public class MainActivity extends AppCompatActivity {
      * Navega hacia otro fragment.
      * @param fragment Fragment hacia el que se desea navegar.
      */
-    public void cambiarFragment(Fragment fragment){
+    public void cambiarFragment(Fragment fragment, boolean puedeRetroceder){
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setReorderingAllowed(true)
-                .replace(mContenedorGeneral.getId(), fragment)
-                .addToBackStack(null)
-                .commit();
+        if(puedeRetroceder){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(mContenedorGeneral.getId(), fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(mContenedorGeneral.getId(), fragment)
+                    .commit();
+        }
+
 
     }
 
