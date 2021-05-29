@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">4Fit</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <!-- Fragment Login -->
     <string name="usuario">Usuario</string>
     <string name="contraseña">Contraseña</string>
@@ -41,12 +42,17 @@
     <string name="altura_vacio">El campo altura es obligatorio</string>
     <string name="peso_vacio">El campo peso es obligatorio</string>
 
+    <!-- Fragment Dias -->
+    <string name="guardar_rutina">Guardar</string>
+    <string name="cambiar_dias_rutina">Dias</string>
 
     <!-- Dialog dias de la semana -->
     <string name="titulo_dialog_dias_semana">¿Qué dias quieres entrenar?</string>
     <string name="boton_negativo_dialog">Volver</string>
     <string name="boton_positivo_dialog">Seguir</string>
     <string name="error_dias">Debes seleccionar al menos un dia</string>
+    <string name="guardado_exito">Tu rutina ha sido creada con exito</string>
+    <string name="guardado_fallo">Tu rutina no ha podido ser creada</string>
     <string name="lunes">Lunes</string>
     <string name="martes">Martes</string>
     <string name="miercoles">Miercoles</string>
@@ -63,10 +69,31 @@
     <string name="boton_añadir">Añadir</string>
     <string name="boton_quitar">Quitar</string>
 
+    <!-- DIALOG FILTROS -->
+    <string name="titulo_dialogo_filtros">Filtros</string>
+    <string name="filtros_grupo_muscular">Grupo Muscular</string>
+    <string name="filtros_dificultad">Dificultad</string>
+    <string name="filtros_material">Materiales</string>
+    <string name="boton_filtrar">Filtrar</string>
+    <string name="boton_cerrar">Cerrar</string>
+    <string name="boton_limpiar_filtros">Limpiar</string>
+
     <!-- CARD DIAS -->
     <string name="añadir_ejercicio_dia">Añadir</string>
     <string name="ver_ejercicios_dia">Mostrar</string>
     <string name="ejercicios_dia"> ejercicios añadidos.</string>
     <string name="eleccion_dias_rutina">¡Muy bien! Ya tenemos los dias que entrenaras, ahora veamos los ejercicios.</string>
+
+    <!-- MENU LISTA EJERCICIOS -->
+    <string name="buscar_ejercicio">Buscar</string>
+    <string name="buscar_ejercicio_placeholder">Buscar...</string>
+    <string name="filtrar_ejercicio">Filtrar</string>
+
+    <!-- FRAGMENT INICIAL -->
+
+
+    <!-- MENU FRAGMENT INICIAL -->
+    <string name="opciones_menu">Más Opciones</string>
+    <string name="no_se_ha_encontrado_rutina">No se ha encontrado ninguna rutina.</string>
 
 </resources>

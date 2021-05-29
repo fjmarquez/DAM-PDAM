@@ -18,39 +18,35 @@ import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 
-/**
- * Clase usada como adaptador para un RecyclerView, la cual mediante su constructor recibira un ArrayList de Ejercicios.
- */
-public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicios.RVEjerciciosViewHolder> {
+public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder> {
 
-    private ArrayList<Ejercicio> listaEjercicios;
-    public AdaptadorEjercicios.OnItemClickListener mListener;
+    public static ArrayList<Ejercicio> listaEjercicios;
+    public AdaptadorEjerciciosDiaRutina.OnItemClickListener mListener;
 
     public interface OnItemClickListener{
-        void añadirListener(int position);
-        void clickListener(int position);
+        void realizarEjercicioListener(int position);
     }
 
-    public void setOnItemClickListener(AdaptadorEjercicios.OnItemClickListener listener){
+    public void setOnItemClickListener(AdaptadorEjerciciosDiaRutina.OnItemClickListener listener){
         mListener = listener;
     }
 
-    public AdaptadorEjercicios(ArrayList<Ejercicio> listaEjercicios) {
+    public AdaptadorEjerciciosDiaRutina(ArrayList<Ejercicio> listaEjercicios) {
         this.listaEjercicios = listaEjercicios;
     }
 
     @NonNull
     @Override
-    public RVEjerciciosViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ejercicio, parent, false);
-        RVEjerciciosViewHolder vh = new RVEjerciciosViewHolder(v, mListener);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ejercicio_dia_rutina, parent, false);
+        AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder vh = new AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder(v, mListener);
 
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdaptadorEjercicios.RVEjerciciosViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder holder, int position) {
 
         holder.setIsRecyclable(true);
 
@@ -59,7 +55,7 @@ public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicio
 
         Glide.with(holder.mIVGIFEjercicio.getContext()).asBitmap()
                 .load(Utiles.urlDrive(ejercicioActual.getGif()))
-                                .into(holder.mIVGIFEjercicio);
+                .into(holder.mIVGIFEjercicio);
 
         holder.mTVNombreEjercicio.setText(ejercicioActual.getNombre());
         holder.mTVDificulatadEjercicio.setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
@@ -73,40 +69,28 @@ public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicio
         return this.listaEjercicios.size();
     }
 
-    public static class RVEjerciciosViewHolder extends RecyclerView.ViewHolder {
+    public static class RVEjerciciosDiaRutinaViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mIVGIFEjercicio;
         private TextView mTVNombreEjercicio;
         private TextView mTVDificulatadEjercicio;
-        private ImageButton mIBAñadirEjercicio;
+        private ImageButton mIBRealizarEjercicio;
 
 
-        public RVEjerciciosViewHolder(@NonNull View itemView, final AdaptadorEjercicios.OnItemClickListener listener) {
+        public RVEjerciciosDiaRutinaViewHolder(@NonNull View itemView, final AdaptadorEjerciciosDiaRutina.OnItemClickListener listener) {
             super(itemView);
 
-            mIVGIFEjercicio = itemView.findViewById(R.id.ivGifEjercicio);
-            mTVNombreEjercicio = itemView.findViewById(R.id.tvNombreEjercicio);
-            mTVDificulatadEjercicio = itemView.findViewById(R.id.tvDificultadEjercicio);
-            mIBAñadirEjercicio = itemView.findViewById(R.id.ibAñadirEjercicio);
-            mIBAñadirEjercicio.setOnClickListener(new View.OnClickListener() {
+            mIVGIFEjercicio = itemView.findViewById(R.id.ivGifEjercicioDiaRutina);
+            mTVNombreEjercicio = itemView.findViewById(R.id.tvNombreEjercicioDiaRutina);
+            mTVDificulatadEjercicio = itemView.findViewById(R.id.tvDificultadEjercicioDiaRutina);
+            mIBRealizarEjercicio = itemView.findViewById(R.id.ibRealizarEjercicioDiaRutina);
+            mIBRealizarEjercicio.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null){
                         int postition = getAdapterPosition();
                         if (postition != RecyclerView.NO_POSITION){
-                            listener.añadirListener(postition);
-                        }
-                    }
-                }
-            });
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(listener != null){
-                        int postition = getAdapterPosition();
-                        if (postition != RecyclerView.NO_POSITION){
-                            listener.clickListener(postition);
+                            listener.realizarEjercicioListener(postition);
                         }
                     }
                 }

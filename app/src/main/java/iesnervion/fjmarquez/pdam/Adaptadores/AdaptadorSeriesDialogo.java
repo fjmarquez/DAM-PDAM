@@ -29,7 +29,7 @@ import iesnervion.fjmarquez.pdam.Utiles.Utiles;
  */
 public class AdaptadorSeriesDialogo extends RecyclerView.Adapter<AdaptadorSeriesDialogo.RVSeriesViewHolder> {
 
-    private static ArrayList<Serie> listaSeries;
+    public static ArrayList<Serie> listaSeries;
 
     public AdaptadorSeriesDialogo(ArrayList<Serie> listaSeries) {
         this.listaSeries = listaSeries;

@@ -19,7 +19,7 @@ import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelCreacionRutina;
 
 /**
  * Fragment destinado a recopilar informacion sobre el usuario despues de que este se haya
@@ -38,7 +38,7 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
     private View mFragmentView;
 
     private ViewModelUsuario mViewModelLogin;
-    private ViewModelRutina mViewModelRutina;
+    private ViewModelCreacionRutina mViewModelRutina;
 
     private String mNombre;
     private String mApellidos;

@@ -12,29 +12,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 
 import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorDias;
-import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorEjerciciosSimple;
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
+import iesnervion.fjmarquez.pdam.Entidades.Rutina;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelCreacionRutina;
 
 /**
  * Este fragmento se encargara de mostrar un listado de dias, los cuales ha especificado el usuario previamente,
  * desde este fragmento se podran añadir ejercicios a cada dia asi como visualizar los ejercicios ya añadidos a un dia.
  */
-public class FragmentDiasRutina extends Fragment {
+public class FragmentDiasRutina extends Fragment implements View.OnClickListener{
 
     /* ATRIBUTOS */
     private View mFragmentView;
@@ -42,8 +43,10 @@ public class FragmentDiasRutina extends Fragment {
     private AdaptadorDias mAdaptadorDias;
     private RecyclerView.LayoutManager mLayoutManager;
 
-    private TextView mTVDiasEjercicios;
+    private Button mBtnGuardarDias;
+    private Button mBtnCambiarDias;
 
+    private AlertDialog mAlertDialogDias;
     private CheckBox mCBLunes;
     private CheckBox mCBMartes;
     private CheckBox mCBMiercoles;
@@ -51,10 +54,11 @@ public class FragmentDiasRutina extends Fragment {
     private CheckBox mCBViernes;
     private CheckBox mCBSabado;
     private CheckBox mCBDomingo;
+    private boolean dialogCreado;
 
     private View mDialogDiasView;
 
-    private ViewModelRutina mViewModelRutina;
+    private ViewModelCreacionRutina mViewModelRutina;
     private ViewModelUsuario mViewModelLogin;
 
     public FragmentDiasRutina() {
@@ -72,7 +76,7 @@ public class FragmentDiasRutina extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelRutina.class);
+        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelCreacionRutina.class);
         mViewModelLogin = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
     }
@@ -84,7 +88,10 @@ public class FragmentDiasRutina extends Fragment {
         mFragmentView = inflater.inflate(R.layout.fragment_dias_rutina, container, false);
         mDialogDiasView = View.inflate(getContext(), R.layout.dialog_dias_layout, null);
 
-        mTVDiasEjercicios = mFragmentView.findViewById(R.id.TVDiasRutina);
+        mBtnGuardarDias = mFragmentView.findViewById(R.id.btnGuardarRutina);
+        mBtnGuardarDias.setOnClickListener(this);
+        mBtnCambiarDias = mFragmentView.findViewById(R.id.btnCambiarDias);
+        mBtnCambiarDias.setOnClickListener(this);
 
         mCBLunes = mDialogDiasView.findViewById(R.id.cbLunes);
         mCBMartes = mDialogDiasView.findViewById(R.id.cbMartes);
@@ -93,6 +100,7 @@ public class FragmentDiasRutina extends Fragment {
         mCBViernes = mDialogDiasView.findViewById(R.id.cbViernes);
         mCBSabado = mDialogDiasView.findViewById(R.id.cbSabado);
         mCBDomingo = mDialogDiasView.findViewById(R.id.cbDomigo);
+        dialogCreado = false;
 
         mRVDiasSeleccionados = mFragmentView.findViewById(R.id.rvDias);
         mRVDiasSeleccionados.setHasFixedSize(true);
@@ -107,11 +115,72 @@ public class FragmentDiasRutina extends Fragment {
 
     }
 
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+            case R.id.btnCambiarDias:
+                mostrarDialogDias();
+                break;
+            case R.id.btnGuardarRutina:
+                if(comprobarRutinaAntesGuardar()){
+                    guardarRutina();
+                }
+                break;
+        }
+
+    }
+
+    /**
+     * Almacena en Firestore la rutina creada por el usuario.
+     */
+    public void guardarRutina(){
+
+        mViewModelRutina.guardarNuevaRutinaFirestore(new Rutina(null, mViewModelRutina.getDiasRutina().getValue())).addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(Task task) {
+                if(task.isSuccessful()){
+                    //Snackbar.make(getView(), R.string.guardado_exito, Snackbar.LENGTH_SHORT).show();
+                    mViewModelLogin.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                }else {
+                    //fallo/error al guardar
+                    //Snackbar.make(getView(), R.string.guardado_fallo, Snackbar.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+    }
+
+    /**
+     * Comprueba que todos los dias introducidos en la rutina por el usuario tienen ejercicios asignados.
+     * @return  Devuelve un booleano que en funcion de si un dia tiene ejercicios o no sera true o false.
+     */
+    public Boolean comprobarRutinaAntesGuardar(){
+
+        Boolean respuesta = true;
+
+        for (Dia dia:
+             mViewModelRutina.getDiasRutina().getValue()) {
+
+            if(dia.getEjercicios().size() == 0){
+                respuesta = false;
+            }
+
+        }
+
+        return respuesta;
+
+    }
+
     /**
      * Muestra un Dialog personalizado, el cual permite al usuario seleccionar los dias de entreno que desea.
      */
     public void mostrarDialogDias(){
 
+        if(mAlertDialogDias == null || !dialogCreado) {
+
+            dialogCreado = true;
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
             builder.setTitle(getText(R.string.titulo_dialog_dias_semana))
                     .setView(mDialogDiasView)
@@ -122,24 +191,31 @@ public class FragmentDiasRutina extends Fragment {
                         }
                     });
 
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+            mAlertDialogDias = builder.create();
+            mAlertDialogDias.show();
 
             //Asigno de nuevo la funcion del boton principal del dialogo porque asi evito que este se cierre
             // al pulsar el boton y no tener elegido ningun checkbox
-            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            mAlertDialogDias.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mViewModelRutina.getDiasRutina().setValue(new ArrayList<>());
+
                     if (recopilarCheckBoxesDias()) {
                         rellenarRecyclerViewDias();
-                        alertDialog.cancel();
+                        mAdaptadorDias.notifyDataSetChanged();
+                        mAlertDialogDias.cancel();
                     } else {
                         Snackbar.make(getView(), R.string.error_dias, Snackbar.LENGTH_SHORT).show();
                     }
 
                 }
             });
+        }else {
+
+            mAlertDialogDias.show();
+
+        }
 
     }
 
@@ -184,31 +260,24 @@ public class FragmentDiasRutina extends Fragment {
 
         if(mCBLunes.isChecked()){
             mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.LUNES, new ArrayList<>()));
-            Toast.makeText(getContext(), "Lunes", Toast.LENGTH_SHORT).show();
         }
         if(mCBMartes.isChecked()){
             mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.MARTES, new ArrayList<>()));
-            Toast.makeText(getContext(), "Martes", Toast.LENGTH_SHORT).show();
         }
         if(mCBMiercoles.isChecked()){
             mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.MIERCOLES, new ArrayList<>()));
-            Toast.makeText(getContext(), "Miercoles", Toast.LENGTH_SHORT).show();
         }
         if(mCBJueves.isChecked()){
             mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.JUEVES, new ArrayList<>()));
-            Toast.makeText(getContext(), "Jueves", Toast.LENGTH_SHORT).show();
         }
         if(mCBViernes.isChecked()){
             mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.VIERNES, new ArrayList<>()));
-            Toast.makeText(getContext(), "Viernes", Toast.LENGTH_SHORT).show();
         }
         if(mCBSabado.isChecked()){
             mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.SABADO, new ArrayList<>()));
-            Toast.makeText(getContext(), "Sabado", Toast.LENGTH_SHORT).show();
         }
         if(mCBDomingo.isChecked()){
             mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.DOMINGO, new ArrayList<>()));
-            Toast.makeText(getContext(), "Domingo", Toast.LENGTH_SHORT).show();
         }
 
         if(mViewModelRutina.getDiasRutina().getValue().size() > 0){
@@ -218,6 +287,5 @@ public class FragmentDiasRutina extends Fragment {
         return respuesta;
 
     }
-
 
 }

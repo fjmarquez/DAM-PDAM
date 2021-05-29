@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import iesnervion.fjmarquez.pdam.Fragmentos.FragmentDetalleEjercicio;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentDiasRutina;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentInicial;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentListaEjercicios;
@@ -47,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
                 case EJERCICIOS:
                     cambiarFragment(mFragmentoListaEjercicios, true);
                     break;
+                case DETALLE_EJERCICIO:
+                    cambiarFragment(mFragmentoDetalleEjercicio, true);
             }
 
         }
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentInicial mFragmentoInicial;
     private FragmentDiasRutina mFragmentoDiasRutina;
     private FragmentListaEjercicios mFragmentoListaEjercicios;
+    private FragmentDetalleEjercicio mFragmentoDetalleEjercicio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         mFragmentoInicial = new FragmentInicial();
         mFragmentoDiasRutina = new FragmentDiasRutina();
         mFragmentoListaEjercicios = new FragmentListaEjercicios();
+        mFragmentoDetalleEjercicio = new FragmentDetalleEjercicio();
 
     }
 

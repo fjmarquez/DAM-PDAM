@@ -1,46 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragmentos.FragmentDiasRutina"
-    android:layout_margin="5dp"
-    android:orientation="vertical">
+    tools:context=".Fragmentos.FragmentDetalleEjercicio">
 
-    <TextView
-        android:id="@+id/TVDiasRutina"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/eleccion_dias_rutina"
-        android:textColor="@color/color_principal"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></TextView>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDias"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minHeight="700dp"
+        android:paddingBottom="65dp"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/btnCambiarDias"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fillViewport="true"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/color_principal"
+        android:text="@string/cambiar_dias_rutina"
+        android:textSize="12dp"
+        app:icon="@drawable/ic_baseline_edit_calendar_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnGuardarRutina"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/btnGuardarRutina"
+        style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/color_principal"
+        android:text="@string/guardar_rutina"
+        android:textSize="11dp"
+        app:icon="@drawable/ic_baseline_save_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TVDiasRutina">
+        app:layout_constraintStart_toEndOf="@id/btnCambiarDias"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvDias"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </androidx.recyclerview.widget.RecyclerView>
-
-    </androidx.core.widget.NestedScrollView>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="hola"></Button>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

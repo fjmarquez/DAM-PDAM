@@ -8,5 +8,6 @@ public enum TipoFragmento {
     POST_REGISTRO,
     PANTALLA_INICIO,
     DIAS_RUTINA,
-    EJERCICIOS
+    EJERCICIOS,
+    DETALLE_EJERCICIO
 }

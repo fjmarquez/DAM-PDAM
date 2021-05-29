@@ -3,76 +3,56 @@ package iesnervion.fjmarquez.pdam.ViewModels;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 
-import iesnervion.fjmarquez.pdam.Entidades.Dia;
-import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
-import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreEjercicios;
+import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirebaseRutinas;
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 
 public class ViewModelRutina extends androidx.lifecycle.ViewModel{
 
     /* ATRIBUTOS */
-    private MutableLiveData<ArrayList<Dia>> DiasRutina;
-    private int DiaSemanaSeleccionado;
-    private Ejercicio EjercicioSeleccionado;
-    private ArrayList<Ejercicio> ListadoEjercicios;
-    private RepositorioFirestoreEjercicios mRepositorioFirestoreEjercicios;
+    private RepositorioFirebaseRutinas mRepositorioFirestoreRutinas;
+    private MutableLiveData<Rutina> rutinaActual;
+    private DiaSemana mDiaSemanaSeleccionado;
 
-    /* CONSTRUTORES */
+    /* CONSTRUCTOR */
     public ViewModelRutina() {
 
-        //ArrayList<Dia> Dias = new ArrayList<>();
-        DiasRutina = new MutableLiveData<>();
-        DiasRutina.postValue(new ArrayList<>());
-        DiaSemanaSeleccionado = -1;
-        EjercicioSeleccionado = null;
-        mRepositorioFirestoreEjercicios = new RepositorioFirestoreEjercicios();
+        rutinaActual = new MutableLiveData<>();
+        rutinaActual.postValue(new Rutina());
+        mRepositorioFirestoreRutinas = new RepositorioFirebaseRutinas();
 
+    }
+
+    /* GETTERS */
+    public MutableLiveData<Rutina> getRutinaActual() {
+        return rutinaActual;
+    }
+
+    public DiaSemana getmDiaSemanaSeleccionado() {
+        return mDiaSemanaSeleccionado;
     }
 
     /* SETTERS */
-
-    public void setDiasRutina(ArrayList<Dia> diasRutina) {
-        DiasRutina.setValue(diasRutina);
+    public void setRutinaActual(Rutina rutinaActual) {
+        this.rutinaActual.setValue(rutinaActual);
     }
 
-    public void setDiaSemanaSeleccionado(int diaSemanaSeleccionado) {
-        DiaSemanaSeleccionado = diaSemanaSeleccionado;
+    public void setmDiaSemanaSeleccionado(DiaSemana mDiaSemanaSeleccionado) {
+        this.mDiaSemanaSeleccionado = mDiaSemanaSeleccionado;
     }
 
-    public void setListadoEjercicios(ArrayList<Ejercicio> listadoEjercicios) {
-        ListadoEjercicios = listadoEjercicios;
-    }
+    /* FUNCIONES */
+    public Task<DocumentSnapshot> obtenerRutinaActualUsuario(){
 
-    public void setEjercicioSeleccionado(Ejercicio ejercicioSeleccionado) {
-        EjercicioSeleccionado = ejercicioSeleccionado;
-    }
-
-    /* GETTERS*/
-    public MutableLiveData<ArrayList<Dia>> getDiasRutina() {
-        return DiasRutina;
-    }
-
-    public int getDiaSemanaSeleccionado() {
-        return DiaSemanaSeleccionado;
-    }
-
-    public ArrayList<Ejercicio> getListadoEjercicios() {
-        return ListadoEjercicios;
-    }
-
-    public Task<QuerySnapshot> obtenerEjerciciosFirestore(){
-
-        return mRepositorioFirestoreEjercicios.obtenerEjerciciosFirestore();
+        return mRepositorioFirestoreRutinas.obtenerRutinaActualUsuario();
 
     }
 
-    public Ejercicio getEjercicioSeleccionado() {
-        return EjercicioSeleccionado;
-    }
+
+
 
 }

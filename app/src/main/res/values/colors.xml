@@ -14,6 +14,9 @@
     <color name="blanco">#FFFFFFFF</color>
     <color name="rojo">#E31111</color>
     <color name="principiante">#509E2F</color>
+    <color name="principiante_transparente">#74509E2F</color>
     <color name="intermedio">#FF8200</color>
+    <color name="intermedio_transparente">#74FF8200</color>
     <color name="experto">#E60D2E</color>
+    <color name="experto_transparente">#74E60D2E</color>
 </resources>
