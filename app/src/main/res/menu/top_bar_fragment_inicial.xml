@@ -3,10 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/masOpcionesMenu"
-        android:icon="@drawable/ic_baseline_more_vert_24"
-        android:title="@string/opciones_menu"
-        android:contentDescription="@string/opciones_menu"
+        android:id="@+id/historicoMenu"
+        android:icon="@drawable/ic_baseline_history_24"
+        android:title="@string/historico_menu"
+        android:contentDescription="@string/historico_menu"
+        app:showAsAction="ifRoom">
+
+    </item>
+
+    <item
+        android:id="@+id/perfilMenu"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/perfil_menu"
+        android:contentDescription="@string/perfil_menu"
         app:showAsAction="ifRoom" />
 
 </menu>

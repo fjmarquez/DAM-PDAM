@@ -52,7 +52,7 @@ public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicio
     @Override
     public void onBindViewHolder(@NonNull AdaptadorEjercicios.RVEjerciciosViewHolder holder, int position) {
 
-        holder.setIsRecyclable(true);
+        //holder.setIsRecyclable(true);
 
         Ejercicio ejercicioActual = this.listaEjercicios.get(position);
 

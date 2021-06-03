@@ -51,7 +51,7 @@ public class AdaptadorSeriesDialogo extends RecyclerView.Adapter<AdaptadorSeries
         Serie serieActual = this.listaSeries.get(position);
 
         holder.mTVNombreSerie.setText("Serie " + (position + 1));
-        holder.mETRepeticionesSerie.getEditText().setText(""+listaSeries.get(position).getRepeticiones());
+        holder.mETRepeticionesSerie.getEditText().setText(""+serieActual.getRepeticiones());
 
     }
 
@@ -80,15 +80,18 @@ public class AdaptadorSeriesDialogo extends RecyclerView.Adapter<AdaptadorSeries
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //Compruebo que el EditText no esta vacio, si lo esta asigno a esa serie 0 repeticiones
                     if (!s.toString().isEmpty()){
+                        //Compruebo si el numero introducido en el EditText es > o < que 0
                         if (Integer.parseInt(s.toString()) <= 0){
                             mETRepeticionesSerie.setError("Debe ser mayor que 0");
                         }else{
-                            listaSeries.get(getAdapterPosition()).setRepeticiones(Integer.parseInt(s.toString()));
                             mETRepeticionesSerie.setError(null);
                         }
+                        listaSeries.get(getAdapterPosition()).setRepeticiones(Integer.parseInt(s.toString()));
                     }else {
                         mETRepeticionesSerie.setError("No puede estar vacio");
+                        listaSeries.get(getAdapterPosition()).setRepeticiones(0);
                     }
                 }
 

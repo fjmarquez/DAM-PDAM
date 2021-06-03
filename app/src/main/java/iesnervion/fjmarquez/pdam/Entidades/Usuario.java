@@ -18,6 +18,7 @@ public class Usuario {
     private Integer Altura;
     private Double Peso;
     private int Edad;
+    private String Rutina;
 
     /* CONSTRUCTORES */
     public Usuario(String uid, String nombre, String apellidos, String email, Integer altura, Double peso, Integer edad) {
@@ -69,6 +70,14 @@ public class Usuario {
         return this.Edad;
     }
 
+    public String getRutina() {
+        return Rutina;
+    }
+
+    public String getApellidos() {
+        return Apellidos;
+    }
+
     /* SETTERS */
     public void setUid(String uid) {
         this.Uid = uid;
@@ -92,5 +101,13 @@ public class Usuario {
 
     public void setEdad(int edad) {
         this.Edad = edad;
+    }
+
+    public void setRutina(String rutina) {
+        Rutina = rutina;
+    }
+
+    public void setApellidos(String apellidos) {
+        Apellidos = apellidos;
     }
 }

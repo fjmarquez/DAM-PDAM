@@ -15,10 +15,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentDetalleEjercicio;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentDiasRutina;
+import iesnervion.fjmarquez.pdam.Fragmentos.FragmentHistorico;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentInicial;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentListaEjercicios;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentLogin;
+import iesnervion.fjmarquez.pdam.Fragmentos.FragmentPerfil;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentPostRegistro;
+import iesnervion.fjmarquez.pdam.Fragmentos.FragmentRealizarEjercicio;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
@@ -35,32 +38,55 @@ public class MainActivity extends AppCompatActivity {
 
             switch (tipoFragmento){
                 case LOGIN:
+                    mFragmentActual = tipoFragmento;
                     break;
                 case POST_REGISTRO:
                     cambiarFragment(mFragmentPostRegistro, false);
+                    mFragmentActual = tipoFragmento;
                     break;
                 case PANTALLA_INICIO:
                     cambiarFragment(mFragmentoInicial, false);
+                    mFragmentActual = tipoFragmento;
                     break;
                 case DIAS_RUTINA:
                     cambiarFragment(mFragmentoDiasRutina, false);
+                    mFragmentActual = tipoFragmento;
                     break;
                 case EJERCICIOS:
                     cambiarFragment(mFragmentoListaEjercicios, true);
+                    mFragmentActual = tipoFragmento;
                     break;
                 case DETALLE_EJERCICIO:
                     cambiarFragment(mFragmentoDetalleEjercicio, true);
+                    mFragmentActual = tipoFragmento;
+                    break;
+                case PERFIL:
+                    cambiarFragment(mFragmentPerfil, true);
+                    mFragmentActual = tipoFragmento;
+                    break;
+                case HISTORICO:
+                    cambiarFragment(mFragmentHistorico, true);
+                    mFragmentActual = tipoFragmento;
+                    break;
+                case REALIZAR_EJERCICIO:
+                    cambiarFragment(mFragmentRealizarEjercicio, true);
+                    mFragmentActual = tipoFragmento;
+                    break;
             }
 
         }
     };
 
+    private TipoFragmento mFragmentActual;
     private FragmentLogin mFragmentLogin;
     private FragmentPostRegistro mFragmentPostRegistro;
     private FragmentInicial mFragmentoInicial;
     private FragmentDiasRutina mFragmentoDiasRutina;
     private FragmentListaEjercicios mFragmentoListaEjercicios;
     private FragmentDetalleEjercicio mFragmentoDetalleEjercicio;
+    private FragmentPerfil mFragmentPerfil;
+    private FragmentHistorico mFragmentHistorico;
+    private FragmentRealizarEjercicio mFragmentRealizarEjercicio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +110,17 @@ public class MainActivity extends AppCompatActivity {
         //Observacion de la variable que se encargara de almacenar el fragment en el cual debe encontrarse la app
         mViewModel.getmTipoFragmento().observe(this, mTipoFragmentoObserver);
         mContenedorGeneral = findViewById(R.id.contenedorGeneral);
+
+        mFragmentActual = null;
         mFragmentLogin = new FragmentLogin();
         mFragmentPostRegistro = new FragmentPostRegistro();
         mFragmentoInicial = new FragmentInicial();
         mFragmentoDiasRutina = new FragmentDiasRutina();
         mFragmentoListaEjercicios = new FragmentListaEjercicios();
         mFragmentoDetalleEjercicio = new FragmentDetalleEjercicio();
+        mFragmentPerfil = new FragmentPerfil();
+        mFragmentHistorico = new FragmentHistorico();
+        mFragmentRealizarEjercicio = new FragmentRealizarEjercicio();
 
     }
 

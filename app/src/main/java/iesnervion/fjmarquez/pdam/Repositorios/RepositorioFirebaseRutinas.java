@@ -7,7 +7,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
-import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 
 public class RepositorioFirebaseRutinas {
 
@@ -42,6 +41,14 @@ public class RepositorioFirebaseRutinas {
         DocumentReference mRutinaDocRef = mRutinaColRef.document(mRepoUsuario.usuarioActual().getUid());
 
         return mRutinaDocRef.get();
+
+    }
+
+    public Task actualizarRutinaActualUsuario(Rutina rutina){
+
+        DocumentReference mRutinaDocRef = mRutinaColRef.document(rutina.getUid());
+
+        return mRutinaDocRef.set(rutina);
 
     }
 

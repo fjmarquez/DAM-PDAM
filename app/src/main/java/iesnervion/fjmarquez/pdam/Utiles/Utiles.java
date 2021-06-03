@@ -69,17 +69,23 @@ public class Utiles {
 
         int color = R.color.negro;
 
-        switch (dificultad){
-            case PRINCIPIANTE:
-                color = R.color.principiante;
-                break;
-            case INTERMEDIO:
-                color = R.color.intermedio;
-                break;
-            case EXPERTO:
-                color = R.color.experto;
-                break;
+        //Si dificultad es null en el ejercicio quiere decir que es un ejercicio personalizado
+        if (dificultad != null){
+            switch (dificultad){
+                case PRINCIPIANTE:
+                    color = R.color.principiante;
+                    break;
+                case INTERMEDIO:
+                    color = R.color.intermedio;
+                    break;
+                case EXPERTO:
+                    color = R.color.experto;
+                    break;
+            }
+        }else {
+            color = R.color.custom;
         }
+
 
         return color;
 

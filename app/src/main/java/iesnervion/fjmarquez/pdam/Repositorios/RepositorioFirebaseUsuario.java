@@ -47,6 +47,12 @@ public class RepositorioFirebaseUsuario {
         return mAuth.getCurrentUser();
     }
 
+    public void cerrarSesionActual(){
+
+        mAuth.signOut();
+
+    }
+
     /**
      * Comprueba si el usuario actual completo el formulario post-registro.
      * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
@@ -71,6 +77,14 @@ public class RepositorioFirebaseUsuario {
         DocumentReference mUsuarioDocRef = mUsuariosColRef.document(usuarioActual().getUid());
 
         return mUsuarioDocRef.set(usuario);
+
+    }
+
+    public Task<DocumentSnapshot> obtenerUsuarioFirestore(){
+
+        DocumentReference mUsuarioDocRef = mUsuariosColRef.document(usuarioActual().getUid());
+
+        return mUsuarioDocRef.get();
 
     }
 

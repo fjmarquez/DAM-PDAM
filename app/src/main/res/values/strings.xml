@@ -2,7 +2,7 @@
     <string name="app_name">4Fit</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <!-- Fragment Login -->
+    <!-- FRAGMENT LOGIN -->
     <string name="usuario">Usuario</string>
     <string name="contraseña">Contraseña</string>
     <string name="iniciar_sesion">Entrar</string>
@@ -25,7 +25,7 @@
     <string name="inicio_con_google_fallido">Error al acceder con Google</string>
     <string name="volver_login">Volver</string>
 
-    <!-- Fragment Post Registro -->
+    <!-- FRAGMENT POST-REGISTRO -->
     <string name="nombre">Nombre</string>
     <string name="apellidos">Apellidos</string>
     <string name="altura">Altura</string>
@@ -42,11 +42,11 @@
     <string name="altura_vacio">El campo altura es obligatorio</string>
     <string name="peso_vacio">El campo peso es obligatorio</string>
 
-    <!-- Fragment Dias -->
+    <!-- FRAGMENT DIAS -->
     <string name="guardar_rutina">Guardar</string>
     <string name="cambiar_dias_rutina">Dias</string>
 
-    <!-- Dialog dias de la semana -->
+    <!-- DIALOG DIAS FRAGMENT DIAS -->
     <string name="titulo_dialog_dias_semana">¿Qué dias quieres entrenar?</string>
     <string name="boton_negativo_dialog">Volver</string>
     <string name="boton_positivo_dialog">Seguir</string>
@@ -61,15 +61,24 @@
     <string name="sabado">Sabado</string>
     <string name="domingo">Domingo</string>
 
-    <!-- DIALOG SERIES -->
+    <!-- DIALOG NOMBRE RUTINA FRAGMENT DIAS -->
+    <string name="titulo_dialog_nombre_rutina">Establece un nombre para la rutina</string>
+    <string name="boton_aceptar_nombre_rutina">Aceptar</string>
+    <string name="boton_cancelar_nombre_rutina">Cancelar</string>
+    <string name="nombre_rutina">Nombre</string>
+    <string name="error_nombre_rutina_vacio">El nombre de la rutina no puede estar vacio.</string>
+
+    <!-- DIALOG SERIES FRAGMENT LISTA DE EJERCICIOS -->
     <string name="titulo_dialogo_series">Especifica las series</string>
     <string name="nombre_serie">Serie</string>
     <string name="repeticiones">Repeticiones</string>
     <string name="ud_reps">Rep.</string>
-    <string name="boton_añadir">Añadir</string>
-    <string name="boton_quitar">Quitar</string>
+    <string name="boton_añadir">+</string>
+    <string name="boton_quitar">-</string>
+    <string name="boton_añadir_ejercicio">Añadir</string>
+    <string name="max_ejercicios_superado">Has llegado al maximo de ejercicios por dia.</string>
 
-    <!-- DIALOG FILTROS -->
+    <!-- DIALOG FILTROS LISTA EJERCICIOS-->
     <string name="titulo_dialogo_filtros">Filtros</string>
     <string name="filtros_grupo_muscular">Grupo Muscular</string>
     <string name="filtros_dificultad">Dificultad</string>
@@ -78,22 +87,59 @@
     <string name="boton_cerrar">Cerrar</string>
     <string name="boton_limpiar_filtros">Limpiar</string>
 
-    <!-- CARD DIAS -->
+    <!-- DIALOG EJERCICIO CUSTOM LISTA EJERCICIOS-->
+    <string name="ejercicio_custom_dialog_titulo">Ejercicio personalizado</string>
+    <string name="boton_crear_ejercicio_custom">Crear</string>
+    <string name="boton_cerrar_ejercicio_custom">Cerrar</string>
+    <string name="nombre_ejercicio_custom">Nombre</string>
+    <string name="descripcion_ejercicio_custom">Descripcion</string>
+    <string name="grupo_muscular_ejercicio_custom">Grupo Muscular</string>
+    <string name="nombre_ejercicio_custom_vacio">El nombre no puede estar vacio.</string>
+    <string name="nombre_ejercicio_custom_corto">El nombre introducido es demasiado corto.</string>
+    <string name="descripcion_ejercicio_custom_vacia">La descripcion no puede estar vacia.</string>
+    <string name="grupo_muscular_no_seleccionado_ejercicio_custom">Debe seleccionar un grupo muscular.</string>
+    <string name="no_existen_coincidencias">No existen coincidencias</string>
+
+    <!-- CARD DIAS FRAGMENT DIAS-->
     <string name="añadir_ejercicio_dia">Añadir</string>
     <string name="ver_ejercicios_dia">Mostrar</string>
     <string name="ejercicios_dia"> ejercicios añadidos.</string>
     <string name="eleccion_dias_rutina">¡Muy bien! Ya tenemos los dias que entrenaras, ahora veamos los ejercicios.</string>
 
-    <!-- MENU LISTA EJERCICIOS -->
+    <!-- MENU FRAGMENT LISTA EJERCICIOS -->
     <string name="buscar_ejercicio">Buscar</string>
     <string name="buscar_ejercicio_placeholder">Buscar...</string>
     <string name="filtrar_ejercicio">Filtrar</string>
+    <string name="añadir_ejercicio_custom">Añadir</string>
 
     <!-- FRAGMENT INICIAL -->
+    <string name="no_ha_iniciado_dia">Aun no has iniciado el dia.</string>
+    <string name="dia_iniciado">Dia iniciado</string>
+    <string name="dia_finalizado">Dia finalizado</string>
+    <string name="descanso">Descanso</string>
 
+    <!-- DIALOGO FINALIZAR DIA FRAGMENT INICIAL -->
+    <string name="titulo_dialogo_finalizar_dia">¿Desea finalizar el dia?</string>
+    <string name="mensaje_dialogo_finalizar_dia">Esta apunto de dar por finalizado el dia, si lo finaliza no podra volver a editarlo.</string>
 
     <!-- MENU FRAGMENT INICIAL -->
-    <string name="opciones_menu">Más Opciones</string>
+    <string name="perfil_menu">Perfil</string>
+    <string name="historico_menu">Historico</string>
     <string name="no_se_ha_encontrado_rutina">No se ha encontrado ninguna rutina.</string>
+
+    <!-- FRAGMENT PERFIL -->
+    <string name="imc_perfil">Su IMC es de: </string>
+
+    <!-- MENU FRAGMENT PERFIL -->
+    <string name="guardar_cambios_perfil">Guardar</string>
+    <string name="mas_opciones_perfil">Más opciones</string>
+    <string name="cambiar_mail_perfil">Cambiar email</string>
+    <string name="cerrar_sesion_perfil">Cerrar sesión</string>
+    <string name="seleccionar_rutina">Seleccionar rutina</string>
+
+    <!-- FRAGMENT DETALLE EJERCICIO -->
+    <string name="material_necesario">Material necesario</string>
+    <string name="bandas_elasticas_necesarias">Bandas elasticas</string>
+    <string name="material_no_necesario">Sin material</string>
 
 </resources>

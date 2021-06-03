@@ -18,7 +18,7 @@ import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     /* ATRIBUTOS */
-    private RepositorioFirebaseUsuario mRepositorioLogin;
+    private RepositorioFirebaseUsuario mRepositorioUsuarios;
     private MutableLiveData<TipoFragmento> mTipoFragmento = new MutableLiveData<TipoFragmento>();
     private Usuario mUsuario;
 
@@ -46,7 +46,7 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     /* CONSTRUCTOR */
     public ViewModelUsuario() {
-        mRepositorioLogin = new RepositorioFirebaseUsuario();
+        mRepositorioUsuarios = new RepositorioFirebaseUsuario();
     }
 
     /* FUNCIONES */
@@ -59,19 +59,25 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
      */
     public FirebaseUser usuarioActual() {
 
-        return mRepositorioLogin.usuarioActual();
+        return mRepositorioUsuarios.usuarioActual();
 
     }
 
     public Task<DocumentSnapshot> usuarioExisteFirebase(){
 
-        return mRepositorioLogin.usuarioExisteFirestore();
+        return mRepositorioUsuarios.usuarioExisteFirestore();
 
     }
 
     public Task añadirUsuarioFirestore(Usuario usuario){
 
-        return mRepositorioLogin.añadirUsuarioFirestore(usuario);
+        return mRepositorioUsuarios.añadirUsuarioFirestore(usuario);
+
+    }
+
+    public Task<DocumentSnapshot> obtenerUsuarioFirestore(){
+
+        return mRepositorioUsuarios.obtenerUsuarioFirestore();
 
     }
 
@@ -85,7 +91,7 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
      */
     public Task<AuthResult> registrarNuevoUsuario(String Email, String Contraseña) {
 
-        return mRepositorioLogin.registrarNuevoUsuario(Email, Contraseña);
+        return mRepositorioUsuarios.registrarNuevoUsuario(Email, Contraseña);
 
     }
 
@@ -99,7 +105,7 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
      */
     public Task<AuthResult> iniciarSesionConUsuarioYContraseña(String Email, String Contraseña) {
 
-        return mRepositorioLogin.iniciarSesionConUsuarioYContraseña(Email, Contraseña);
+        return mRepositorioUsuarios.iniciarSesionConUsuarioYContraseña(Email, Contraseña);
 
     }
 
@@ -112,7 +118,7 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
      */
     public Intent autenticacionGoogle(String idToken, Context context) {
 
-        return mRepositorioLogin.autenticacionGoogle(idToken, context);
+        return mRepositorioUsuarios.autenticacionGoogle(idToken, context);
 
     }
 
@@ -125,7 +131,7 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
      */
     public Task<AuthResult> accederMedianteGoogle(String idToken) {
 
-        return mRepositorioLogin.accederMedianteGoogle(idToken);
+        return mRepositorioUsuarios.accederMedianteGoogle(idToken);
 
     }
 
@@ -137,7 +143,7 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
      * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
      */
     public Task<Void> mandarMailRecuperarContraseña(String Email) {
-        return mRepositorioLogin.mandarMailRecuperarContraseña(Email);
+        return mRepositorioUsuarios.mandarMailRecuperarContraseña(Email);
     }
 
 }

@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 
@@ -29,7 +30,7 @@ import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelCreacionRutina;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelEjercicios;
 
 /**
  * Este fragmento se encargara de mostrar un listado de dias, los cuales ha especificado el usuario previamente,
@@ -54,11 +55,17 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     private CheckBox mCBViernes;
     private CheckBox mCBSabado;
     private CheckBox mCBDomingo;
-    private boolean dialogCreado;
+    private boolean dialogDiasCreado;
+
+    private AlertDialog mAlertDialogNombreRutina;
+    private TextInputLayout mETNombreRutina;
+    private String mNombreRutina;
+    private boolean dialogNombreRutinaCreado;
 
     private View mDialogDiasView;
+    private View mDialogNombreRutinaView;
 
-    private ViewModelCreacionRutina mViewModelRutina;
+    private ViewModelEjercicios mViewModelRutina;
     private ViewModelUsuario mViewModelLogin;
 
     public FragmentDiasRutina() {
@@ -76,7 +83,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelCreacionRutina.class);
+        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelEjercicios.class);
         mViewModelLogin = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
     }
@@ -87,6 +94,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
         mFragmentView = inflater.inflate(R.layout.fragment_dias_rutina, container, false);
         mDialogDiasView = View.inflate(getContext(), R.layout.dialog_dias_layout, null);
+        mDialogNombreRutinaView = View.inflate(getContext(), R.layout.dialog_nombre_rutina_layout, null);
 
         mBtnGuardarDias = mFragmentView.findViewById(R.id.btnGuardarRutina);
         mBtnGuardarDias.setOnClickListener(this);
@@ -100,7 +108,10 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
         mCBViernes = mDialogDiasView.findViewById(R.id.cbViernes);
         mCBSabado = mDialogDiasView.findViewById(R.id.cbSabado);
         mCBDomingo = mDialogDiasView.findViewById(R.id.cbDomigo);
-        dialogCreado = false;
+        dialogDiasCreado = false;
+        dialogNombreRutinaCreado = false;
+
+        mETNombreRutina = mDialogNombreRutinaView.findViewById(R.id.etNombreRutina);
 
         mRVDiasSeleccionados = mFragmentView.findViewById(R.id.rvDias);
         mRVDiasSeleccionados.setHasFixedSize(true);
@@ -124,10 +135,92 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
                 break;
             case R.id.btnGuardarRutina:
                 if(comprobarRutinaAntesGuardar()){
-                    guardarRutina();
+                    mostrarDialogNombreRutina();
+                    //guardarRutina();
                 }
                 break;
         }
+
+    }
+
+    public void mostrarDialogNombreRutina(){
+
+        if (mAlertDialogNombreRutina == null || !dialogNombreRutinaCreado) {
+
+            dialogNombreRutinaCreado = true;
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+            builder.setTitle(getText(R.string.titulo_dialog_nombre_rutina))
+                    .setView(mDialogNombreRutinaView)
+                    .setCancelable(false)
+                    .setPositiveButton(getText(R.string.boton_aceptar_nombre_rutina), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).setNegativeButton(getText(R.string.boton_cancelar_nombre_rutina), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+
+            mAlertDialogNombreRutina = builder.create();
+            mAlertDialogNombreRutina.show();
+
+            //Asigno de nuevo la funcion del boton principal del dialogo porque asi evito que este se cierre
+            // al pulsar el boton y no tener elegido ningun checkbox
+            mAlertDialogNombreRutina.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (comprobarNombreRutina()) {
+                        recopilarNombreRutina();
+                        guardarRutina();
+                        mAlertDialogNombreRutina.dismiss();
+                    }
+                }
+            });
+
+            mAlertDialogNombreRutina.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAlertDialogNombreRutina.dismiss();
+                }
+            });
+        }else {
+
+            mAlertDialogNombreRutina.show();
+
+        }
+
+    }
+
+    public void recopilarNombreRutina(){
+
+        mNombreRutina = mETNombreRutina.getEditText().getText().toString();
+
+    }
+
+    public boolean comprobarNombreRutina(){
+
+        boolean respuesta = true;
+
+        limpiarErroresDialogNombreRutina();
+
+        if (mETNombreRutina.getEditText().getText().toString().length() == 0){
+
+            mETNombreRutina.setError(getString(R.string.error_nombre_rutina_vacio));
+            respuesta = false;
+
+        }
+
+        return respuesta;
+
+    }
+
+    public void limpiarErroresDialogNombreRutina(){
+
+        mETNombreRutina.setError(null);
 
     }
 
@@ -135,8 +228,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
      * Almacena en Firestore la rutina creada por el usuario.
      */
     public void guardarRutina(){
-
-        mViewModelRutina.guardarNuevaRutinaFirestore(new Rutina(null, mViewModelRutina.getDiasRutina().getValue())).addOnCompleteListener(new OnCompleteListener() {
+        mViewModelRutina.guardarNuevaRutinaFirestore(new Rutina(null, mNombreRutina, mViewModelRutina.getDiasRutina().getValue())).addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(Task task) {
                 if(task.isSuccessful()){
@@ -178,9 +270,9 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
      */
     public void mostrarDialogDias(){
 
-        if(mAlertDialogDias == null || !dialogCreado) {
+        if(mAlertDialogDias == null || !dialogDiasCreado) {
 
-            dialogCreado = true;
+            dialogDiasCreado = true;
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
             builder.setTitle(getText(R.string.titulo_dialog_dias_semana))
                     .setView(mDialogDiasView)
@@ -235,15 +327,13 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
         mAdaptadorDias.setOnItemClickListener(new AdaptadorDias.OnItemClickListener() {
             @Override
             public void añadirListener(int position) {
-                Snackbar.make(getView(), "añadir " + mViewModelRutina.getDiasRutina().getValue().get(position).getDia(), Snackbar.LENGTH_SHORT).show();
                 mViewModelRutina.setDiaSemanaSeleccionado(position);
                 mViewModelLogin.setmTipoFragmento(TipoFragmento.EJERCICIOS);
             }
 
             @Override
             public void mostrarListener(int position) {
-                Snackbar.make(getView(), "mostrar " + mViewModelRutina.getDiasRutina().getValue().get(position).getDia(), Snackbar.LENGTH_SHORT).show();
-                // TODO: 02/05/2021 Hace visible la sublista con los ejercicios correspondientes a cada dia
+
             }
         });
 

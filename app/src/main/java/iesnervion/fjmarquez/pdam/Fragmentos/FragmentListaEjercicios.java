@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,7 +19,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,6 +34,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -44,7 +51,7 @@ import iesnervion.fjmarquez.pdam.Utiles.GrupoMuscular;
 import iesnervion.fjmarquez.pdam.Utiles.Materiales;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
-import iesnervion.fjmarquez.pdam.ViewModels.ViewModelCreacionRutina;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelEjercicios;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
 /**
@@ -57,8 +64,12 @@ public class FragmentListaEjercicios extends Fragment {
     private View mFragmentView;
     private View mDialogSeriesView;
     private View mDialogFiltrosView;
+    private View mDialogEjercicioCustomView;
 
-    private ViewModelCreacionRutina mViewModelRutina;
+    private ConstraintLayout mCLExistenCoincidencias;
+    private ImageView mIVNoExiste;
+
+    private ViewModelEjercicios mViewModelRutina;
     private ViewModelUsuario mViewModelUsuario;
 
     private MaterialToolbar mToolbar;
@@ -73,11 +84,21 @@ public class FragmentListaEjercicios extends Fragment {
     private ChipGroup mCGFiltroGrupoMuscular;
     private ChipGroup mCGFiltroDificultad;
     private ChipGroup mCGFiltroMaterial;
+    private boolean dialogFiltrosCreado;
+
+    private AlertDialog mAlertDialogEjercicioCustom;
+    private TextInputLayout mETNombreEjercicioCustom;
+    private TextInputLayout mETDescripcionEjercicioCustom;
+    private TextInputLayout mACTVGrupoMuscularEjercicioCustom;
+    private String mNombreEjercicioCustom;
+    private String mDescripcionEjercicioCustom;
+    private GrupoMuscular mGrupoMuscularEjercicioCustom;
 
     private ArrayList<Serie> mSeriesDialog;
     private AlertDialog mAlertDialogSeries;
     private RecyclerView mRVSeries;
     private AdaptadorSeriesDialogo mRVSeriesDialogoAdaptador;
+    private boolean dialogSeriesCreado;
 
     public FragmentListaEjercicios() {
 
@@ -95,7 +116,7 @@ public class FragmentListaEjercicios extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelCreacionRutina.class);
+        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelEjercicios.class);
         mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
     }
@@ -107,16 +128,26 @@ public class FragmentListaEjercicios extends Fragment {
         mFragmentView = inflater.inflate(R.layout.fragment_lista_ejercicios, container, false);
         mDialogSeriesView = View.inflate(getContext(), R.layout.dialog_series_layout, null);
         mDialogFiltrosView = View.inflate(getContext(), R.layout.dialog_filtros_ejercicios_layout, null);
+        mDialogEjercicioCustomView = View.inflate(getContext(), R.layout.dialog_ejercicio_custom_layout, null);
+
+        mCLExistenCoincidencias = mFragmentView.findViewById(R.id.clNoExistenCoincidencias);
+        mIVNoExiste = mFragmentView.findViewById(R.id.ivNoExiste);
 
         mCGFiltroGrupoMuscular = mDialogFiltrosView.findViewById(R.id.cgFiltroGrupoMuscular);
         mCGFiltroDificultad = mDialogFiltrosView.findViewById(R.id.cgFiltroDificultad);
         mCGFiltroMaterial = mDialogFiltrosView.findViewById(R.id.cgFiltroMaterial);
+        dialogFiltrosCreado = false;
 
-        mToolbar = mFragmentView.findViewById(R.id.topAppBar);
+        mETNombreEjercicioCustom = mDialogEjercicioCustomView.findViewById(R.id.etNombreEjercicioCustom);
+        mETDescripcionEjercicioCustom = mDialogEjercicioCustomView.findViewById(R.id.etDescripcionEjercicioCustom);
+        mACTVGrupoMuscularEjercicioCustom = mDialogEjercicioCustomView.findViewById(R.id.acGrupoMuscularEjercicioCustom);
+
+        mToolbar = mFragmentView.findViewById(R.id.mtEjercicios);
         mETBuscadorEjercicio = mFragmentView.findViewById(R.id.etBuscarEjercicio);
         accionesMenu();
 
         mRVSeries = mDialogSeriesView.findViewById(R.id.rvSeries);
+        dialogSeriesCreado = false;
 
         mRVEjercicios = mFragmentView.findViewById(R.id.rvEjercicios);
         mRVEjercicios.setHasFixedSize(true);
@@ -127,39 +158,196 @@ public class FragmentListaEjercicios extends Fragment {
     }
 
     /**
+     * Funcion que crea/muestra (dependiendo de si existe o no) un Dialog custom que permite al usuario
+     * agreagar a su rutina un ejercicio custom definido por el mismo.
+     */
+    public void mostrarDialogEjercicioCustom(){
+
+        if(mAlertDialogEjercicioCustom == null) {
+
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+            builder.setTitle(getText(R.string.ejercicio_custom_dialog_titulo))
+                    .setView(mDialogEjercicioCustomView)
+                    .setCancelable(false)
+                    .setPositiveButton(getText(R.string.boton_crear_ejercicio_custom), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).setNegativeButton(getText(R.string.boton_cerrar_ejercicio_custom), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            //Configuro un ArrayAdapter necesario para mostrar las posibles opcion de Grupos Musculares
+            //en un AutoCompleteTextview
+            ArrayAdapter adaptadorACTVGruposMusculares = new ArrayAdapter<String>(getContext(), R.layout.support_simple_spinner_dropdown_item, obtenerArrayGruposMusculares());
+            //Parseo un EditText (Material) a AutoCompleteTextView y le seteo un ArrayAdapter
+            ((AutoCompleteTextView) mACTVGrupoMuscularEjercicioCustom.getEditText()).setAdapter(adaptadorACTVGruposMusculares);
+
+            mAlertDialogEjercicioCustom = builder.create();
+            mAlertDialogEjercicioCustom.show();
+
+            //Asigno de nuevo la funcion del boton principal del dialogo porque asi evito que este se cierre
+            // al pulsar el boton y no tener elegido ningun checkbox
+            mAlertDialogEjercicioCustom.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (comprobarCamposEjercicioCustom()) {
+                        recopilarDatosEjercicioCustom();
+                        mostrarDialogoSeries();
+                        mAlertDialogEjercicioCustom.dismiss();
+                    }
+                }
+            });
+
+            mAlertDialogEjercicioCustom.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAlertDialogEjercicioCustom.dismiss();
+                }
+            });
+        }else {
+
+            mAlertDialogEjercicioCustom.show();
+
+        }
+
+    }
+
+    /**
+     * Funcion que setea a null, es decir limpia, los mensajes de error asignados a los diferentes EditText
+     * de los que esta formado el Dialog EjercicioCustom.
+     */
+    public void limpiarErroresCamposEjercicioCustom(){
+
+        mETNombreEjercicioCustom.setError(null);
+        mETDescripcionEjercicioCustom.setError(null);
+        mACTVGrupoMuscularEjercicioCustom.setError(null);
+
+    }
+
+    /**
+     * Funcion que comprueba si los campos se han rellenado de forma correcta y devuelve un valor booleano que sera true
+     * en caso positivo y false en caso negativo.
+     * @return Booleano que indica si los campos del Dialgo EjercicioCustom se han rellenado de manera correcta.
+     */
+    public boolean comprobarCamposEjercicioCustom(){
+
+        boolean respuesta = true;
+
+        limpiarErroresCamposEjercicioCustom();
+
+        //Si el nombre del ejercicio tiene una longitud menor a 5 se mostrara un mensaje de error indicandolo
+        if (mETNombreEjercicioCustom.getEditText().getText().toString().length() < 5){
+
+            respuesta = false;
+
+            //Si el nombre del ejercicio esta vacio se mostrara un mensaje de error indicandolo
+            if(mETNombreEjercicioCustom.getEditText().getText().toString().length() == 0){
+                mETNombreEjercicioCustom.setError(getString(R.string.nombre_ejercicio_custom_vacio));
+            }else {
+                mETNombreEjercicioCustom.setError(getString(R.string.nombre_ejercicio_custom_corto));
+            }
+
+        }
+
+        //Si la descripcion del ejercicio esta vacia se mostrara un mensaje de error indicandolo
+        if (mETDescripcionEjercicioCustom.getEditText().getText().toString().length() == 0){
+
+            respuesta = false;
+            mETDescripcionEjercicioCustom.setError(getString(R.string.descripcion_ejercicio_custom_vacia));
+
+        }
+
+        //Si no se ha seleccionado ningun Grupo Muscular se mostrara un mensaje de error indicandolo
+        if (mACTVGrupoMuscularEjercicioCustom.getEditText().getText().toString().length() == 0){
+
+            respuesta = false;
+            mACTVGrupoMuscularEjercicioCustom.setError(getString(R.string.grupo_muscular_no_seleccionado_ejercicio_custom));
+
+        }
+
+        return respuesta;
+
+    }
+
+    /**
+     * Recopila la informacion del Dialog EjercicioCustom y crea un objeto Ejercicio, el cual se almacena en
+     * el ViewModelCreacionRutina para mas adelante indicar las series deseadas.
+     */
+    public void recopilarDatosEjercicioCustom(){
+
+        mNombreEjercicioCustom = mETNombreEjercicioCustom.getEditText().getText().toString();
+        mDescripcionEjercicioCustom = mETDescripcionEjercicioCustom.getEditText().getText().toString();
+        String grupoMuscular = mACTVGrupoMuscularEjercicioCustom.getEditText().getText().toString();
+        mGrupoMuscularEjercicioCustom = GrupoMuscular.valueOf(grupoMuscular.toUpperCase());
+
+        Ejercicio ejercicioCustom = new Ejercicio();
+        ejercicioCustom.setNombre(mNombreEjercicioCustom);
+        ejercicioCustom.setDescripcion(mDescripcionEjercicioCustom);
+        ejercicioCustom.setGrupoMuscular(mGrupoMuscularEjercicioCustom);
+        ejercicioCustom.setDificultad(null);//Si la dificultad se setea a null quiero indica que es un ejercicio personalizado
+        mViewModelRutina.setEjercicioSeleccionado(ejercicioCustom);
+
+    }
+
+    /**
+     * Funcion que devuelve un ArrayList de String con todos los posibles valores del Enum Grupos Musculares.
+     * @return ArrayList de String con los valores del Enum Grupos Musculares
+     */
+    public ArrayList<String> obtenerArrayGruposMusculares(){
+
+        ArrayList<String> respuesta = new ArrayList<>();
+
+        //Itero los valores del enum
+        for (GrupoMuscular grupo:
+             GrupoMuscular.values()) {
+            respuesta.add(Utiles.capitalizar(grupo.name()));
+        }
+
+        return respuesta;
+
+    }
+
+    /**
      * Rellena los diferentes ChipGroups con Chips de manera dinamica
      */
     public void rellenarChipGroups(){
 
-        //Creo los Chips para los grupos musculares
-        for (GrupoMuscular grupo:
-             GrupoMuscular.values()) {
-            Chip chipGrupoMuscular = new Chip(getContext());
-            chipGrupoMuscular.setText(Utiles.capitalizar(grupo.name()));
-            chipGrupoMuscular.setCheckable(true);
-            chipGrupoMuscular.setCheckedIconTintResource(R.color.color_principal);
-            mCGFiltroGrupoMuscular.addView(chipGrupoMuscular);
-        }
+            mViewModelRutina.incrementarmChipsCreados();
 
-        //Creo los Chips para las diferentes dificultades
-        for(DificultadEjercicio dificultad:
-            DificultadEjercicio.values()) {
-            Chip chipDificultad = new Chip(getContext());
-            chipDificultad.setText(Utiles.capitalizar(dificultad.name()));
-            chipDificultad.setCheckable(true);
-            chipDificultad.setCheckedIconTintResource(R.color.color_principal);
-            mCGFiltroDificultad.addView(chipDificultad);
-        }
+            //Creo los Chips para los grupos musculares
+            for (GrupoMuscular grupo:
+                    GrupoMuscular.values()) {
+                Chip chipGrupoMuscular = new Chip(getContext());
+                chipGrupoMuscular.setText(Utiles.capitalizar(grupo.name()));
+                chipGrupoMuscular.setCheckable(true);
+                chipGrupoMuscular.setCheckedIconTintResource(R.color.color_principal);
+                mCGFiltroGrupoMuscular.addView(chipGrupoMuscular);
+            }
 
-        //Creo los chip teniendo en cuenta los materiales necesarios en cada ejercicio
-        for (Materiales material:
-             Materiales.values()) {
-            Chip chipMaterial = new Chip(getContext());
-            chipMaterial.setText(Utiles.capitalizar(material.name().replace("_", " ")));
-            chipMaterial.setCheckable(true);
-            chipMaterial.setCheckedIconTintResource(R.color.color_principal);
-            mCGFiltroMaterial.addView(chipMaterial);
-        }
+            //Creo los Chips para las diferentes dificultades
+            for(DificultadEjercicio dificultad:
+                    DificultadEjercicio.values()) {
+                Chip chipDificultad = new Chip(getContext());
+                chipDificultad.setText(Utiles.capitalizar(dificultad.name()));
+                chipDificultad.setCheckable(true);
+                chipDificultad.setCheckedIconTintResource(R.color.color_principal);
+                mCGFiltroDificultad.addView(chipDificultad);
+            }
+
+            //Creo los chip teniendo en cuenta los materiales necesarios en cada ejercicio
+            for (Materiales material:
+                    Materiales.values()) {
+                Chip chipMaterial = new Chip(getContext());
+                chipMaterial.setText(Utiles.capitalizar(material.name().replace("_", " ")));
+                chipMaterial.setCheckable(true);
+                chipMaterial.setCheckedIconTintResource(R.color.color_principal);
+                mCGFiltroMaterial.addView(chipMaterial);
+            }
 
     }
 
@@ -169,6 +357,7 @@ public class FragmentListaEjercicios extends Fragment {
      */
     public void accionesMenu(){
 
+        //Eventos para el EditText destinado a la busqueda por nombre en la lista de ejercicios
         mETBuscadorEjercicio.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -177,17 +366,19 @@ public class FragmentListaEjercicios extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (count == 0 && mViewModelRutina.getListadoEjerciciosMaster().size() > mEjercicios.size()){
-                    resetearRecyclerViewEjercicios();
-                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                //Cuando el texto introducido en el EditText se haya modificado y su longuitud sea 0,
+                //se reseteara el RecyclerView de ejercicios limpiando asi el filtrado.
+                if (s.length() == 0 && mViewModelRutina.getListadoEjerciciosMaster().size() > mEjercicios.size()){
+                    //resetearRecyclerViewEjercicios();
+                }
             }
         });
 
+        //Evento onClick para el icono de navagacion contenido en el Toolbar
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,11 +386,14 @@ public class FragmentListaEjercicios extends Fragment {
             }
         });
 
+        //Eventos onClick para los iconos contenidos en el Toolbar
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
                 switch (item.getItemId()){
+
                     case R.id.buscarEjercicio:
                         String busqueda = mETBuscadorEjercicio.getText().toString();
                         if(!busqueda.isEmpty()){
@@ -212,15 +406,23 @@ public class FragmentListaEjercicios extends Fragment {
                                 }
                             }
                             mRVEjerciciosAdaptador.notifyDataSetChanged();
+                        }else {
+                            mETBuscadorEjercicio.requestFocus();
                         }
                         break;
+
                     case R.id.filtrarEjercicio:
                         Toast.makeText(getContext(), "filtrar", Toast.LENGTH_SHORT).show();
                         mostrarDialogoFiltros();
                         break;
+
+                    case R.id.añadirEjercicioCustom:
+                        mostrarDialogEjercicioCustom();
+                        break;
                 }
                 return false;
             }
+
         });
 
     }
@@ -231,7 +433,9 @@ public class FragmentListaEjercicios extends Fragment {
     public void mostrarDialogoFiltros(){
 
         //Si ya ha sido creado evitamos crearlo otra vez y solamente lo mostramos usando .show()
-        if (mAlertDialogFiltros == null){
+        if (mAlertDialogFiltros == null|| !dialogFiltrosCreado) {
+
+            dialogFiltrosCreado = true;
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
             builder.setTitle(getText(R.string.titulo_dialogo_filtros))
                     .setView(mDialogFiltrosView)
@@ -241,12 +445,12 @@ public class FragmentListaEjercicios extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setNeutralButton(getText(R.string.boton_cerrar), new DialogInterface.OnClickListener() {
+                    .setNeutralButton(getText(R.string.boton_limpiar_filtros), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setNegativeButton(getText(R.string.boton_limpiar_filtros), new DialogInterface.OnClickListener() {
+                    .setNegativeButton(getText(R.string.boton_cerrar), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
@@ -262,12 +466,14 @@ public class FragmentListaEjercicios extends Fragment {
             mAlertDialogFiltros.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    resetearRecyclerViewEjercicios();
+                    mAlertDialogFiltros.dismiss();
                 }
             });
             mAlertDialogFiltros.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //Limpio el ArrayList de Ejercicios y aplico los filtros seleccionados por el usuario
                     mEjercicios.clear();
                     filtrarPorGrupoMuscular();
                     filtrarPorDificultad();
@@ -280,12 +486,14 @@ public class FragmentListaEjercicios extends Fragment {
             mAlertDialogFiltros.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    mAlertDialogFiltros.dismiss();
                 }
             });
 
         }else {
+
             mAlertDialogFiltros.show();
+
         }
 
         //Esta linea permite desplegar el teclado al poner el foco sobre un EditText dentro del Dialog
@@ -298,27 +506,28 @@ public class FragmentListaEjercicios extends Fragment {
      */
     public void filtrarPorGrupoMuscular(){
         List<Integer> selectedChips = mCGFiltroGrupoMuscular.getCheckedChipIds();
+        int tamañoInicioFiltro = mEjercicios.size();
         for(int i = 0; i < selectedChips.size(); i++){
-            if(mEjercicios.size() == 0 || selectedChips.size() > 1){
 
+            int posicionChip = selectedChips.get(i)-1-mViewModelRutina.obtenerIdsChipCreados();
+
+            if(/*mEjercicios.size() == 0 || selectedChips.size() > 1*/ tamañoInicioFiltro == 0){
                 for (Ejercicio ejercicio:
                         mViewModelRutina.getListadoEjerciciosMaster()) {
-                    if(ejercicio.getGrupoMuscular() == (GrupoMuscular.values()[selectedChips.get(i)-1])){
+                    if(ejercicio.getGrupoMuscular() == (GrupoMuscular.values()[posicionChip])){
                         mEjercicios.add(ejercicio);
                     }
                 }
-                int o = 0;
 
             }else{
 
                 ArrayList<Ejercicio> copiaEjerciciosFiltrados = new ArrayList<>(mEjercicios);
                 for (Ejercicio ejercicio:
                         copiaEjerciciosFiltrados) {
-                    if(ejercicio.getGrupoMuscular() != (GrupoMuscular.values()[selectedChips.get(i)-1])){
+                    if(ejercicio.getGrupoMuscular() != (GrupoMuscular.values()[posicionChip])){
                         mEjercicios.remove(ejercicio);
                     }
                 }
-                int o = 0;
 
             }
 
@@ -330,51 +539,76 @@ public class FragmentListaEjercicios extends Fragment {
      */
     public void filtrarPorDificultad(){
         List<Integer> selectedChips = mCGFiltroDificultad.getCheckedChipIds();
+        int tamañoInicioFiltro = mEjercicios.size();
         for(int i = 0; i < selectedChips.size(); i++){
-            if(mEjercicios.size() == 0 || selectedChips.size() > 1) {
+
+            int posicionChip = selectedChips.get(i)-1-GrupoMuscular.values().length-mViewModelRutina.obtenerIdsChipCreados();
+
+            if(/*mEjercicios.size() == 0*/ tamañoInicioFiltro == 0) {
 
                 for (Ejercicio ejercicio :
                         mViewModelRutina.getListadoEjerciciosMaster()) {
-                    if (ejercicio.getDificultad() == (DificultadEjercicio.values()[selectedChips.get(i)-GrupoMuscular.values().length-1])) {
+                    if (ejercicio.getDificultad() == (DificultadEjercicio.values()[posicionChip])) {
                         mEjercicios.add(ejercicio);
                     }
                 }
-                int o = 0;
             }else {
 
                 ArrayList<Ejercicio> copiaEjerciciosFiltrados = new ArrayList<>(mEjercicios);
                 for (Ejercicio ejercicio :
                         copiaEjerciciosFiltrados) {
-                    int x = selectedChips.get(i)-6;
+                    //int x = selectedChips.get(i)-6;
                     //String s = DificultadEjercicio.values()[selectedChips.get(i)-6].name();
-                    if (ejercicio.getDificultad() != (DificultadEjercicio.values()[selectedChips.get(i)-GrupoMuscular.values().length-1])) {
+                    if (ejercicio.getDificultad() != (DificultadEjercicio.values()[posicionChip])) {
                         mEjercicios.remove(ejercicio);
                     }
                 }
-                int o = 0;
             }
         }
     }
 
     /**
-     * Filtra los ejercicios segun el material necesario para su realizacion
+     * Filtra los ejercicios segun el material necesario para su realizacion.
      */
     public void filtrarPorMaterial(){
         List<Integer> selectedChips = mCGFiltroMaterial.getCheckedChipIds();
+        int tamañoInicioFiltro = mEjercicios.size();
         for(int i = 0; i < selectedChips.size(); i++){
-            //GrupoMuscular.values()[selectedChips.get(i)-1].name();
-            for (Ejercicio ejercicio:
-                    mViewModelRutina.getListadoEjerciciosMaster()) {
-                if(Materiales.values()[selectedChips.get(i)-DificultadEjercicio.values().length-GrupoMuscular.values().length-1] == Materiales.BANDAS_ELASTICAS && ejercicio.getBandasElasticas()){
-                    mEjercicios.add(ejercicio);
+
+            int posicionChip = selectedChips.get(i)-1-GrupoMuscular.values().length-DificultadEjercicio.values().length-mViewModelRutina.obtenerIdsChipCreados();
+
+            if (tamañoInicioFiltro == 0){
+
+                for (Ejercicio ejercicio:
+                        mViewModelRutina.getListadoEjerciciosMaster()) {
+                    if(Materiales.values()[posicionChip] == Materiales.BANDAS_ELASTICAS && ejercicio.getBandasElasticas()){
+                        mEjercicios.add(ejercicio);
+                    }
+                    if(Materiales.values()[posicionChip] == Materiales.GIMNASIO && ejercicio.getMaterial()){
+                        mEjercicios.add(ejercicio);
+                    }
+                    if(Materiales.values()[posicionChip] == Materiales.SIN_MATERIAL && !ejercicio.getMaterial() && !ejercicio.getBandasElasticas()){
+                        mEjercicios.add(ejercicio);
+                    }
                 }
-                if(Materiales.values()[selectedChips.get(i)-DificultadEjercicio.values().length-GrupoMuscular.values().length-1] == Materiales.GIMNASIO && ejercicio.getMaterial()){
-                    mEjercicios.add(ejercicio);
+
+            }else {
+
+                for (Ejercicio ejercicio:
+                        mViewModelRutina.getListadoEjerciciosMaster()) {
+                    if(Materiales.values()[selectedChips.get(i)-DificultadEjercicio.values().length-GrupoMuscular.values().length-1] != Materiales.BANDAS_ELASTICAS && ejercicio.getBandasElasticas()){
+                        mEjercicios.remove(ejercicio);
+                    }
+                    if(Materiales.values()[selectedChips.get(i)-DificultadEjercicio.values().length-GrupoMuscular.values().length-1] != Materiales.GIMNASIO && ejercicio.getMaterial()){
+                        mEjercicios.remove(ejercicio);
+                    }
+                    if(Materiales.values()[selectedChips.get(i)-DificultadEjercicio.values().length-GrupoMuscular.values().length-1] != Materiales.SIN_MATERIAL && !ejercicio.getMaterial()){
+                        mEjercicios.remove(ejercicio);
+                    }
                 }
-                if(Materiales.values()[selectedChips.get(i)-DificultadEjercicio.values().length-GrupoMuscular.values().length-1] == Materiales.SIN_MATERIAL && !ejercicio.getMaterial()){
-                    mEjercicios.add(ejercicio);
-                }
+
             }
+
         }
     }
 
@@ -389,14 +623,13 @@ public class FragmentListaEjercicios extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful()){
-                        //ArrayList<Ejercicio> mlistadoEjerciciosFirestore = new ArrayList<>();
                         mEjercicios = new ArrayList<>();
+                        //Itero los resultados obtenidos en la consulta, los parseo y los añado a la lista
                         for (QueryDocumentSnapshot document: task.getResult()
                         ) {
-                            //Map<String, Object> mDocumentMap = document.getData();
+                            //Parseo el resultado obtenido a un objeto Ejercicio
                             Ejercicio mEjercicio = document.toObject(Ejercicio.class);
                             mEjercicio.setUid(document.getId());
-                            //mlistadoEjerciciosFirestore.add(mEjercicio);
                             mEjercicios.add(mEjercicio);
                         }
                         mViewModelRutina.setListadoEjerciciosMaster(new ArrayList<>(mEjercicios));
@@ -426,26 +659,48 @@ public class FragmentListaEjercicios extends Fragment {
 
         //Listener para eventos de Click de cada elemento de la lista
         mRVEjerciciosAdaptador.setOnItemClickListener(new AdaptadorEjercicios.OnItemClickListener() {
+            //Evento onClick destinado a añadir un ejercicio al dia correspondiente de la rutina, aunque antes el usuario debe especificar las series.
             @Override
             public void añadirListener(int position) {
-                Toast.makeText(getActivity().getApplicationContext(), ""+mViewModelRutina.getListadoEjerciciosMaster().get(position).getNombre(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity().getApplicationContext(), ""+mViewModelRutina.getListadoEjerciciosMaster().get(position).getNombre(), Toast.LENGTH_SHORT).show();
+                //Si el ejercicio no ha sido añadido ya a ese dia
                 if (!mViewModelRutina.getDiasRutina().getValue()
                         .get(mViewModelRutina.getDiaSemanaSeleccionado())
                         .getEjercicios().contains(mViewModelRutina.getListadoEjerciciosMaster().get(position))){
-                    mViewModelRutina.setEjercicioSeleccionado(mViewModelRutina.getListadoEjerciciosMaster().get(position));
+                    mViewModelRutina.setEjercicioSeleccionado(mEjercicios.get(position));
                     mostrarDialogoSeries();
                 }else {
                     Snackbar.make(getView(), "Ya has añadido este ejercicio", Snackbar.LENGTH_LONG).show();
                 }
             }
 
+            //Evento onClick que nos llevara a una vista detallada del ejericicio sobre el que hemos pulsado.
             @Override
             public void clickListener(int position) {
-                Toast.makeText(getActivity().getApplicationContext(), ""+mViewModelRutina.getListadoEjerciciosMaster().get(position).getNombre(), Toast.LENGTH_SHORT).show();
-                mViewModelRutina.setEjercicioSeleccionado(mViewModelRutina.getListadoEjerciciosMaster().get(position));
+                //Toast.makeText(getActivity().getApplicationContext(), ""+mViewModelRutina.getListadoEjerciciosMaster().get(position).getNombre(), Toast.LENGTH_SHORT).show();
+                mViewModelRutina.setEjercicioSeleccionado(mEjercicios.get(position));
                 mViewModelUsuario.setmTipoFragmento(TipoFragmento.DETALLE_EJERCICIO);
             }
         });
+
+    }
+
+    public void configuracionVisualRecyclerViewEjercicios(){
+
+        if (mEjercicios.size() == 0){
+
+            mRVEjercicios.setVisibility(View.INVISIBLE);
+            mCLExistenCoincidencias.setVisibility(View.VISIBLE);
+            Animation animacionRotar = AnimationUtils.loadAnimation(getContext(), R.anim.rotar_imageview_360);
+            mIVNoExiste.startAnimation(animacionRotar);
+
+        }else {
+
+            mCLExistenCoincidencias.setVisibility(View.GONE);
+            mRVEjercicios.setVisibility(View.VISIBLE);
+
+        }
+
 
     }
 
@@ -487,7 +742,9 @@ public class FragmentListaEjercicios extends Fragment {
     public void mostrarDialogoSeries() {
 
         //Si ya ha sido creado evitamos crearlo otra vez y solamente lo mostramos usando .show()
-        if (mAlertDialogSeries == null){
+        if (mAlertDialogSeries == null|| !dialogSeriesCreado) {
+
+            dialogSeriesCreado = true;
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
             builder.setTitle(getText(R.string.titulo_dialogo_series))
                     .setView(mDialogSeriesView)
@@ -497,7 +754,7 @@ public class FragmentListaEjercicios extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .setNeutralButton(getText(R.string.boton_positivo_dialog), new DialogInterface.OnClickListener() {
+                    .setNeutralButton(getText(R.string.boton_añadir_ejercicio), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                         }
@@ -518,16 +775,26 @@ public class FragmentListaEjercicios extends Fragment {
             mAlertDialogSeries.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //asignamos las series especificadas al ejercicios seleccionado
-                    mViewModelRutina.getEjercicioSeleccionado().setSeries(AdaptadorSeriesDialogo.listaSeries);
-                    //añadirmos el ejercicio seleccionado con sus correspondientes series al dia correspondiente de la rutina
-                    mViewModelRutina.getDiasRutina().getValue().get(mViewModelRutina.getDiaSemanaSeleccionado()).getEjercicios().add(mViewModelRutina.getEjercicioSeleccionado());
-                    mAlertDialogSeries.dismiss();
+
+                    if (comprobarSeriesDialog()){
+                        //asignamos las series especificadas al ejercicios seleccionado
+                        mViewModelRutina.getEjercicioSeleccionado().setSeries(AdaptadorSeriesDialogo.listaSeries);
+                        //si los ejercicios son menos de 10 en el dia seleccionado se añadira el nuevo ejercicio al dia
+                        if (mViewModelRutina.getDiasRutina().getValue().get(mViewModelRutina.getDiaSemanaSeleccionado()).getEjercicios().size() < 10){
+                            //añadirmos el ejercicio seleccionado con sus correspondientes series al dia correspondiente de la rutina
+                            mViewModelRutina.getDiasRutina().getValue().get(mViewModelRutina.getDiaSemanaSeleccionado()).getEjercicios().add(mViewModelRutina.getEjercicioSeleccionado());
+                        }else{
+                            Snackbar.make(getView(), R.string.max_ejercicios_superado, Snackbar.LENGTH_LONG).show();
+                        }
+                        mAlertDialogSeries.dismiss();
+                    }
+
                 }
             });
             mAlertDialogSeries.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //si las series son menos de 6 se añadira otra nueva serie
                     if (mSeriesDialog.size() < 6) {
                         mSeriesDialog.add(new Serie());
                         mRVSeriesDialogoAdaptador.notifyDataSetChanged();
@@ -545,11 +812,31 @@ public class FragmentListaEjercicios extends Fragment {
             });
 
         }else {
+            rellenarRecyclerViewSeries();
             mAlertDialogSeries.show();
         }
 
         //Esta linea permite desplegar el teclado al poner el foco sobre un EditText dentro del Dialog
         mAlertDialogSeries.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+    }
+
+    public boolean comprobarSeriesDialog(){
+
+        boolean respuesta = true;
+
+        for (Serie serie:
+                AdaptadorSeriesDialogo.listaSeries){
+
+            if (serie.getRepeticiones() == 0){
+
+                respuesta = false;
+
+            }
+
+        }
+
+        return respuesta;
 
     }
 

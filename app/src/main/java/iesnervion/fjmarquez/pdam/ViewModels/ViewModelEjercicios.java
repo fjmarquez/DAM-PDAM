@@ -13,8 +13,11 @@ import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
 import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirebaseRutinas;
 import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreEjercicios;
+import iesnervion.fjmarquez.pdam.Utiles.DificultadEjercicio;
+import iesnervion.fjmarquez.pdam.Utiles.GrupoMuscular;
+import iesnervion.fjmarquez.pdam.Utiles.Materiales;
 
-public class ViewModelCreacionRutina extends androidx.lifecycle.ViewModel{
+public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
 
     /* ATRIBUTOS */
     private MutableLiveData<ArrayList<Dia>> DiasRutina;
@@ -24,9 +27,11 @@ public class ViewModelCreacionRutina extends androidx.lifecycle.ViewModel{
     private ArrayList<Ejercicio> ListadoEjercicios;
     private RepositorioFirestoreEjercicios mRepositorioFirestoreEjercicios;
     private RepositorioFirebaseRutinas mRepositorioFirestoreRutinas;
+    private int mChipsCreados;
+    private final int SUM_ENUMS_FILTRO = GrupoMuscular.values().length + DificultadEjercicio.values().length + Materiales.values().length;
 
     /* CONSTRUTORES */
-    public ViewModelCreacionRutina() {
+    public ViewModelEjercicios() {
 
         //ArrayList<Dia> Dias = new ArrayList<>();
         DiasRutina = new MutableLiveData<>();
@@ -35,6 +40,7 @@ public class ViewModelCreacionRutina extends androidx.lifecycle.ViewModel{
         EjercicioSeleccionado = null;
         mRepositorioFirestoreEjercicios = new RepositorioFirestoreEjercicios();
         mRepositorioFirestoreRutinas = new RepositorioFirebaseRutinas();
+        mChipsCreados = -1;
 
     }
 
@@ -61,6 +67,10 @@ public class ViewModelCreacionRutina extends androidx.lifecycle.ViewModel{
         EjercicioSeleccionado = ejercicioSeleccionado;
     }
 
+    public void incrementarmChipsCreados() {
+        this.mChipsCreados = this.mChipsCreados+1;
+    }
+
     /* GETTERS*/
     public MutableLiveData<ArrayList<Dia>> getDiasRutina() {
         return DiasRutina;
@@ -78,7 +88,15 @@ public class ViewModelCreacionRutina extends androidx.lifecycle.ViewModel{
         return ListadoEjercicios;
     }
 
+    public int getmChipsCreados() {
+        return mChipsCreados;
+    }
+
     /* FUNCIONES */
+
+    public int obtenerIdsChipCreados(){
+        return SUM_ENUMS_FILTRO * mChipsCreados;
+    }
 
     public Task<QuerySnapshot> obtenerEjerciciosFirestore(){
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/guardarPerfilMenu"
+        android:icon="@drawable/ic_baseline_save_24"
+        android:title="@string/guardar_cambios_perfil"
+        android:contentDescription="@string/guardar_cambios_perfil"
+        app:showAsAction="ifRoom"/>
+
+        <item
+            android:id="@+id/cambiarMailPerfilMenu"
+            android:title="@string/cambiar_mail_perfil"
+            android:contentDescription="@string/cambiar_mail_perfil"/>
+
+        <item
+            android:id="@+id/cerrarSesionPerfilMenu"
+            android:title="@string/cerrar_sesion_perfil"
+            android:contentDescription="@string/cerrar_sesion_perfil"/>
+
+</menu>
