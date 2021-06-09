@@ -50,7 +50,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
     private Pattern mRegexMail = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private Pattern mRegexContraseña = Pattern.compile("((?=.*[a-z])(?=.*\\d)(?=.*[A-Z])(?=.*[@#._$,:;?¿¡)(*^<>%!]).{8,40})");
 
-    private ViewModelUsuario mViewModel;
+    private ViewModelUsuario mViewModelUsuario;
 
     public FragmentLogin() {
 
@@ -68,7 +68,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
         super.onCreate(savedInstanceState);
         //Inicializo el ViewModel
-        mViewModel = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
+        mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
     }
 
@@ -95,6 +95,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     }
 
+
     /**
      * Eventos onClick de los elementos del Fragment.
      * @param v Vista que contiene los elementos del Fragment.
@@ -106,11 +107,11 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
                 case R.id.BTNIniciarSesion:
                     if(comprobarCampos(false, false)){
-                        mViewModel.iniciarSesionConUsuarioYContraseña(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        mViewModelUsuario.iniciarSesionConUsuarioYContraseña(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
-                                    mViewModel.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                                    mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
                                     //mViewModel.setmTipoFragmento(TipoFragmento.POST_REGISTRO);
                                 }else{
                                     mostrarDialogError(false, true, false);
@@ -122,11 +123,11 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
                 case R.id.BTNRegistrarse:
                     if(comprobarCampos(false, true)){
-                        mViewModel.registrarNuevoUsuario(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        mViewModelUsuario.registrarNuevoUsuario(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
-                                    mViewModel.setmTipoFragmento(TipoFragmento.POST_REGISTRO);
+                                    mViewModelUsuario.setmTipoFragmento(TipoFragmento.POST_REGISTRO);
                                 }else{
                                     mostrarDialogError(true, false, false);
                                 }
@@ -136,13 +137,13 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
                     break;
 
                 case R.id.BTNRegistrarseGoogle:
-                    Intent i = mViewModel.autenticacionGoogle(getString(R.string.default_web_client_id), getContext());
+                    Intent i = mViewModelUsuario.autenticacionGoogle(getString(R.string.default_web_client_id), getContext());
                     startActivityForResult(i, CODE_GOOGLE_SIGN);
                     break;
 
                 case R.id.BTNRecordarContraseña:
                     if (comprobarCampos(true, false)){
-                        mViewModel.mandarMailRecuperarContraseña(mUsuario).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        mViewModelUsuario.mandarMailRecuperarContraseña(mUsuario).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
@@ -173,11 +174,11 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount acount = task.getResult(ApiException.class);
-                mViewModel.accederMedianteGoogle(acount.getIdToken()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                mViewModelUsuario.accederMedianteGoogle(acount.getIdToken()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            mViewModel.setmTipoFragmento(TipoFragmento.POST_REGISTRO);
+                            mViewModelUsuario.setmTipoFragmento(TipoFragmento.POST_REGISTRO);
                             Snackbar.make(getView(), R.string.inicio_con_google_correcto, Snackbar.LENGTH_SHORT).show();
                         }else {
                             mostrarDialogError(false, true, false);

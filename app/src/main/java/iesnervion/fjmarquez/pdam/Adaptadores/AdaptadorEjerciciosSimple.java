@@ -26,9 +26,18 @@ import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 public class AdaptadorEjerciciosSimple extends RecyclerView.Adapter<AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder> {
 
     private ArrayList<Ejercicio> listaEjercicios;
+    public AdaptadorEjerciciosSimple.OnItemClickListener mListener;
 
     public AdaptadorEjerciciosSimple(ArrayList<Ejercicio> listaEjercicios) {
         this.listaEjercicios = listaEjercicios;
+    }
+
+    public interface OnItemClickListener{
+        void quitarListener(int position);
+    }
+
+    public void setOnItemClickListener(AdaptadorEjerciciosSimple.OnItemClickListener listener){
+        mListener = listener;
     }
 
     @NonNull
@@ -36,7 +45,7 @@ public class AdaptadorEjerciciosSimple extends RecyclerView.Adapter<AdaptadorEje
     public AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ejercicio_simple, parent, false);
-        AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder vh = new AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder(v);
+        AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder vh = new AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder(v, mListener);
 
         return vh;
     }
@@ -46,9 +55,9 @@ public class AdaptadorEjerciciosSimple extends RecyclerView.Adapter<AdaptadorEje
 
         Ejercicio ejercicioActual = this.listaEjercicios.get(position);
 
-        holder.mTVNombreEjercicioSimple.setText(ejercicioActual.getNombre());
-        holder.mTVDificulatadEjercicioSimple.setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
-        holder.mTVDificulatadEjercicioSimple.setTextColor(holder.mTVDificulatadEjercicioSimple.getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
+        holder.getmTVNombreEjercicioSimple().setText(ejercicioActual.getNombre());
+        holder.getmTVDificulatadEjercicioSimple().setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
+        holder.getmTVDificulatadEjercicioSimple().setTextColor(holder.getmTVDificulatadEjercicioSimple().getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
 
     }
 
@@ -61,15 +70,31 @@ public class AdaptadorEjerciciosSimple extends RecyclerView.Adapter<AdaptadorEje
 
         private TextView mTVNombreEjercicioSimple;
         private TextView mTVDificulatadEjercicioSimple;
+        private ImageView mIBQuitarEjercicio;
 
+        /* CONSTRUCTOR */
 
-        public RVEjerciciosSimpleViewHolder(@NonNull View itemView) {
+        public RVEjerciciosSimpleViewHolder(@NonNull View itemView, final AdaptadorEjerciciosSimple.OnItemClickListener listener) {
             super(itemView);
 
             mTVNombreEjercicioSimple = itemView.findViewById(R.id.tvNombreEjercicioSimple);
             mTVDificulatadEjercicioSimple = itemView.findViewById(R.id.tvDificultadEjercicioSimple);
+            mIBQuitarEjercicio = itemView.findViewById(R.id.ibQuitarEjercicio);
+            mIBQuitarEjercicio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int postition = getAdapterPosition();
+                        if (postition != RecyclerView.NO_POSITION){
+                            listener.quitarListener(postition);
+                        }
+                    }
+                }
+            });
 
         }
+
+        /* GETTERS */
 
         public TextView getmTVNombreEjercicioSimple() {
             return mTVNombreEjercicioSimple;
@@ -79,12 +104,22 @@ public class AdaptadorEjerciciosSimple extends RecyclerView.Adapter<AdaptadorEje
             return mTVDificulatadEjercicioSimple;
         }
 
+        public ImageView getmIBQuitarEjercicio() {
+            return mIBQuitarEjercicio;
+        }
+
+        /* SETTERS */
+
         public void setmTVNombreEjercicioSimple(TextView mTVNombreEjercicioSimple) {
             this.mTVNombreEjercicioSimple = mTVNombreEjercicioSimple;
         }
 
         public void setmTVDificulatadEjercicioSimple(TextView mTVDificulatadEjercicioSimple) {
             this.mTVDificulatadEjercicioSimple = mTVDificulatadEjercicioSimple;
+        }
+
+        public void setmIBQuitarEjercicio(ImageView mIBQuitarEjercicio) {
+            this.mIBQuitarEjercicio = mIBQuitarEjercicio;
         }
     }
 }

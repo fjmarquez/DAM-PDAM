@@ -105,7 +105,8 @@ public class FragmentRealizarEjercicio extends Fragment implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.ibConfirmarRealizarEjercicio:
-                //TODO actualizar antes rutina en firestore
+                mViewModelRutina.getmDiaSeleccionado().getEjercicios().get(mViewModelRutina.getmEjercicioRealizar()).setSeries(mAdaptadorSeriesRealizarEjercicio.listaSeries);
+                mViewModelRutina.actualizarRutinaActualUsuario();
                 mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
                 break;
             case R.id.ibCancelarRealizarEjercicio:

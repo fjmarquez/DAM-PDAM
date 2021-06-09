@@ -15,69 +15,68 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentDetalleEjercicio;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentDiasRutina;
-import iesnervion.fjmarquez.pdam.Fragmentos.FragmentHistorico;
+import iesnervion.fjmarquez.pdam.Fragmentos.FragmentListaHistorico;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentInicial;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentListaEjercicios;
+import iesnervion.fjmarquez.pdam.Fragmentos.FragmentListaRutinas;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentLogin;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentPerfil;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentPostRegistro;
 import iesnervion.fjmarquez.pdam.Fragmentos.FragmentRealizarEjercicio;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
 public class MainActivity extends AppCompatActivity {
 
     /* ATRIBUTOS */
     private FragmentContainerView mContenedorGeneral;
-    private ViewModelUsuario mViewModel;
+    private ViewModelUsuario mViewModelUsuario;
+    private ViewModelRutina mViewModelRutina;
     //Observer que se encargara de la navegacion entre fragmentos.
     private Observer<TipoFragmento> mTipoFragmentoObserver = new Observer<TipoFragmento>() {
         @Override
         public void onChanged(TipoFragmento tipoFragmento) {
 
+            mViewModelUsuario.setmUltimoFragmento(tipoFragmento);
+
             switch (tipoFragmento){
                 case LOGIN:
-                    mFragmentActual = tipoFragmento;
+                    cambiarFragment(mFragmentLogin, false);
                     break;
                 case POST_REGISTRO:
                     cambiarFragment(mFragmentPostRegistro, false);
-                    mFragmentActual = tipoFragmento;
                     break;
                 case PANTALLA_INICIO:
                     cambiarFragment(mFragmentoInicial, false);
-                    mFragmentActual = tipoFragmento;
                     break;
                 case DIAS_RUTINA:
                     cambiarFragment(mFragmentoDiasRutina, false);
-                    mFragmentActual = tipoFragmento;
                     break;
                 case EJERCICIOS:
                     cambiarFragment(mFragmentoListaEjercicios, true);
-                    mFragmentActual = tipoFragmento;
                     break;
                 case DETALLE_EJERCICIO:
                     cambiarFragment(mFragmentoDetalleEjercicio, true);
-                    mFragmentActual = tipoFragmento;
                     break;
                 case PERFIL:
                     cambiarFragment(mFragmentPerfil, true);
-                    mFragmentActual = tipoFragmento;
                     break;
                 case HISTORICO:
-                    cambiarFragment(mFragmentHistorico, true);
-                    mFragmentActual = tipoFragmento;
+                    cambiarFragment(mFragmentListaHistorico, true);
                     break;
                 case REALIZAR_EJERCICIO:
                     cambiarFragment(mFragmentRealizarEjercicio, true);
-                    mFragmentActual = tipoFragmento;
                     break;
+                case LISTA_RUTINAS:
+                    cambiarFragment(mFragmentListaRutinas, true);
             }
 
         }
     };
 
-    private TipoFragmento mFragmentActual;
+    private boolean mFragmentInicial;
     private FragmentLogin mFragmentLogin;
     private FragmentPostRegistro mFragmentPostRegistro;
     private FragmentInicial mFragmentoInicial;
@@ -85,8 +84,9 @@ public class MainActivity extends AppCompatActivity {
     private FragmentListaEjercicios mFragmentoListaEjercicios;
     private FragmentDetalleEjercicio mFragmentoDetalleEjercicio;
     private FragmentPerfil mFragmentPerfil;
-    private FragmentHistorico mFragmentHistorico;
+    private FragmentListaHistorico mFragmentListaHistorico;
     private FragmentRealizarEjercicio mFragmentRealizarEjercicio;
+    private FragmentListaRutinas mFragmentListaRutinas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,12 +106,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public void inicializar(){
 
-        mViewModel = new ViewModelProvider(this).get(ViewModelUsuario.class);
+        mViewModelUsuario = new ViewModelProvider(this).get(ViewModelUsuario.class);
+        mViewModelRutina = new ViewModelProvider(this).get(ViewModelRutina.class);
         //Observacion de la variable que se encargara de almacenar el fragment en el cual debe encontrarse la app
-        mViewModel.getmTipoFragmento().observe(this, mTipoFragmentoObserver);
+        mViewModelUsuario.getmTipoFragmento().observe(this, mTipoFragmentoObserver);
         mContenedorGeneral = findViewById(R.id.contenedorGeneral);
 
-        mFragmentActual = null;
+        mFragmentInicial = false;
         mFragmentLogin = new FragmentLogin();
         mFragmentPostRegistro = new FragmentPostRegistro();
         mFragmentoInicial = new FragmentInicial();
@@ -119,8 +120,9 @@ public class MainActivity extends AppCompatActivity {
         mFragmentoListaEjercicios = new FragmentListaEjercicios();
         mFragmentoDetalleEjercicio = new FragmentDetalleEjercicio();
         mFragmentPerfil = new FragmentPerfil();
-        mFragmentHistorico = new FragmentHistorico();
+        mFragmentListaHistorico = new FragmentListaHistorico();
         mFragmentRealizarEjercicio = new FragmentRealizarEjercicio();
+        mFragmentListaRutinas = new FragmentListaRutinas();
 
     }
 
@@ -130,17 +132,40 @@ public class MainActivity extends AppCompatActivity {
      * Establece el fragment que debe ser el primero en mostrarse y lo carga en el fragment container.
      */
     public void fragmentInicial(){
+        if (mViewModelUsuario.usuarioActual() != null) {
 
-        if (mViewModel.usuarioActual() != null) {
-            mViewModel.usuarioExisteFirebase().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            mViewModelUsuario.usuarioExisteFirebase().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()){
                         DocumentSnapshot documento = task.getResult();
                         if (documento.exists()){
-                            cambiarFragment(mFragmentoDiasRutina, false);
+
+                            mViewModelRutina.comprobarSiExisteRutinaUsuarioActual().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()){
+                                        if (task.getResult().exists()){
+                                            if (!mFragmentInicial){
+                                                cambiarFragment(mFragmentoInicial, false);
+                                                mFragmentInicial = true;
+                                            }
+                                        }else{
+                                            if (!mFragmentInicial){
+                                                cambiarFragment(mFragmentoDiasRutina, false);
+                                                mFragmentInicial = true;
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+
+                            //cambiarFragment(mFragmentoDiasRutina, false);
                         } else {
-                            cambiarFragment(mFragmentPostRegistro, false);
+                            if (!mFragmentInicial){
+                                cambiarFragment(mFragmentPostRegistro, false);
+                                mFragmentInicial = true;
+                            }
                         }
                     }
                 }

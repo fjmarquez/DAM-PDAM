@@ -22,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 
-public class RepositorioFirebaseUsuario {
+public class RepositorioFirestoreUsuario {
 
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
@@ -32,7 +32,7 @@ public class RepositorioFirebaseUsuario {
     /**
      * Constuctor de la clase.
      */
-    public RepositorioFirebaseUsuario() {
+    public RepositorioFirestoreUsuario() {
         this.mAuth = FirebaseAuth.getInstance();
         this.mFirestoreDB = FirebaseFirestore.getInstance();
         this.mUsuariosColRef = mFirestoreDB.collection("usuarios");
@@ -72,7 +72,7 @@ public class RepositorioFirebaseUsuario {
      * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
      * correctamente o no).
      */
-    public Task añadirUsuarioFirestore(Usuario usuario){
+    public Task añadirOActualizarUsuarioFirestore(Usuario usuario){
 
         DocumentReference mUsuarioDocRef = mUsuariosColRef.document(usuarioActual().getUid());
 

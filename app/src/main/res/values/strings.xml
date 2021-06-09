@@ -45,6 +45,8 @@
     <!-- FRAGMENT DIAS -->
     <string name="guardar_rutina">Guardar</string>
     <string name="cambiar_dias_rutina">Dias</string>
+    <string name="rutina_asignada">Rutina asignada correctamente</string>
+    <string name="error_rutina_asignada">Error al asignar rutina</string>
 
     <!-- DIALOG DIAS FRAGMENT DIAS -->
     <string name="titulo_dialog_dias_semana">¿Qué dias quieres entrenar?</string>
@@ -103,6 +105,7 @@
     <!-- CARD DIAS FRAGMENT DIAS-->
     <string name="añadir_ejercicio_dia">Añadir</string>
     <string name="ver_ejercicios_dia">Mostrar</string>
+    <string name="rutina_incompleta">No ha rellenado la rutina completamente</string>
     <string name="ejercicios_dia"> ejercicios añadidos.</string>
     <string name="eleccion_dias_rutina">¡Muy bien! Ya tenemos los dias que entrenaras, ahora veamos los ejercicios.</string>
 
@@ -130,16 +133,51 @@
     <!-- FRAGMENT PERFIL -->
     <string name="imc_perfil">Su IMC es de: </string>
 
+    <!-- DIALOG CERRAR SESION FRAGMENT PERFIL -->
+    <string name="titulo_dialogo_cerrar_sesion">Cerrar sesión</string>
+    <string name="desea_cerrar_sesion">¿Desea cerrar la sesión actual?</string>
+
+
+    <!-- DIALOG GUARDAR CAMBIOS FRAGMENT PERFIL -->
+    <string name="titulo_dialogo_guardar_cambios">Guardar cambios</string>
+    <string name="desea_guardar_cambios">¿Desea guardar cambios?</string>
+    <string name="cambios_guardados_con_exito">Cambios guardados con exito</string>
+
     <!-- MENU FRAGMENT PERFIL -->
     <string name="guardar_cambios_perfil">Guardar</string>
     <string name="mas_opciones_perfil">Más opciones</string>
     <string name="cambiar_mail_perfil">Cambiar email</string>
     <string name="cerrar_sesion_perfil">Cerrar sesión</string>
     <string name="seleccionar_rutina">Seleccionar rutina</string>
+    <string name="ver_rutinas">Ver rutinas</string>
 
     <!-- FRAGMENT DETALLE EJERCICIO -->
     <string name="material_necesario">Material necesario</string>
     <string name="bandas_elasticas_necesarias">Bandas elasticas</string>
     <string name="material_no_necesario">Sin material</string>
+
+    <!-- FRAGMENT LISTA RUTINAS -->
+    <string name="eliminar_rutina">Eliminar</string>
+    <string name="editar_rutina">Editar</string>
+    <string name="dias_rutina">dias de entrenamiento.</string>
+    <string name="rutina_eliminada_correctamente">Rutina eliminada correctamente</string>
+    <string name="fallo_eliminar_rutina">No hemos conseguido eliminar la rutina</string>
+    <string name="fallo_eliminar_rutina_actual">No puedes eliminar la rutina que usas actualmente</string>
+    <string name="fallo_eliminar_unica_rutina">No puedes eliminar tu unica rutina</string>
+
+    <!-- DIALOG ELIMINAR RUTINA FRAGMENT LISTA RUTINAS -->
+    <string name="titulo_dialogo_eliminar_rutina">Eliminar rutina</string>
+    <string name="mensaje_dialogo_eliminar_rutina">¿Esta seguro de eliminar esta rutina?</string>
+    <string name="boton_eliminar_rutina">Eliminar</string>
+
+    <!-- MENU FRAGMENT LISTA RUTINAS -->
+    <string name="añadir_rutina">Añadir rutina</string>
+
+    <!-- FRAGMENT LISTA HISTORICO -->
+    <string name="mensaje_error_lista_historicos">No hemos podido obtener su historico</string>
+
+    <!-- MENU FRAGMENT LISTA HISTORICO -->
+    <string name="filtrar_historico">Filtrar historico</string>
+    <string name="limpiar_filtro_historico">Limpiar filtro historico</string>
 
 </resources>

@@ -11,11 +11,13 @@
         android:layout_height="wrap_content"
         android:text="@string/bienvenido_post_registro"
         android:textColor="@color/gris"
-        android:textSize="12dp"
+        android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="15dp">
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="2dp">
 
     </TextView>
 
@@ -24,13 +26,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="hola"
-        android:textSize="12dp"
         android:textColor="@color/gris_claro"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvNombreEjercicioSimple"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp">
+
+    </TextView>
+
+    <ImageButton
+        android:id="@+id/ibQuitarEjercicio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/blanco"
+        android:backgroundTint="@color/transparente"
+        android:src="@drawable/ic_baseline_remove_24"
+        android:tint="@color/color_principal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="15dp">
-
-    </TextView>
+        android:layout_marginRight="25dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

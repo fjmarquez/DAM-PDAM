@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvRutina"
+    android:layout_margin="7dp"
+    android:layout_gravity="fill_vertical"
+    app:strokeWidth="1.5dp"
+    app:strokeColor="@color/color_principal_transparente"
+    android:backgroundTint="@color/blanco"
+    app:cardElevation="2dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:cardCornerRadius="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="15dp">
+
+            <TextView
+                android:id="@+id/tvRutina"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Prueba"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@color/gris">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/tvDiasRutina"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dias_rutina"
+                android:textColor="@color/gris_claro"
+                android:paddingBottom="25dp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/llBotones"
+            android:orientation="vertical"
+            android:gravity="end"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditarRutina"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/editar_rutina"
+                android:textSize="11dp"
+                android:clickable="true"
+                android:backgroundTint="@color/color_principal"
+                android:textColor="@color/blanco"
+                app:icon="@drawable/ic_baseline_edit_24"
+                app:iconGravity="textEnd">
+
+            </com.google.android.material.button.MaterialButton>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEliminarRutina"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="@string/eliminar_rutina"
+                android:clickable="true"
+                android:textSize="11dp"
+                android:backgroundTint="@color/transparente"
+                android:shadowColor="@color/transparente"
+                style="?android:attr/borderlessButtonStyle"
+                android:textColor="@color/color_principal"
+                app:icon="@drawable/ic_baseline_delete_24"
+                app:iconTint="@color/color_principal"
+                app:iconGravity="textEnd">
+
+            </com.google.android.material.button.MaterialButton>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

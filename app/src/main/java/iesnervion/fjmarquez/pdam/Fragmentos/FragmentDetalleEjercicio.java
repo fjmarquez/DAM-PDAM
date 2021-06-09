@@ -94,7 +94,7 @@ public class FragmentDetalleEjercicio extends Fragment implements View.OnClickLi
         Ejercicio e = mViewModelRutina.getEjercicioSeleccionado();
 
         Glide.with(getContext()).asGif()
-                .load(Utiles.urlDrive(e.getGif()))
+                .load(e.getGif())
                 .into(mIVGifEjercicioDetalles);
         mTVNombreEjercicioDetalles.setText(e.getNombre());
         mTVDescripcionEjercicioDetalles.setText(e.getDescripcion());
@@ -104,8 +104,10 @@ public class FragmentDetalleEjercicio extends Fragment implements View.OnClickLi
             mCHDificultadEjercicioDetalles.setChipBackgroundColorResource(R.color.principiante_transparente);
         }else if (e.getDificultad() == DificultadEjercicio.INTERMEDIO){
             mCHDificultadEjercicioDetalles.setChipBackgroundColorResource(R.color.color_principal_transparente);
-        }else {
+        }else if (e.getDificultad() == DificultadEjercicio.EXPERTO){
             mCHDificultadEjercicioDetalles.setChipBackgroundColorResource(R.color.experto_transparente);
+        }else {
+            mCHDificultadEjercicioDetalles.setChipBackgroundColorResource(R.color.custom_transparente);
         }
         if (e.getMaterial()) {
             mCHMaterialEjercicioDetalles.setText(R.string.material_necesario);

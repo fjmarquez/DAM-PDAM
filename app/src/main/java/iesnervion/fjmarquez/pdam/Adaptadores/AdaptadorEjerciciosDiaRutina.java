@@ -53,13 +53,13 @@ public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<Adaptador
         Ejercicio ejercicioActual = this.listaEjercicios.get(position);
 
 
-        Glide.with(holder.mIVGIFEjercicio.getContext()).asBitmap()
-                .load(Utiles.urlDrive(ejercicioActual.getGif()))
-                .into(holder.mIVGIFEjercicio);
+        Glide.with(holder.getmIVGIFEjercicio().getContext()).asBitmap()
+                .load(ejercicioActual.getGif())
+                .into(holder.getmIVGIFEjercicio());
 
-        holder.mTVNombreEjercicio.setText(ejercicioActual.getNombre());
-        holder.mTVDificulatadEjercicio.setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
-        holder.mTVDificulatadEjercicio.setTextColor(holder.mTVDificulatadEjercicio.getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
+        holder.getmTVNombreEjercicio().setText(ejercicioActual.getNombre());
+        holder.getmTVDificulatadEjercicio().setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
+        holder.getmTVDificulatadEjercicio().setTextColor(holder.getmTVDificulatadEjercicio().getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
 
 
     }
@@ -76,6 +76,7 @@ public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<Adaptador
         private TextView mTVDificulatadEjercicio;
         private ImageButton mIBRealizarEjercicio;
 
+        /* CONSTRUCTOR */
 
         public RVEjerciciosDiaRutinaViewHolder(@NonNull View itemView, final AdaptadorEjerciciosDiaRutina.OnItemClickListener listener) {
             super(itemView);
@@ -98,6 +99,8 @@ public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<Adaptador
 
         }
 
+        /* GETTERS */
+
         public TextView getmTVNombreEjercicio() {
             return mTVNombreEjercicio;
         }
@@ -106,12 +109,30 @@ public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<Adaptador
             return mTVDificulatadEjercicio;
         }
 
+        public ImageView getmIVGIFEjercicio() {
+            return mIVGIFEjercicio;
+        }
+
+        public ImageButton getmIBRealizarEjercicio() {
+            return mIBRealizarEjercicio;
+        }
+
+        /* SETTERS */
+
         public void setmTVNombreEjercicio(TextView mTVNombreEjercicio) {
             this.mTVNombreEjercicio = mTVNombreEjercicio;
         }
 
         public void setmTVDificulatadEjercicio(TextView mTVDificulatadEjercicio) {
             this.mTVDificulatadEjercicio = mTVDificulatadEjercicio;
+        }
+
+        public void setmIVGIFEjercicio(ImageView mIVGIFEjercicio) {
+            this.mIVGIFEjercicio = mIVGIFEjercicio;
+        }
+
+        public void setmIBRealizarEjercicio(ImageButton mIBRealizarEjercicio) {
+            this.mIBRealizarEjercicio = mIBRealizarEjercicio;
         }
     }
 

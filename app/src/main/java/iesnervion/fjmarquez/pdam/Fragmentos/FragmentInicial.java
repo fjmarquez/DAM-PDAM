@@ -30,6 +30,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -39,6 +40,7 @@ import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener;
 import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorEjerciciosDiaRutina;
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
+import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
@@ -123,9 +125,34 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
         configurarCalendarioHorizontal();
         actualizarDiaActual(startDate);
         fechaEsHoy(Calendar.getInstance());
-        obtenerRutina();
+        comprobarSiExisteHistorico();
 
         return mFragmentView;
+    }
+
+
+
+    public void comprobarSiExisteHistorico(){
+
+        mViewModelRutina.obtenerHistoricosUsuarioHoy().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (DocumentSnapshot  document: task.getResult()
+                    ) {
+                        Dia mDia = document.toObject(Dia.class);
+                        mViewModelRutina.setmDiaSeleccionado(mDia);
+                        configurarRecyclerViewEjerciciosDia();
+                    }
+                }
+                if (task.getResult().isEmpty()){
+                    obtenerDatosUsuario();
+                }
+            }
+        });
+
+
+
     }
 
     public void accionesMenu(){
@@ -134,13 +161,19 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
-                switch (item.getItemId()){
-                    case R.id.historicoMenu:
-                        mViewModelUsuario.setmTipoFragmento(TipoFragmento.HISTORICO);
-                        break;
-                    case R.id.perfilMenu:
-                        mViewModelUsuario.setmTipoFragmento(TipoFragmento.PERFIL);
-                        break;
+                if (mBtnComenzar.getVisibility() == View.VISIBLE ||
+                    (mBtnComenzar.getVisibility() == View.GONE &&
+                    mBtnFinalizar.getVisibility() == View.GONE)){
+
+                    switch (item.getItemId()){
+                        case R.id.historicoMenu:
+                            mViewModelUsuario.setmTipoFragmento(TipoFragmento.HISTORICO);
+                            break;
+                        case R.id.perfilMenu:
+                            mViewModelUsuario.setmTipoFragmento(TipoFragmento.PERFIL);
+                            break;
+                    }
+
                 }
 
                 return false;
@@ -170,18 +203,23 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
         mCalendarioHorizontal.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
-                if (mViewModelRutina.getmDiaSeleccionado().getInicio() == null ||
+                if (mViewModelRutina.getmDiaSeleccionado().getFecha() == null ||
                     mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
+
                     mViewModelRutina.setmFechaSeleccionada(date);
                     actualizarDiaActual(date);
-                    fechaEsHoy(date);
-                    obtenerRutina();
-                    configurarRecyclerViewEjerciciosDia();
+
+                    if(fechaEsHoy(date)){
+                        comprobarSiExisteHistorico();
+                    }else {
+                        //obtenerRutina();
+                        obtenerDatosUsuario();
+                    }
+
+                    //configurarRecyclerViewEjerciciosDia();
                 }else {
                     mCalendarioHorizontal.goToday(false);
-                    //mCalendarioHorizontal.selectDate(Calendar.getInstance(), false);
                 }
-
 
             }
 
@@ -266,7 +304,6 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
 
         mLayoutManager = new LinearLayoutManager(getContext());
         mRVEjerciciosDiaRutina.setLayoutManager(mLayoutManager);
-        obtenerDiaSeleccionado();
         mAdaptadorEjerciciosDiaRutina = new AdaptadorEjerciciosDiaRutina(mViewModelRutina.getmDiaSeleccionado().getEjercicios());
         mRVEjerciciosDiaRutina.setAdapter(mAdaptadorEjerciciosDiaRutina);
 
@@ -274,10 +311,10 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
             @Override
             public void realizarEjercicioListener(int position) {
                 //Si el dia ha sido iniciado y no ha finalizado se podran realizar los ejercicios
-                Calendar c = mViewModelRutina.getmDiaSeleccionado().getInicio();
-                boolean b = !mViewModelRutina.getmDiaSeleccionado().getFinalizado();
+                //Date c = mViewModelRutina.getmDiaSeleccionado().getInicio();
+                //boolean b = !mViewModelRutina.getmDiaSeleccionado().getFinalizado();
 
-                if (mViewModelRutina.getmDiaSeleccionado().getInicio() != null &&
+                if (mViewModelRutina.getmDiaSeleccionado().getFecha() != null &&
                         !mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
 
                     mViewModelRutina.setmEjercicioRealizar(position);
@@ -320,11 +357,11 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
             //un boton para iniciar el dia
             if (fechaEsHoy(mViewModelRutina.getmFechaSeleccionada())){
 
-                if (mViewModelRutina.getmDiaSeleccionado().getInicio() == null && !mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
+                if (mViewModelRutina.getmDiaSeleccionado().getFecha() == null && !mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
                     mBtnComenzar.setVisibility(View.VISIBLE);
                 }else {
 
-                    if (mViewModelRutina.getmDiaSeleccionado().getInicio() != null && !mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
+                    if (mViewModelRutina.getmDiaSeleccionado().getFecha() != null && !mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
                         mBtnComenzar.setVisibility(View.GONE);
                         mBtnFinalizar.setVisibility(View.VISIBLE);
                     }else {
@@ -333,7 +370,6 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
                     }
 
                 }
-
 
             }else {
 
@@ -372,13 +408,31 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
 
     }
 
+    public void obtenerDatosUsuario(){
+
+            mViewModelUsuario.obtenerUsuarioFirestore().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful() && task.getResult().exists()){
+
+                        Usuario usuario = task.getResult().toObject(Usuario.class);
+                        mViewModelUsuario.setmUsuario(usuario);
+                        obtenerRutina();
+
+                    }
+
+                }
+            });
+
+    }
+
     /**
      * Funcion que obtiene a traves de ViewModelRutina la rutina correspondiente al usuario.
      */
     public void obtenerRutina(){
-        Rutina r = mViewModelRutina.getRutinaActual().getValue();
-        if (mViewModelRutina.getRutinaActual().getValue() == null){
-            mViewModelRutina.obtenerRutinaActualUsuario().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+
+        //if (mViewModelRutina.getRutinaActual().getValue().getDias() == null || ){
+            mViewModelRutina.obtenerRutinaActualUsuario(mViewModelUsuario.getmUsuario().getRutina()).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(Task<DocumentSnapshot> task) {
 
@@ -387,8 +441,11 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
                         DocumentSnapshot documento = task.getResult();
 
                         if (documento.exists()){
+
                             //Parseo la respuesta de Firestore a un objeto de tipo Rutina
                             mViewModelRutina.setRutinaActual(documento.toObject(Rutina.class));
+                            mViewModelRutina.getRutinaActual().getValue().setUid(documento.getId());
+                            obtenerDiaSeleccionado();
                             configurarRecyclerViewEjerciciosDia();
 
                         }
@@ -401,11 +458,12 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
 
                 }
             });
-        }else {
+        /*}else {
 
+            obtenerDiaSeleccionado();
             configurarRecyclerViewEjerciciosDia();
 
-        }
+        }*/
 
     }
 
@@ -415,10 +473,17 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
     public void iniciarDia(){
 
         //Guardo la fecha en la que inicia el dia, oculto el boton de iniciar dia y muestro el boton de finalizar dia
-        mViewModelRutina.getmDiaSeleccionado().setInicio(Calendar.getInstance());
-        mBtnComenzar.setVisibility(View.GONE);
-        mBtnFinalizar.setVisibility(View.VISIBLE);
-        Snackbar.make(getView(), R.string.dia_iniciado, Snackbar.LENGTH_LONG).show();
+        String inicio = DateFormat.format("dd-MM-yyyy", Calendar.getInstance()).toString();
+        mViewModelRutina.getmDiaSeleccionado().setFecha(inicio);
+        mViewModelRutina.getmDiaSeleccionado().setRutina(mViewModelRutina.getRutinaActual().getValue().getUid());
+        mViewModelRutina.crearHistoricoDia().addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(Task task) {
+                mBtnComenzar.setVisibility(View.GONE);
+                mBtnFinalizar.setVisibility(View.VISIBLE);
+                Snackbar.make(getView(), R.string.dia_iniciado, Snackbar.LENGTH_LONG).show();
+            }
+        });
 
     }
 
@@ -426,11 +491,18 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
      * Funcion que lleva a cabo las acciones necesarias para finalizar el dia actual
      */
     public void finalizarDia(){
-        //Guardo la fecha en la que finaliza el dia y oculto el boton de finalizar dia
-        mViewModelRutina.getmDiaSeleccionado().setFinalizacion(Calendar.getInstance());
+
         mViewModelRutina.getmDiaSeleccionado().setFinalizado(true);
-        mBtnFinalizar.setVisibility(View.GONE);
-        Snackbar.make(getView(), R.string.dia_finalizado, Snackbar.LENGTH_LONG).show();
+        mViewModelRutina.actualizarRutinaActualUsuario().addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(Task task) {
+                if (task.isSuccessful()){
+                    mBtnFinalizar.setVisibility(View.GONE);
+                }else {
+                    Snackbar.make(getView(), R.string.dia_finalizado, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
 
     }
 
@@ -451,12 +523,11 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
                     .setPositiveButton(getText(R.string.boton_aceptar_nombre_rutina), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            finalizarDia();
                         }
                     }).setNegativeButton(getText(R.string.boton_cancelar_nombre_rutina), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            mAlertDialogTerminarRutina.dismiss();
+
                         }
                     });
 

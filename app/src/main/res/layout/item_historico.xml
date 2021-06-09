@@ -1,0 +1,88 @@
+<com.google.android.material.card.MaterialCardView xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cvHistorico"
+    android:layout_margin="7dp"
+    android:layout_gravity="fill_vertical"
+    app:strokeWidth="1.5dp"
+    app:strokeColor="@color/color_principal_transparente"
+    android:backgroundTint="@color/blanco"
+    app:cardElevation="2dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:cardCornerRadius="5dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/llTextoHistorico"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginLeft="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/tvDiaHistorico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Prueba"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="@color/gris">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/tvNumeroEjerciciosHistorico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ejercicios_dia"
+                android:textColor="@color/gris_claro">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnVerEjerciciosHistorico"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/transparente"
+            android:clickable="true"
+            android:shadowColor="@color/transparente"
+            android:text="@string/ver_ejercicios_dia"
+            android:textColor="@color/color_principal"
+            android:textSize="11dp"
+            app:icon="@drawable/ic_round_expand_more_24"
+            app:iconGravity="textEnd"
+            app:iconTint="@color/color_principal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </com.google.android.material.button.MaterialButton>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvEjerciciosSimpleHistorico"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/llTextoHistorico"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

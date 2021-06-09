@@ -26,7 +26,7 @@ import iesnervion.fjmarquez.pdam.Utiles.Utiles;
  */
 public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasViewHolder>{
 
-    private ArrayList<Dia> listaDias;
+    private static ArrayList<Dia> listaDias;
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener{
@@ -71,13 +71,25 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
     public void onBindViewHolder(@NonNull AdaptadorDias.RVDiasViewHolder holder, int position) {
 
         Dia diaActual = this.listaDias.get(position);
-        holder.tvDia.setText(Utiles.capitalizar(diaActual.getDia().name()));
-        holder.tvNumeroEjercicios.setText(diaActual.getEjercicios().size() + " ejercicios añadidos");
+        holder.getTvDia().setText(Utiles.capitalizar(diaActual.getDia().name()));
+        holder.getTvNumeroEjercicios().setText(diaActual.getEjercicios().size() + " ejercicios añadidos");
 
         AdaptadorEjerciciosSimple adaptadorEjerciciosSimple = new AdaptadorEjerciciosSimple(diaActual.getEjercicios());
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(holder.rvEjerciciosSimple.getContext());
-        holder.rvEjerciciosSimple.setLayoutManager(linearLayoutManager);
-        holder.rvEjerciciosSimple.setAdapter(adaptadorEjerciciosSimple);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(holder.getRvEjerciciosSimple().getContext());
+        holder.getRvEjerciciosSimple().setLayoutManager(linearLayoutManager);
+        holder.getRvEjerciciosSimple().setAdapter(adaptadorEjerciciosSimple);
+
+        adaptadorEjerciciosSimple.setOnItemClickListener(new AdaptadorEjerciciosSimple.OnItemClickListener() {
+            @Override
+            public void quitarListener(int position) {
+                diaActual.getEjercicios().remove(position);
+                adaptadorEjerciciosSimple.notifyDataSetChanged();
+                notifyDataSetChanged();
+                if (diaActual.getEjercicios().size() == 0){
+                    holder.getRvEjerciciosSimple().setVisibility(View.GONE);
+                }
+            }
+        });
 
     }
 
@@ -88,7 +100,6 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
 
     public static class RVDiasViewHolder extends RecyclerView.ViewHolder {
 
-        /* ATRIBUTOS */
         private TextView tvDia;
         private TextView tvNumeroEjercicios;
         private Button btnAñadir;
@@ -96,6 +107,7 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
         private RecyclerView rvEjerciciosSimple;
 
         /* CONSTRUCTOR */
+
         public RVDiasViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
 
@@ -106,18 +118,21 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
             btnMostrar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(rvEjerciciosSimple.getVisibility() == View.GONE){
-                        rvEjerciciosSimple.setVisibility(View.VISIBLE);
-                    }else{
-                        rvEjerciciosSimple.setVisibility(View.GONE);
-                    }
+                    if (listaDias.get(getAdapterPosition()).getEjercicios().size() != 0){
+                        if(rvEjerciciosSimple.getVisibility() == View.GONE){
+                            rvEjerciciosSimple.setVisibility(View.VISIBLE);
+                        }else{
+                            rvEjerciciosSimple.setVisibility(View.GONE);
+                        }
 
-                    if(listener != null){
-                        int postition = getAdapterPosition();
-                        if (postition != RecyclerView.NO_POSITION){
-                            listener.mostrarListener(postition);
+                        if(listener != null){
+                            int postition = getAdapterPosition();
+                            if (postition != RecyclerView.NO_POSITION){
+                                listener.mostrarListener(postition);
+                            }
                         }
                     }
+
                 }
             });
             btnAñadir = itemView.findViewById(R.id.btnAñadirEjercicioDia);
@@ -138,6 +153,7 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
         }
 
         /* GETTERS */
+
         public TextView getTvDia() {
             return tvDia;
         }
@@ -154,7 +170,12 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
             return btnMostrar;
         }
 
+        public RecyclerView getRvEjerciciosSimple() {
+            return rvEjerciciosSimple;
+        }
+
         /* SETTERS */
+
         public void setTvDia(TextView tvDia) {
             this.tvDia = tvDia;
         }
@@ -169,6 +190,10 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
 
         public void setBtnMostrar(Button btnMostrar) {
             this.btnMostrar = btnMostrar;
+        }
+
+        public void setRvEjerciciosSimple(RecyclerView rvEjerciciosSimple) {
+            this.rvEjerciciosSimple = rvEjerciciosSimple;
         }
     }
 

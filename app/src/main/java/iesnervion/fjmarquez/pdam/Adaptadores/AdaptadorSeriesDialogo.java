@@ -50,8 +50,8 @@ public class AdaptadorSeriesDialogo extends RecyclerView.Adapter<AdaptadorSeries
 
         Serie serieActual = this.listaSeries.get(position);
 
-        holder.mTVNombreSerie.setText("Serie " + (position + 1));
-        holder.mETRepeticionesSerie.getEditText().setText(""+serieActual.getRepeticiones());
+        holder.getmTVNombreSerie().setText("Serie " + (position + 1));
+        holder.getmETRepeticionesSerie().getEditText().setText(""+serieActual.getRepeticiones());
 
     }
 
@@ -65,6 +65,7 @@ public class AdaptadorSeriesDialogo extends RecyclerView.Adapter<AdaptadorSeries
         private TextView mTVNombreSerie;
         private TextInputLayout mETRepeticionesSerie;
 
+        /* CONSTRUCTOR */
 
         public RVSeriesViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -103,7 +104,25 @@ public class AdaptadorSeriesDialogo extends RecyclerView.Adapter<AdaptadorSeries
 
         }
 
+        /* GETTERS */
 
+        public TextView getmTVNombreSerie() {
+            return mTVNombreSerie;
+        }
+
+        public TextInputLayout getmETRepeticionesSerie() {
+            return mETRepeticionesSerie;
+        }
+
+        /* SETTERS */
+
+        public void setmTVNombreSerie(TextView mTVNombreSerie) {
+            this.mTVNombreSerie = mTVNombreSerie;
+        }
+
+        public void setmETRepeticionesSerie(TextInputLayout mETRepeticionesSerie) {
+            this.mETRepeticionesSerie = mETRepeticionesSerie;
+        }
     }
 
 }

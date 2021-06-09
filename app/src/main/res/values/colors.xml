@@ -22,4 +22,5 @@
     <color name="experto">#E60D2E</color>
     <color name="experto_transparente">#74E60D2E</color>
     <color name="custom">#0D6FE6</color>
+    <color name="custom_transparente">#740D6FE6</color>
 </resources>

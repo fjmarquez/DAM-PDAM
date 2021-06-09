@@ -11,26 +11,32 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import iesnervion.fjmarquez.pdam.Entidades.Usuario;
-import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirebaseUsuario;
+import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreUsuario;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 
 
 public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     /* ATRIBUTOS */
-    private RepositorioFirebaseUsuario mRepositorioUsuarios;
+    private RepositorioFirestoreUsuario mRepositorioUsuarios;
     private MutableLiveData<TipoFragmento> mTipoFragmento = new MutableLiveData<TipoFragmento>();
+    private TipoFragmento mUltimoFragmento;
     private Usuario mUsuario;
 
     /* SETTERS */
     public void setmTipoFragmento(TipoFragmento mTipoFragmento) {
 
         this.mTipoFragmento.setValue(mTipoFragmento);
+        this.mUltimoFragmento = null;
 
     }
 
     public void setmUsuario(Usuario mUsuario) {
         this.mUsuario = mUsuario;
+    }
+
+    public void setmUltimoFragmento(TipoFragmento mUltimoFragmento) {
+        this.mUltimoFragmento = mUltimoFragmento;
     }
 
     /* GETTERS */
@@ -44,9 +50,13 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
         return mUsuario;
     }
 
+    public TipoFragmento getmUltimoFragmento() {
+        return mUltimoFragmento;
+    }
+
     /* CONSTRUCTOR */
     public ViewModelUsuario() {
-        mRepositorioUsuarios = new RepositorioFirebaseUsuario();
+        mRepositorioUsuarios = new RepositorioFirestoreUsuario();
     }
 
     /* FUNCIONES */
@@ -69,9 +79,9 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     }
 
-    public Task añadirUsuarioFirestore(Usuario usuario){
+    public Task añadirOActualizarUsuarioFirestore(Usuario usuario){
 
-        return mRepositorioUsuarios.añadirUsuarioFirestore(usuario);
+        return mRepositorioUsuarios.añadirOActualizarUsuarioFirestore(usuario);
 
     }
 
@@ -144,6 +154,12 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
      */
     public Task<Void> mandarMailRecuperarContraseña(String Email) {
         return mRepositorioUsuarios.mandarMailRecuperarContraseña(Email);
+    }
+
+    public void cerrarSesionActual(){
+
+        mRepositorioUsuarios.cerrarSesionActual();
+
     }
 
 }

@@ -11,11 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
 import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.R;
+import iesnervion.fjmarquez.pdam.Utiles.GrupoMuscular;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 
 /**
@@ -56,14 +58,14 @@ public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicio
 
         Ejercicio ejercicioActual = this.listaEjercicios.get(position);
 
+        Glide.with(holder.getmIVGIFEjercicio().getContext()).asBitmap()
+                .load(ejercicioActual.getGif())
+                //.apply(new RequestOptions().override(200, 200))
+                                .into(holder.getmIVGIFEjercicio());
 
-        Glide.with(holder.mIVGIFEjercicio.getContext()).asBitmap()
-                .load(Utiles.urlDrive(ejercicioActual.getGif()))
-                                .into(holder.mIVGIFEjercicio);
-
-        holder.mTVNombreEjercicio.setText(ejercicioActual.getNombre());
-        holder.mTVDificulatadEjercicio.setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
-        holder.mTVDificulatadEjercicio.setTextColor(holder.mTVDificulatadEjercicio.getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
+        holder.getmTVNombreEjercicio().setText(ejercicioActual.getNombre());
+        holder.getmTVDificulatadEjercicio().setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
+        holder.getmTVDificulatadEjercicio().setTextColor(holder.getmTVDificulatadEjercicio().getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
 
 
     }
@@ -80,6 +82,7 @@ public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicio
         private TextView mTVDificulatadEjercicio;
         private ImageButton mIBAñadirEjercicio;
 
+        /* CONSTRUCTOR */
 
         public RVEjerciciosViewHolder(@NonNull View itemView, final AdaptadorEjercicios.OnItemClickListener listener) {
             super(itemView);
@@ -114,6 +117,8 @@ public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicio
 
         }
 
+        /* GETTERS */
+
         public TextView getmTVNombreEjercicio() {
             return mTVNombreEjercicio;
         }
@@ -122,6 +127,16 @@ public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicio
             return mTVDificulatadEjercicio;
         }
 
+        public ImageView getmIVGIFEjercicio() {
+            return mIVGIFEjercicio;
+        }
+
+        public ImageButton getmIBAñadirEjercicio() {
+            return mIBAñadirEjercicio;
+        }
+
+        /* SETTERS */
+
         public void setmTVNombreEjercicio(TextView mTVNombreEjercicio) {
             this.mTVNombreEjercicio = mTVNombreEjercicio;
         }
@@ -129,6 +144,15 @@ public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicio
         public void setmTVDificulatadEjercicio(TextView mTVDificulatadEjercicio) {
             this.mTVDificulatadEjercicio = mTVDificulatadEjercicio;
         }
+
+        public void setmIVGIFEjercicio(ImageView mIVGIFEjercicio) {
+            this.mIVGIFEjercicio = mIVGIFEjercicio;
+        }
+
+        public void setmIBAñadirEjercicio(ImageButton mIBAñadirEjercicio) {
+            this.mIBAñadirEjercicio = mIBAñadirEjercicio;
+        }
+
     }
 
 }

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:minHeight="1000dp"
     tools:context=".Fragmentos.FragmentPerfil"
     android:orientation="vertical"
     android:gravity="fill_vertical">
@@ -20,7 +19,9 @@
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/top_bar_perfil">
+            app:menu="@menu/top_bar_perfil"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+            app:navigationIconTint="@color/blanco">
 
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -50,7 +51,7 @@
             android:id="@+id/tvEmailPerfil"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
             android:textColor="@color/gris_muy_claro"
@@ -62,7 +63,7 @@
             android:id="@+id/tvIMCPerfil"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
@@ -107,6 +108,7 @@
             android:inputType="text" />
 
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

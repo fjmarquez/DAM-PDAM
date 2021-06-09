@@ -1,9 +1,6 @@
 package iesnervion.fjmarquez.pdam.Entidades;
 
-import com.google.type.DateTime;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 
@@ -16,17 +13,21 @@ public class Dia {
     /* ATRIBUTOS */
     private DiaSemana Dia;
     private ArrayList<Ejercicio> Ejercicios;
-    private Calendar Inicio;
-    private Calendar Finalizacion;
+    private String Fecha;
     private Boolean Finalizado;
+    private String Usuario;
+    private String Rutina;
+    private String Uid;
 
     /* CONSTRUCTORES */
-    public Dia(DiaSemana dia, ArrayList<Ejercicio> ejercicios) {
+    public Dia(DiaSemana dia, ArrayList<Ejercicio> ejercicios, String usuario, String rutina) {
         Dia = dia;
         Ejercicios = ejercicios;
-        Inicio = null;
-        Finalizacion = null;
+        Fecha = null;
         Finalizado = false;
+        Usuario = usuario;
+        Rutina = rutina;
+        Uid = null;
     }
 
     public Dia(){
@@ -42,16 +43,24 @@ public class Dia {
         return Ejercicios;
     }
 
-    public Calendar getInicio() {
-        return Inicio;
-    }
-
-    public Calendar getFinalizacion() {
-        return Finalizacion;
+    public String getFecha() {
+        return Fecha;
     }
 
     public Boolean getFinalizado() {
         return Finalizado;
+    }
+
+    public String getUsuario() {
+        return Usuario;
+    }
+
+    public String getRutina() {
+        return Rutina;
+    }
+
+    public String getUid() {
+        return Uid;
     }
 
     /* SETTERS */
@@ -63,17 +72,23 @@ public class Dia {
         Ejercicios = ejercicios;
     }
 
-    public void setInicio(Calendar inicio) {
-        Inicio = inicio;
-    }
-
-    public void setFinalizacion(Calendar finalizacion) {
-        Finalizacion = finalizacion;
-        //Finalizado = true;
+    public void setFecha(String fecha) {
+        Fecha = fecha;
     }
 
     public void setFinalizado(Boolean finalizado) {
         Finalizado = finalizado;
     }
 
+    public void setUsuario(String usuario) {
+        Usuario = usuario;
+    }
+
+    public void setRutina(String rutina) {
+        Rutina = rutina;
+    }
+
+    public void setUid(String uid) {
+        Uid = uid;
+    }
 }

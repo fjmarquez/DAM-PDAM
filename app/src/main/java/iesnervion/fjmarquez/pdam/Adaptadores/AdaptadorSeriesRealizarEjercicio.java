@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,11 +53,11 @@ public class AdaptadorSeriesRealizarEjercicio extends RecyclerView.Adapter<Adapt
 
         Serie serieActual = this.listaSeries.get(position);
 
-        holder.mTVNombreSerieRealizarEjercicio.setText("Serie " + (position + 1));
-        holder.mETRepeticionesSerieRealizarEjercicio.getEditText().setText(""+serieActual.getRepeticiones());
-        holder.mTVRepeticionesSerieRealizarEjercicio.setText(""+serieActual.getRepeticiones()+ " Reps.");
-        holder.mETKilosSerieRealizarEjercicio.getEditText().setText(""+serieActual.getPeso());
-        holder.mTVKilosSerieRealizarEjercicio.setText(""+serieActual.getPeso()+" Kgs.");
+        holder.getmTVNombreSerieRealizarEjercicio().setText("Serie " + (position + 1));
+        holder.getmETRepeticionesSerieRealizarEjercicio().getEditText().setText(""+serieActual.getRepeticiones());
+        holder.getmTVRepeticionesSerieRealizarEjercicio().setText(""+serieActual.getRepeticiones()+ " Reps.");
+        holder.getmETKilosSerieRealizarEjercicio().getEditText().setText(""+serieActual.getPeso());
+        holder.getmTVKilosSerieRealizarEjercicio().setText(""+serieActual.getPeso()+" Kgs.");
 
     }
 
@@ -74,7 +75,10 @@ public class AdaptadorSeriesRealizarEjercicio extends RecyclerView.Adapter<Adapt
         private TextView mTVKilosSerieRealizarEjercicio;
         private ImageButton mIBConfirmarSerieRealizarEjercicio;
         private ImageButton mIBEditarSerieRealizarEjercicio;
+        private LinearLayout mLLET;
+        private LinearLayout mLLTV;
 
+        /* CONSTRUCTOR */
 
         public RVSeriesRealizarEjercicioViewHolder(@NonNull View itemView, final AdaptadorSeriesRealizarEjercicio.OnItemClickListener listener) {
             super(itemView);
@@ -86,14 +90,14 @@ public class AdaptadorSeriesRealizarEjercicio extends RecyclerView.Adapter<Adapt
             mTVKilosSerieRealizarEjercicio = itemView.findViewById(R.id.tvKgsRealizarEjercicio);
             mIBConfirmarSerieRealizarEjercicio = itemView.findViewById(R.id.ibConfirmarSerieRealizarEjercicio);
             mIBEditarSerieRealizarEjercicio = itemView.findViewById(R.id.ibEditarSerieRealizarEjercicio);
+            mLLET = itemView.findViewById(R.id.lletRepsKgs);
+            mLLTV = itemView.findViewById(R.id.lltvRepsKgs);
 
             mIBConfirmarSerieRealizarEjercicio.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mETRepeticionesSerieRealizarEjercicio.setVisibility(View.INVISIBLE);
-                    mTVRepeticionesSerieRealizarEjercicio.setVisibility(View.VISIBLE);
-                    mETKilosSerieRealizarEjercicio.setVisibility(View.INVISIBLE);
-                    mTVKilosSerieRealizarEjercicio.setVisibility(View.VISIBLE);
+                    mLLET.setVisibility(View.GONE);
+                    mLLTV.setVisibility(View.VISIBLE);
                     mIBConfirmarSerieRealizarEjercicio.setVisibility(View.GONE);
                     mIBEditarSerieRealizarEjercicio.setVisibility(View.VISIBLE);
                     if(listener != null){
@@ -108,10 +112,8 @@ public class AdaptadorSeriesRealizarEjercicio extends RecyclerView.Adapter<Adapt
             mIBEditarSerieRealizarEjercicio.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mETRepeticionesSerieRealizarEjercicio.setVisibility(View.VISIBLE);
-                    mTVRepeticionesSerieRealizarEjercicio.setVisibility(View.GONE);
-                    mETKilosSerieRealizarEjercicio.setVisibility(View.VISIBLE);
-                    mTVKilosSerieRealizarEjercicio.setVisibility(View.GONE);
+                    mLLET.setVisibility(View.VISIBLE);
+                    mLLTV.setVisibility(View.GONE);
                     mIBConfirmarSerieRealizarEjercicio.setVisibility(View.VISIBLE);
                     mIBEditarSerieRealizarEjercicio.setVisibility(View.GONE);
                     if(listener != null){
@@ -187,7 +189,81 @@ public class AdaptadorSeriesRealizarEjercicio extends RecyclerView.Adapter<Adapt
 
         }
 
+        /* GETTERS */
 
+        public TextView getmTVNombreSerieRealizarEjercicio() {
+            return mTVNombreSerieRealizarEjercicio;
+        }
+
+        public TextInputLayout getmETRepeticionesSerieRealizarEjercicio() {
+            return mETRepeticionesSerieRealizarEjercicio;
+        }
+
+        public TextView getmTVRepeticionesSerieRealizarEjercicio() {
+            return mTVRepeticionesSerieRealizarEjercicio;
+        }
+
+        public TextInputLayout getmETKilosSerieRealizarEjercicio() {
+            return mETKilosSerieRealizarEjercicio;
+        }
+
+        public TextView getmTVKilosSerieRealizarEjercicio() {
+            return mTVKilosSerieRealizarEjercicio;
+        }
+
+        public ImageButton getmIBConfirmarSerieRealizarEjercicio() {
+            return mIBConfirmarSerieRealizarEjercicio;
+        }
+
+        public ImageButton getmIBEditarSerieRealizarEjercicio() {
+            return mIBEditarSerieRealizarEjercicio;
+        }
+
+        public LinearLayout getmLLET() {
+            return mLLET;
+        }
+
+        public LinearLayout getmLLTV() {
+            return mLLTV;
+        }
+
+        /* SETTERS */
+
+        public void setmTVNombreSerieRealizarEjercicio(TextView mTVNombreSerieRealizarEjercicio) {
+            this.mTVNombreSerieRealizarEjercicio = mTVNombreSerieRealizarEjercicio;
+        }
+
+        public void setmETRepeticionesSerieRealizarEjercicio(TextInputLayout mETRepeticionesSerieRealizarEjercicio) {
+            this.mETRepeticionesSerieRealizarEjercicio = mETRepeticionesSerieRealizarEjercicio;
+        }
+
+        public void setmTVRepeticionesSerieRealizarEjercicio(TextView mTVRepeticionesSerieRealizarEjercicio) {
+            this.mTVRepeticionesSerieRealizarEjercicio = mTVRepeticionesSerieRealizarEjercicio;
+        }
+
+        public void setmETKilosSerieRealizarEjercicio(TextInputLayout mETKilosSerieRealizarEjercicio) {
+            this.mETKilosSerieRealizarEjercicio = mETKilosSerieRealizarEjercicio;
+        }
+
+        public void setmTVKilosSerieRealizarEjercicio(TextView mTVKilosSerieRealizarEjercicio) {
+            this.mTVKilosSerieRealizarEjercicio = mTVKilosSerieRealizarEjercicio;
+        }
+
+        public void setmIBConfirmarSerieRealizarEjercicio(ImageButton mIBConfirmarSerieRealizarEjercicio) {
+            this.mIBConfirmarSerieRealizarEjercicio = mIBConfirmarSerieRealizarEjercicio;
+        }
+
+        public void setmIBEditarSerieRealizarEjercicio(ImageButton mIBEditarSerieRealizarEjercicio) {
+            this.mIBEditarSerieRealizarEjercicio = mIBEditarSerieRealizarEjercicio;
+        }
+
+        public void setmLLET(LinearLayout mLLET) {
+            this.mLLET = mLLET;
+        }
+
+        public void setmLLTV(LinearLayout mLLTV) {
+            this.mLLTV = mLLTV;
+        }
     }
 
 }

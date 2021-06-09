@@ -20,15 +20,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
 import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorDias;
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
+import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelEjercicios;
 
@@ -65,8 +69,9 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     private View mDialogDiasView;
     private View mDialogNombreRutinaView;
 
-    private ViewModelEjercicios mViewModelRutina;
-    private ViewModelUsuario mViewModelLogin;
+    private ViewModelEjercicios mViewModelEjercicios;
+    private ViewModelRutina mViewModelRutina;
+    private ViewModelUsuario mViewModelUsuario;
 
     public FragmentDiasRutina() {
 
@@ -83,8 +88,9 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelEjercicios.class);
-        mViewModelLogin = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
+        mViewModelEjercicios = new ViewModelProvider(getActivity()).get(ViewModelEjercicios.class);
+        mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
+        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelRutina.class);
 
     }
 
@@ -116,7 +122,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
         mRVDiasSeleccionados = mFragmentView.findViewById(R.id.rvDias);
         mRVDiasSeleccionados.setHasFixedSize(true);
 
-        if (mViewModelRutina.getDiasRutina().getValue() == null || mViewModelRutina.getDiasRutina().getValue().size() == 0) {
+        if (mViewModelEjercicios.getDiasRutina().getValue() == null || mViewModelEjercicios.getDiasRutina().getValue().getDias().size() == 0) {
             mostrarDialogDias();
         } else {
             rellenarRecyclerViewDias();
@@ -135,8 +141,14 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
                 break;
             case R.id.btnGuardarRutina:
                 if(comprobarRutinaAntesGuardar()){
-                    mostrarDialogNombreRutina();
-                    //guardarRutina();
+                    if(mViewModelEjercicios.getDiasRutina().getValue().getUid() != null){
+                        mNombreRutina = mViewModelEjercicios.getDiasRutina().getValue().getNombre();
+                        guardarRutina(mViewModelEjercicios.getDiasRutina().getValue().getUid());
+                    }else{
+                        mostrarDialogNombreRutina();
+                    }
+                }else{
+                    Snackbar.make(getView(), getText(R.string.rutina_incompleta), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -158,12 +170,11 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
                         }
                     }).setNegativeButton(getText(R.string.boton_cancelar_nombre_rutina), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
 
-                }
-            });
-
+                        }
+                    });
 
             mAlertDialogNombreRutina = builder.create();
             mAlertDialogNombreRutina.show();
@@ -174,8 +185,10 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
                 @Override
                 public void onClick(View v) {
                     if (comprobarNombreRutina()) {
-                        recopilarNombreRutina();
-                        guardarRutina();
+                        if (mViewModelEjercicios.getDiasRutina().getValue().getUid() == null){
+                            recopilarNombreRutina();
+                        }
+                        comprobarRutinasExistentes();
                         mAlertDialogNombreRutina.dismiss();
                     }
                 }
@@ -224,21 +237,95 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
     }
 
+    public void comprobarRutinasExistentes(){
+
+        mViewModelRutina.obtenerListaRutinasUsuario().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(Task<QuerySnapshot> task) {
+                String uid = null;
+                if (task.isSuccessful()){
+                    if (task.getResult().getDocuments().size() == 0){
+                        uid = mViewModelUsuario.usuarioActual().getUid();
+                    }
+
+                    guardarRutina(uid);
+
+                }
+
+            }
+        });
+
+    }
+
     /**
      * Almacena en Firestore la rutina creada por el usuario.
      */
-    public void guardarRutina(){
-        mViewModelRutina.guardarNuevaRutinaFirestore(new Rutina(null, mNombreRutina, mViewModelRutina.getDiasRutina().getValue())).addOnCompleteListener(new OnCompleteListener() {
+    public void guardarRutina(String uid){
+
+        mViewModelEjercicios.guardarNuevaRutinaFirestore(new Rutina(uid, mNombreRutina, mViewModelEjercicios.getDiasRutina().getValue().getDias(), mViewModelUsuario.usuarioActual().getUid())).addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(Task task) {
                 if(task.isSuccessful()){
-                    //Snackbar.make(getView(), R.string.guardado_exito, Snackbar.LENGTH_SHORT).show();
-                    mViewModelLogin.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                    if (uid != null){
+                        obtenerUsuarioRutinaActual(uid);
+                    }else{
+                        mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                    }
+                    Snackbar.make(getView(), R.string.guardado_exito, Snackbar.LENGTH_SHORT).show();
                 }else {
                     //fallo/error al guardar
-                    //Snackbar.make(getView(), R.string.guardado_fallo, Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), R.string.guardado_fallo, Snackbar.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+
+    }
+
+    public void obtenerUsuarioRutinaActual(String uidRutina){
+
+        if (mViewModelRutina.getRutinaActual().getValue().getUid() == null){
+            if(mViewModelUsuario.getmUsuario() == null){
+
+                mViewModelUsuario.obtenerUsuarioFirestore().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful() && task.getResult().exists()){
+
+                            Usuario usuario = task.getResult().toObject(Usuario.class);
+                            usuario.setRutina(uidRutina); //id de la nueva rutina creada
+                            mViewModelUsuario.setmUsuario(usuario);
+                            actualizarUsuarioConRutina();
+
+                        }
+
+                    }
+                });
+
+            }else{
+
+                mViewModelUsuario.getmUsuario().setRutina(uidRutina);
+                actualizarUsuarioConRutina();
+
+            }
+        }else {
+            mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+        }
+
+
+    }
+
+    public void actualizarUsuarioConRutina(){
+
+        mViewModelUsuario.añadirOActualizarUsuarioFirestore(mViewModelUsuario.getmUsuario()).addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(Task task) {
+                if (task.isSuccessful()){
+                    Snackbar.make(getView(), R.string.rutina_asignada, Snackbar.LENGTH_SHORT).show();
+                    mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                }else{
+                    Snackbar.make(getView(), R.string.error_rutina_asignada, Snackbar.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -253,7 +340,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
         Boolean respuesta = true;
 
         for (Dia dia:
-             mViewModelRutina.getDiasRutina().getValue()) {
+             mViewModelEjercicios.getDiasRutina().getValue().getDias()) {
 
             if(dia.getEjercicios().size() == 0){
                 respuesta = false;
@@ -291,7 +378,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
             mAlertDialogDias.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mViewModelRutina.getDiasRutina().setValue(new ArrayList<>());
+                    mViewModelEjercicios.getDiasRutina().getValue().setDias(new ArrayList<>());
 
                     if (recopilarCheckBoxesDias()) {
                         rellenarRecyclerViewDias();
@@ -318,7 +405,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     public void rellenarRecyclerViewDias(){
 
         mLayoutManager =  new LinearLayoutManager(getActivity());
-        mAdaptadorDias = new AdaptadorDias(mViewModelRutina.getDiasRutina().getValue());
+        mAdaptadorDias = new AdaptadorDias(mViewModelEjercicios.getDiasRutina().getValue().getDias());
         mRVDiasSeleccionados.setLayoutManager(mLayoutManager);
         mRVDiasSeleccionados.setAdapter(mAdaptadorDias);
 
@@ -327,8 +414,8 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
         mAdaptadorDias.setOnItemClickListener(new AdaptadorDias.OnItemClickListener() {
             @Override
             public void añadirListener(int position) {
-                mViewModelRutina.setDiaSemanaSeleccionado(position);
-                mViewModelLogin.setmTipoFragmento(TipoFragmento.EJERCICIOS);
+                mViewModelEjercicios.setDiaSemanaSeleccionado(position);
+                mViewModelUsuario.setmTipoFragmento(TipoFragmento.EJERCICIOS);
             }
 
             @Override
@@ -347,30 +434,31 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     public boolean recopilarCheckBoxesDias(){
 
         boolean respuesta = false;
+        String usuario = mViewModelUsuario.usuarioActual().getUid();
 
         if(mCBLunes.isChecked()){
-            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.LUNES, new ArrayList<>()));
+            mViewModelEjercicios.getDiasRutina().getValue().getDias().add(new Dia(DiaSemana.LUNES, new ArrayList<>(), usuario, null));
         }
         if(mCBMartes.isChecked()){
-            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.MARTES, new ArrayList<>()));
+            mViewModelEjercicios.getDiasRutina().getValue().getDias().add(new Dia(DiaSemana.MARTES, new ArrayList<>(), usuario, null));
         }
         if(mCBMiercoles.isChecked()){
-            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.MIERCOLES, new ArrayList<>()));
+            mViewModelEjercicios.getDiasRutina().getValue().getDias().add(new Dia(DiaSemana.MIERCOLES, new ArrayList<>(), usuario, null));
         }
         if(mCBJueves.isChecked()){
-            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.JUEVES, new ArrayList<>()));
+            mViewModelEjercicios.getDiasRutina().getValue().getDias().add(new Dia(DiaSemana.JUEVES, new ArrayList<>(), usuario, null));
         }
         if(mCBViernes.isChecked()){
-            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.VIERNES, new ArrayList<>()));
+            mViewModelEjercicios.getDiasRutina().getValue().getDias().add(new Dia(DiaSemana.VIERNES, new ArrayList<>(), usuario, null));
         }
         if(mCBSabado.isChecked()){
-            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.SABADO, new ArrayList<>()));
+            mViewModelEjercicios.getDiasRutina().getValue().getDias().add(new Dia(DiaSemana.SABADO, new ArrayList<>(), usuario, null));
         }
         if(mCBDomingo.isChecked()){
-            mViewModelRutina.getDiasRutina().getValue().add(new Dia(DiaSemana.DOMINGO, new ArrayList<>()));
+            mViewModelEjercicios.getDiasRutina().getValue().getDias().add(new Dia(DiaSemana.DOMINGO, new ArrayList<>(), usuario, null));
         }
 
-        if(mViewModelRutina.getDiasRutina().getValue().size() > 0){
+        if(mViewModelEjercicios.getDiasRutina().getValue().getDias().size() > 0){
             respuesta = true;
         }
 

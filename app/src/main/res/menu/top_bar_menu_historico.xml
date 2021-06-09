@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/limpiarFiltroHistorico"
+        android:icon="@drawable/ic_baseline_cleaning_services_24"
+        android:title="@string/limpiar_filtro_historico"
+        android:contentDescription="@string/limpiar_filtro_historico"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/filtrarHistorico"
+        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:title="@string/filtrar_historico"
+        android:contentDescription="@string/filtrar_historico"
+        app:showAsAction="ifRoom" />
+
+</menu>

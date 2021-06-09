@@ -13,12 +13,14 @@ public class Rutina {
     private String Uid;
     private String Nombre;
     private ArrayList<Dia> Dias;
+    private String Usuario;
 
     /* CONSTRUCTORES */
-    public Rutina(String uid, String nombre, ArrayList<Dia> dias) {
+    public Rutina(String uid, String nombre, ArrayList<Dia> dias, String usuario) {
         Uid = uid;
         Nombre = nombre;
         Dias = dias;
+        Usuario = usuario;
     }
 
     public Rutina(){
@@ -38,6 +40,10 @@ public class Rutina {
         return Nombre;
     }
 
+    public String getUsuario() {
+        return Usuario;
+    }
+
     /* SETTERS */
     public void setUid(String uid) {
         Uid = uid;
@@ -50,4 +56,9 @@ public class Rutina {
     public void setNombre(String nombre) {
         Nombre = nombre;
     }
+
+    public void setUsuario(String usuario) {
+        Usuario = usuario;
+    }
+
 }

@@ -37,7 +37,7 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
 
     private View mFragmentView;
 
-    private ViewModelUsuario mViewModelLogin;
+    private ViewModelUsuario mViewModelUsuario;
     private ViewModelEjercicios mViewModelRutina;
 
     private String mNombre;
@@ -59,7 +59,7 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mViewModelLogin = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
+        mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
 
     }
@@ -81,6 +81,7 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
         return mFragmentView;
 
     }
+
 
     /**
      * Eventos onClick de los elementos del Fragment.
@@ -108,14 +109,14 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
         mAltura = Integer.parseInt(mETAltura.getEditText().getText().toString());
         mPeso = Double.parseDouble(mETPeso.getEditText().getText().toString());
 
-        Usuario usuario = new Usuario(mViewModelLogin.usuarioActual(), mNombre, mApellidos, mAltura, mPeso, mEdad);
-        mViewModelLogin.setmUsuario(usuario);
+        Usuario usuario = new Usuario(mViewModelUsuario.usuarioActual(), mNombre, mApellidos, mAltura, mPeso, mEdad);
+        mViewModelUsuario.setmUsuario(usuario);
 
-        mViewModelLogin.añadirUsuarioFirestore(usuario).addOnCompleteListener(new OnCompleteListener() {
+        mViewModelUsuario.añadirOActualizarUsuarioFirestore(usuario).addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
                 if (task.isSuccessful()){
-                    mViewModelLogin.setmTipoFragmento(TipoFragmento.DIAS_RUTINA);
+                    mViewModelUsuario.setmTipoFragmento(TipoFragmento.DIAS_RUTINA);
                 }
             }
         });

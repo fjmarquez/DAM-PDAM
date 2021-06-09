@@ -3,7 +3,6 @@ package iesnervion.fjmarquez.pdam.ViewModels;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
-import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirebaseRutinas;
+import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreRutinas;
 import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreEjercicios;
 import iesnervion.fjmarquez.pdam.Utiles.DificultadEjercicio;
 import iesnervion.fjmarquez.pdam.Utiles.GrupoMuscular;
@@ -20,13 +19,13 @@ import iesnervion.fjmarquez.pdam.Utiles.Materiales;
 public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
 
     /* ATRIBUTOS */
-    private MutableLiveData<ArrayList<Dia>> DiasRutina;
+    private MutableLiveData<Rutina> DiasRutina;
     private int DiaSemanaSeleccionado;
     private Ejercicio EjercicioSeleccionado;
     private ArrayList<Ejercicio> ListadoEjerciciosMaster;
     private ArrayList<Ejercicio> ListadoEjercicios;
     private RepositorioFirestoreEjercicios mRepositorioFirestoreEjercicios;
-    private RepositorioFirebaseRutinas mRepositorioFirestoreRutinas;
+    private RepositorioFirestoreRutinas mRepositorioFirestoreRutinas;
     private int mChipsCreados;
     private final int SUM_ENUMS_FILTRO = GrupoMuscular.values().length + DificultadEjercicio.values().length + Materiales.values().length;
 
@@ -35,18 +34,18 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
 
         //ArrayList<Dia> Dias = new ArrayList<>();
         DiasRutina = new MutableLiveData<>();
-        DiasRutina.postValue(new ArrayList<>());
+        DiasRutina.postValue(new Rutina());
         DiaSemanaSeleccionado = -1;
         EjercicioSeleccionado = null;
         mRepositorioFirestoreEjercicios = new RepositorioFirestoreEjercicios();
-        mRepositorioFirestoreRutinas = new RepositorioFirebaseRutinas();
+        mRepositorioFirestoreRutinas = new RepositorioFirestoreRutinas();
         mChipsCreados = -1;
 
     }
 
     /* SETTERS */
 
-    public void setDiasRutina(ArrayList<Dia> diasRutina) {
+    public void setDiasRutina(Rutina diasRutina) {
         DiasRutina.setValue(diasRutina);
     }
 
@@ -72,7 +71,7 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
     }
 
     /* GETTERS*/
-    public MutableLiveData<ArrayList<Dia>> getDiasRutina() {
+    public MutableLiveData<Rutina> getDiasRutina() {
         return DiasRutina;
     }
 

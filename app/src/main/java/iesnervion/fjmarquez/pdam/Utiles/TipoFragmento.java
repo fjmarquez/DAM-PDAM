@@ -12,5 +12,6 @@ public enum TipoFragmento {
     DETALLE_EJERCICIO,
     PERFIL,
     HISTORICO,
-    REALIZAR_EJERCICIO
+    REALIZAR_EJERCICIO,
+    LISTA_RUTINAS
 }
