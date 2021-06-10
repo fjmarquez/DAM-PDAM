@@ -30,12 +30,6 @@ import static android.content.ContentValues.TAG;
 
 public class Utiles {
 
-    public static String urlDrive(String id){
-        //String url = "https://drive.google.com/uc?export=view&id="+id;
-        String url = "https://firebasestorage.googleapis.com/v0/b/fit-bda0d.appspot.com/o/Aductor%20Externo%20Aislado%20en%20M%C3%A1quina.gif?alt=media&token=5ed63018-7850-4064-962d-b04ff7ea1546";
-        return url;
-    }
-
     public static ArrayList<Serie> seriesPorDefecto(){
 
         ArrayList<Serie> seriesDefecto = new ArrayList<>();
@@ -52,19 +46,6 @@ public class Utiles {
 
         String capitalizado = cadena.substring(0, 1).toUpperCase() + cadena.substring(1).toLowerCase();
         return capitalizado;
-
-    }
-
-    public static String descripcionCorta(String descripcion) {
-
-        String[] arrayDescripcion = descripcion.split(" ");
-        String descripcionCorta = "";
-
-        for (int i=0; i <= 10; i++){
-            descripcionCorta += arrayDescripcion[i] + " ";
-        }
-
-        return descripcionCorta += descripcionCorta + "...";
 
     }
 

@@ -10,12 +10,14 @@ import java.util.ArrayList;
 public class Rutina {
 
     /* ATRIBUTOS */
+
     private String Uid;
     private String Nombre;
     private ArrayList<Dia> Dias;
     private String Usuario;
 
     /* CONSTRUCTORES */
+
     public Rutina(String uid, String nombre, ArrayList<Dia> dias, String usuario) {
         Uid = uid;
         Nombre = nombre;
@@ -28,6 +30,7 @@ public class Rutina {
     }
 
     /* GETTERS */
+
     public String getUid() {
         return Uid;
     }
@@ -45,6 +48,7 @@ public class Rutina {
     }
 
     /* SETTERS */
+
     public void setUid(String uid) {
         Uid = uid;
     }

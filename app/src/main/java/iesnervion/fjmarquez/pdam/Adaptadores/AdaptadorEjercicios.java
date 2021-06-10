@@ -54,16 +54,17 @@ public class AdaptadorEjercicios extends RecyclerView.Adapter<AdaptadorEjercicio
     @Override
     public void onBindViewHolder(@NonNull AdaptadorEjercicios.RVEjerciciosViewHolder holder, int position) {
 
-        //holder.setIsRecyclable(true);
-
         Ejercicio ejercicioActual = this.listaEjercicios.get(position);
 
+        //Gif del ejercicio
         Glide.with(holder.getmIVGIFEjercicio().getContext()).asBitmap()
                 .load(ejercicioActual.getGif())
-                //.apply(new RequestOptions().override(200, 200))
+                .apply(new RequestOptions().override(200, 200))
                                 .into(holder.getmIVGIFEjercicio());
 
+        //Nombre del ejercicio
         holder.getmTVNombreEjercicio().setText(ejercicioActual.getNombre());
+        //Grupo muscular del ejercicio capitalizado
         holder.getmTVDificulatadEjercicio().setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
         holder.getmTVDificulatadEjercicio().setTextColor(holder.getmTVDificulatadEjercicio().getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
 

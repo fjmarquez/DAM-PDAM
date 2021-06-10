@@ -36,10 +36,14 @@ import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
-
+/**
+ * En este Fragment se mostrar la informacion principal de usuario, tendra opcion de editar dicha informacion,
+ * desde aqui tambien podra cerrar sesion y ver la lista de rutinas del usuario.
+ */
 public class FragmentPerfil extends Fragment {
 
     /* ATRIBUTOS */
+
     private View mFragmentView;
 
     private ViewModelUsuario mViewModelUsuario;
@@ -64,12 +68,13 @@ public class FragmentPerfil extends Fragment {
     private TextInputLayout mACTVRutinas;
     private AdaptadorListaRutinasPerfil mACTVRutinasAdaptador;
 
+    /* CONSTRUCTOR */
+
     public FragmentPerfil() {
 
     }
 
-
-    public static FragmentPerfil newInstance(String param1, String param2) {
+    public static FragmentPerfil newInstance() {
         FragmentPerfil fragment = new FragmentPerfil();
 
         return fragment;
@@ -112,7 +117,9 @@ public class FragmentPerfil extends Fragment {
 
     }
 
-
+    /**
+     * Muestra o crea un dialogo de confirmacion para consultar al usuario si desea guardar los cambios relizados.
+     */
     public void mostrarDialogoGuardarCambiosPerfil(){
 
         if (mAlertDialogGuardarCambiosPerfil == null || !dialogGuardarCambiosPerfil) {
@@ -162,6 +169,9 @@ public class FragmentPerfil extends Fragment {
 
     }
 
+    /**
+     * Muestra o crea un dialog de confirmacion preguntando al usuario si desea cerrar sesion.
+     */
     public void mostrarDialogoCerrarSesion(){
 
         if (mAlertDialogCerrarSesion == null || !dialogCerrarSesionCreado) {
@@ -190,6 +200,7 @@ public class FragmentPerfil extends Fragment {
                 @Override
                 public void onClick(View v) {
                     mViewModelUsuario.setmTipoFragmento(TipoFragmento.LOGIN);
+                    //Cierra sesion en Firebase
                     mViewModelUsuario.cerrarSesionActual();
                     mAlertDialogCerrarSesion.dismiss();
                 }
@@ -209,6 +220,9 @@ public class FragmentPerfil extends Fragment {
 
     }
 
+    /**
+     * Recopila la informacion contenida en el formulario del perfil.
+     */
     public void recopilarDatosUsuario(){
 
         mUsuarioModificado.setUid(mViewModelUsuario.getmUsuario().getUid());
@@ -226,6 +240,9 @@ public class FragmentPerfil extends Fragment {
 
     }
 
+    /**
+     * Actualiza el usuario en Firestore.
+     */
     public void actualizarUsuario(){
 
         mViewModelUsuario.añadirOActualizarUsuarioFirestore(mUsuarioModificado).addOnCompleteListener(new OnCompleteListener() {
@@ -233,6 +250,7 @@ public class FragmentPerfil extends Fragment {
             public void onComplete(Task task) {
                 if (task.isSuccessful()){
                     Snackbar.make(getView(), R.string.cambios_guardados_con_exito, Snackbar.LENGTH_SHORT).show();
+                    //Obtiene de nuevo los datos del usuario para mostrarlos actualizados
                     obtenerDatosUsuario();
                 }
             }
@@ -240,15 +258,19 @@ public class FragmentPerfil extends Fragment {
 
     }
 
+    /**
+     * Obtiene la informacion del usuario actual contenida en Firestore.
+     */
     public void obtenerDatosUsuario(){
 
             mViewModelUsuario.obtenerUsuarioFirestore().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(Task<DocumentSnapshot> task) {
                     if (task.isSuccessful() && task.getResult().exists()){
-
+                        //Parseo el resultado
                         Usuario usuario = task.getResult().toObject(Usuario.class);
                         mViewModelUsuario.setmUsuario(usuario);
+                        //Obtiene las rutinas correspondientes al usuario actual
                         obtenerRutinasUsuario();
 
                     }
@@ -258,6 +280,9 @@ public class FragmentPerfil extends Fragment {
 
     }
 
+    /**
+     * Obtiene un listado de todas las rutinas del usuario actual.
+     */
     public void obtenerRutinasUsuario(){
 
         mViewModelRutina.obtenerListaRutinasUsuario().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -278,6 +303,9 @@ public class FragmentPerfil extends Fragment {
 
     }
 
+    /**
+     * Rellena el formulario con los datos actuales del usuario.
+     */
     public void relleñarDatosUsuario(){
 
         String nombre = mViewModelUsuario.getmUsuario().getNombre();
@@ -305,6 +333,9 @@ public class FragmentPerfil extends Fragment {
 
     }
 
+    /**
+     * Rellena un AutoCompleteTextView con los nombres de las rutinas pertenecientes al usuario actual.
+     */
     public void rellenarACTVRutinas(){
 
         mACTVRutinasAdaptador = new AdaptadorListaRutinasPerfil(getContext(), mViewModelRutina.getmListaRutinasUsuario());
@@ -320,13 +351,18 @@ public class FragmentPerfil extends Fragment {
 
     }
 
+    /**
+     * Obtiene el nombre de la rutina que actualmente tiene asignada el usuario actual.
+     *
+     * @return String que contiene el nombre de la rutina que actualmente esta usando el usuario.
+     */
     public String obtenerNombreRutinaActual(){
 
         String respuesta = "";
 
         for (Rutina rutina:
                 mViewModelRutina.getmListaRutinasUsuario()){
-            if (mViewModelUsuario.getmUsuario().getRutina().equals(rutina.getUid())){//FALTA ID RUTINA EN USUARIO
+            if (mViewModelUsuario.getmUsuario().getRutina().equals(rutina.getUid())){
                 respuesta = rutina.getNombre();
             }
         }
@@ -334,8 +370,12 @@ public class FragmentPerfil extends Fragment {
         return respuesta;
     }
 
+    /**
+     * Configura las acciones del menu del Fragment Perfil
+     */
     public void accionesMenu(){
 
+        //Configura las acciones a realizar cuando se pulsa sobre un MenuItem
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -343,6 +383,7 @@ public class FragmentPerfil extends Fragment {
             }
         });
 
+        //Configuro la funcionalidad de los MenuItems correspondientes
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

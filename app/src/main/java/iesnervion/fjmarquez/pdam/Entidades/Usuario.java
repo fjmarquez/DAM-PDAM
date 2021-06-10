@@ -11,6 +11,7 @@ import java.util.Date;
 public class Usuario {
 
     /* ATRIBUTOS */
+
     private String Uid;
     private String Nombre;
     private String Apellidos;
@@ -21,6 +22,7 @@ public class Usuario {
     private String Rutina;
 
     /* CONSTRUCTORES */
+
     public Usuario(String uid, String nombre, String apellidos, String email, Integer altura, Double peso, Integer edad) {
         this.Uid = uid;
         this.Nombre = nombre;
@@ -46,6 +48,7 @@ public class Usuario {
     }
 
     /* GETTERS */
+
     public String getUid() {
         return this.Uid;
     }
@@ -79,6 +82,7 @@ public class Usuario {
     }
 
     /* SETTERS */
+
     public void setUid(String uid) {
         this.Uid = uid;
     }

@@ -3,11 +3,9 @@ package iesnervion.fjmarquez.pdam.Fragmentos;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,9 +31,14 @@ import iesnervion.fjmarquez.pdam.ViewModels.ViewModelEjercicios;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
+/**
+ * En este Fragment se mostrar un listado con todas las rutinas que pertenecen a un usuario, tendra opcion de editar,
+ * eliminar y crear una nueva rutina.
+ */
 public class FragmentListaRutinas extends Fragment {
 
     /* ATRIBUTOS */
+
     private View mFragmentView;
 
     private ViewModelRutina mViewModelRutina;
@@ -50,6 +53,8 @@ public class FragmentListaRutinas extends Fragment {
     private RecyclerView mRVRutinas;
     private LinearLayoutManager mLayoutManager;
     private AdaptadorListaRutinas mRVRutinasAdaptador;
+
+    /* CONSTRUCTOR */
 
     public FragmentListaRutinas() {
 
@@ -89,8 +94,12 @@ public class FragmentListaRutinas extends Fragment {
         return mFragmentView;
     }
 
+    /**
+     * Establece las funcionalidades del menu correspondiente al Fragment.
+     */
     public void accionesMenu(){
 
+        //Configuro la funcionalidad del icono de navegacion
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,6 +107,7 @@ public class FragmentListaRutinas extends Fragment {
             }
         });
 
+        //Configuro la funcionalidad de los MenuItems correspondientes
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -114,6 +124,9 @@ public class FragmentListaRutinas extends Fragment {
 
     }
 
+    /**
+     * Configura y rellena el RecyclerView encargado de lista las rutinas de usuario.
+     */
     public void configurarRecyclerViewRutinas(){
 
         mRVRutinas.setHasFixedSize(true);
@@ -125,12 +138,15 @@ public class FragmentListaRutinas extends Fragment {
         mRVRutinasAdaptador.setOnItemClickListener(new AdaptadorListaRutinas.OnItemClickListener() {
             @Override
             public void editarListener(int position) {
+                //En el ViewModelEjercicio establezco como rutina la seleccionada en la lista
                 mViewModelEjercicios.setDiasRutina(mRVRutinasAdaptador.listaRutinas.get(position));
+                //redirecciono al fragment Dias Rutina para que el usuario comience a editar la rutina
                 mViewModelUsuario.setmTipoFragmento(TipoFragmento.DIAS_RUTINA);
             }
 
             @Override
             public void eliminarListener(int position) {
+                //Obtengo la rutina y la elimino de Firestore, luego actualizo la lista mostrada
                 Rutina rutina = mRVRutinasAdaptador.listaRutinas.get(position);
                 if (mViewModelRutina.getmListaRutinasUsuario().size() > 1){
                     if (!mViewModelUsuario.getmUsuario().getRutina().equals(rutina.getUid())){
@@ -147,6 +163,11 @@ public class FragmentListaRutinas extends Fragment {
 
     }
 
+    /**
+     * Muestra o crea un dialogo que preguntara al usuario si desea eliminar la rutina.
+     *
+     * @param rutina Objeto Rutina a eliminar
+     */
     public void mostrarDialogoEliminarRutina(Rutina rutina){
 
         if (mAlertDialogEliminarRutina == null || !dialogEliminarRutinaCreado) {
@@ -194,13 +215,20 @@ public class FragmentListaRutinas extends Fragment {
 
     }
 
+    /**
+     * Elimina una rutina de Firestore
+     *
+     * @param rutina Objeto Rutina a eliminar.
+     */
     public void eliminarRutina(Rutina rutina){
         mViewModelRutina.eliminarRutina(rutina).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(Task<Void> task) {
 
                 if (task.isSuccessful()){
+                    //eliminar la rutina de la lista
                     mViewModelRutina.getmListaRutinasUsuario().remove(rutina);
+                    //actualizo la lista
                     mRVRutinasAdaptador.notifyDataSetChanged();
                     Snackbar.make(getView(), R.string.rutina_eliminada_correctamente, Snackbar.LENGTH_SHORT);
                 }else {

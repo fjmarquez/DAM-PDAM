@@ -40,6 +40,7 @@ public class AdaptadorSeriesDialogo extends RecyclerView.Adapter<AdaptadorSeries
     public AdaptadorSeriesDialogo.RVSeriesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_serie, parent, false);
+
         AdaptadorSeriesDialogo.RVSeriesViewHolder vh = new AdaptadorSeriesDialogo.RVSeriesViewHolder(v);
 
         return vh;
@@ -50,7 +51,9 @@ public class AdaptadorSeriesDialogo extends RecyclerView.Adapter<AdaptadorSeries
 
         Serie serieActual = this.listaSeries.get(position);
 
+        //Nombre de la serie (Serie + posicion de la serie en el ArrayList)
         holder.getmTVNombreSerie().setText("Serie " + (position + 1));
+        //Repeticiones de la serie
         holder.getmETRepeticionesSerie().getEditText().setText(""+serieActual.getRepeticiones());
 
     }

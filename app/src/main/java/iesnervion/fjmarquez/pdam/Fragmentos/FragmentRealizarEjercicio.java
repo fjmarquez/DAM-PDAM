@@ -11,12 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorEjerciciosDiaRutina;
 import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorSeriesRealizarEjercicio;
 import iesnervion.fjmarquez.pdam.Entidades.Serie;
 import iesnervion.fjmarquez.pdam.R;
@@ -24,9 +21,13 @@ import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
+/**
+ * En este Fragment se da la posibilidad al usuario de rellenar las series de cada ejercicio.
+ */
 public class FragmentRealizarEjercicio extends Fragment implements View.OnClickListener{
 
     /* ATRIBUTOS */
+
     private View mFragmentView;
 
     private ViewModelRutina mViewModelRutina;
@@ -39,11 +40,13 @@ public class FragmentRealizarEjercicio extends Fragment implements View.OnClickL
     private ImageButton mIBCancelarRealizarEjercicio;
     private ImageButton mIBConfirmarRealizarEjercicio;
 
+    /* CONSTRUCTOR */
+
     public FragmentRealizarEjercicio() {
 
     }
 
-    public static FragmentRealizarEjercicio newInstance(String param1, String param2) {
+    public static FragmentRealizarEjercicio newInstance() {
         FragmentRealizarEjercicio fragment = new FragmentRealizarEjercicio();
 
         return fragment;
@@ -77,6 +80,9 @@ public class FragmentRealizarEjercicio extends Fragment implements View.OnClickL
 
     }
 
+    /**
+     * Configura y rellena un RecyclerView con toda la informacion de las series correspondientes al ejercicio seleccionado.
+     */
     public void configurarRecyclerViewSeriesRealizarEjercicio(){
 
         mLayoutManager = new LinearLayoutManager(getContext());
@@ -88,8 +94,7 @@ public class FragmentRealizarEjercicio extends Fragment implements View.OnClickL
         mAdaptadorSeriesRealizarEjercicio.setOnItemClickListener(new AdaptadorSeriesRealizarEjercicio.OnItemClickListener() {
             @Override
             public void confirmarSerieListener(int position) {
-                Serie e = mViewModelRutina.getmDiaSeleccionado().getEjercicios().get(mViewModelRutina.getmEjercicioRealizar()).getSeries().get(position);
-                Toast.makeText(getContext(), ""+e.getPeso()+"--"+e.getRepeticiones(), Toast.LENGTH_SHORT).show();
+                //Serie e = mViewModelRutina.getmDiaSeleccionado().getEjercicios().get(mViewModelRutina.getmEjercicioRealizar()).getSeries().get(position);
             }
 
             @Override

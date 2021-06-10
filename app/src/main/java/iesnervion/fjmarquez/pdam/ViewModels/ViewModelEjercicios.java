@@ -19,6 +19,7 @@ import iesnervion.fjmarquez.pdam.Utiles.Materiales;
 public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
 
     /* ATRIBUTOS */
+
     private MutableLiveData<Rutina> DiasRutina;
     private int DiaSemanaSeleccionado;
     private Ejercicio EjercicioSeleccionado;
@@ -30,6 +31,7 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
     private final int SUM_ENUMS_FILTRO = GrupoMuscular.values().length + DificultadEjercicio.values().length + Materiales.values().length;
 
     /* CONSTRUTORES */
+
     public ViewModelEjercicios() {
 
         //ArrayList<Dia> Dias = new ArrayList<>();
@@ -55,7 +57,6 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
 
     public void setListadoEjerciciosMaster(ArrayList<Ejercicio> listadoEjercicios) {
         ListadoEjerciciosMaster = listadoEjercicios;
-        //ListadoEjercicios = listadoEjercicios;
     }
 
     public void setListadoEjercicios(ArrayList<Ejercicio> listadoEjercicios) {
@@ -66,11 +67,8 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
         EjercicioSeleccionado = ejercicioSeleccionado;
     }
 
-    public void incrementarmChipsCreados() {
-        this.mChipsCreados = this.mChipsCreados+1;
-    }
-
     /* GETTERS*/
+
     public MutableLiveData<Rutina> getDiasRutina() {
         return DiasRutina;
     }
@@ -91,26 +89,48 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
         return mChipsCreados;
     }
 
+    public Ejercicio getEjercicioSeleccionado() {
+        return EjercicioSeleccionado;
+    }
+
     /* FUNCIONES */
 
+    /**
+     * Obtiene el ultimo id asignado a un chip que se creo dinamicamente.
+     *
+     * @return Devuelve un entero que indica el ultimo id repartido a un chip.
+     */
     public int obtenerIdsChipCreados(){
         return SUM_ENUMS_FILTRO * mChipsCreados;
     }
 
+    /**
+     * Obtiene a traves del Repositorio de ejercicios una lista con todos los ejercicios almacenados en Firestore.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<QuerySnapshot> obtenerEjerciciosFirestore(){
 
         return mRepositorioFirestoreEjercicios.obtenerEjerciciosFirestore();
 
     }
 
-    public Ejercicio getEjercicioSeleccionado() {
-        return EjercicioSeleccionado;
-    }
-
+    /**
+     * Guarda una rutina en Firestore, a traves del Repositorio de rutinas.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task guardarNuevaRutinaFirestore(Rutina rutina){
 
         return mRepositorioFirestoreRutinas.añadirRutinaFirestore(rutina);
 
+    }
+
+    /**
+     * Incrementa en uno las veces que se generan dinamicamente los chips
+     */
+    public void incrementarmChipsCreados() {
+        this.mChipsCreados = this.mChipsCreados+1;
     }
 
 }

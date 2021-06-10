@@ -54,7 +54,8 @@
     <string name="boton_positivo_dialog">Seguir</string>
     <string name="error_dias">Debes seleccionar al menos un dia</string>
     <string name="guardado_exito">Tu rutina ha sido creada con exito</string>
-    <string name="guardado_fallo">Tu rutina no ha podido ser creada</string>
+    <string name="editador_exito">Tu rutina ha sido editada con exito</string>
+    <string name="guardado_fallo">Tu rutina no ha podido ser guardada</string>
     <string name="lunes">Lunes</string>
     <string name="martes">Martes</string>
     <string name="miercoles">Miercoles</string>
@@ -179,5 +180,6 @@
     <!-- MENU FRAGMENT LISTA HISTORICO -->
     <string name="filtrar_historico">Filtrar historico</string>
     <string name="limpiar_filtro_historico">Limpiar filtro historico</string>
+    <string name="mensaje_date_picker_range">Selecciona el intervalo de fechas</string>
 
 </resources>

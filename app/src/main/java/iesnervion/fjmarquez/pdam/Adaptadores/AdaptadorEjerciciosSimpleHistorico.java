@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.R;
 
+/**
+ * Clase usada como adaptador para un RecyclerView, la cual mediante su constructor recibira un ArrayList de Ejercicios.
+ * A diferencia del AdaptadorEjercicioSimple muestra el numero de series establecidas para cada ejercicio
+ */
 public class AdaptadorEjerciciosSimpleHistorico extends RecyclerView.Adapter<AdaptadorEjerciciosSimpleHistorico.RVEjerciciosSimpleHistoricoViewHolder> {
 
     private ArrayList<Ejercicio> listaEjercicios;
@@ -26,6 +30,7 @@ public class AdaptadorEjerciciosSimpleHistorico extends RecyclerView.Adapter<Ada
     public RVEjerciciosSimpleHistoricoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ejercicio_simple_historico, parent, false);
+
         RVEjerciciosSimpleHistoricoViewHolder vh = new RVEjerciciosSimpleHistoricoViewHolder(v);
 
         return vh;
@@ -36,7 +41,9 @@ public class AdaptadorEjerciciosSimpleHistorico extends RecyclerView.Adapter<Ada
 
         Ejercicio ejercicioActual = this.listaEjercicios.get(position);
 
+        //Nombre del ejercicio
         holder.getmTVNombreEjercicioSimple().setText(ejercicioActual.getNombre());
+        //Numero de series
         holder.getmTVSeriesEjercicioSimple().setText(ejercicioActual.getSeries().size() + " series");
 
     }

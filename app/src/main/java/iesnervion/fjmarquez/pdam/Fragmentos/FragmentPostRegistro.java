@@ -28,6 +28,7 @@ import iesnervion.fjmarquez.pdam.ViewModels.ViewModelEjercicios;
 public class FragmentPostRegistro extends Fragment implements View.OnClickListener{
 
     /* ATRIBUTOS */
+
     private TextInputLayout mETNombre;
     private TextInputLayout mETApellidos;
     private TextInputLayout mETEdad;
@@ -46,6 +47,8 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
     private Double mPeso;
     private Integer mAltura;
 
+    /* CONSTRUCTOR */
+
     public FragmentPostRegistro() {
 
     }
@@ -60,7 +63,6 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
         super.onCreate(savedInstanceState);
 
         mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
-
 
     }
 
@@ -82,9 +84,9 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
 
     }
 
-
     /**
      * Eventos onClick de los elementos del Fragment.
+     *
      * @param v Vista que contiene los elementos del Fragment.
      */
     @Override
@@ -125,6 +127,7 @@ public class FragmentPostRegistro extends Fragment implements View.OnClickListen
 
     /**
      * Comprueba que los EditText presentes en el formulario han sido rellenados.
+     *
      * @return Devuelve un valor Boolean, si todos los campos estan rellenos devolvera true, en caso contrario false.
      */
     public boolean comprobarCampos(){

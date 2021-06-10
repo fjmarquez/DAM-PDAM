@@ -25,7 +25,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -99,6 +98,8 @@ public class FragmentListaEjercicios extends Fragment {
     private RecyclerView mRVSeries;
     private AdaptadorSeriesDialogo mRVSeriesDialogoAdaptador;
     private boolean dialogSeriesCreado;
+
+    /* CONSTRUCTOR */
 
     public FragmentListaEjercicios() {
 
@@ -233,6 +234,7 @@ public class FragmentListaEjercicios extends Fragment {
     /**
      * Funcion que comprueba si los campos se han rellenado de forma correcta y devuelve un valor booleano que sera true
      * en caso positivo y false en caso negativo.
+     *
      * @return Booleano que indica si los campos del Dialgo EjercicioCustom se han rellenado de manera correcta.
      */
     public boolean comprobarCamposEjercicioCustom(){
@@ -297,6 +299,7 @@ public class FragmentListaEjercicios extends Fragment {
 
     /**
      * Funcion que devuelve un ArrayList de String con todos los posibles valores del Enum Grupos Musculares.
+     *
      * @return ArrayList de String con los valores del Enum Grupos Musculares
      */
     public ArrayList<String> obtenerArrayGruposMusculares(){
@@ -398,7 +401,6 @@ public class FragmentListaEjercicios extends Fragment {
                     case R.id.buscarEjercicio:
                         String busqueda = mETBuscadorEjercicio.getText().toString();
                         if(!busqueda.isEmpty()){
-                            Toast.makeText(getContext(), "buscar", Toast.LENGTH_SHORT).show();
                             ArrayList<Ejercicio> ejercicios = new ArrayList<>(mViewModelRutina.getListadoEjerciciosMaster());
                             for ( Ejercicio ejercicio:
                                     ejercicios) {
@@ -413,7 +415,6 @@ public class FragmentListaEjercicios extends Fragment {
                         break;
 
                     case R.id.filtrarEjercicio:
-                        Toast.makeText(getContext(), "filtrar", Toast.LENGTH_SHORT).show();
                         mostrarDialogoFiltros();
                         break;
 
@@ -680,7 +681,6 @@ public class FragmentListaEjercicios extends Fragment {
             //Evento onClick que nos llevara a una vista detallada del ejericicio sobre el que hemos pulsado.
             @Override
             public void clickListener(int position) {
-                //Toast.makeText(getActivity().getApplicationContext(), ""+mViewModelRutina.getListadoEjerciciosMaster().get(position).getNombre(), Toast.LENGTH_SHORT).show();
                 mViewModelRutina.setEjercicioSeleccionado(mViewModelRutina.getListadoEjercicios().get(position));
                 mViewModelUsuario.setmTipoFragmento(TipoFragmento.DETALLE_EJERCICIO);
             }

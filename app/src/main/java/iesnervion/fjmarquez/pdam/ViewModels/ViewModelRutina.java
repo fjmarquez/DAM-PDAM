@@ -15,9 +15,11 @@ import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreRutinas;
 import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreHistorico;
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 
+
 public class ViewModelRutina extends androidx.lifecycle.ViewModel{
 
     /* ATRIBUTOS */
+
     private RepositorioFirestoreRutinas mRepositorioFirestoreRutinas;
     private RepositorioFirestoreHistorico mRepositorioFirestoreHistorico;
     private ArrayList<Rutina> mListaRutinasUsuario;
@@ -29,6 +31,7 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
     private Calendar mFechaSeleccionada;
 
     /* CONSTRUCTOR */
+
     public ViewModelRutina() {
 
         mFechaSeleccionada = Calendar.getInstance();
@@ -44,6 +47,7 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
     }
 
     /* GETTERS */
+
     public MutableLiveData<Rutina> getRutinaActual() {
         return rutinaActual;
     }
@@ -73,6 +77,7 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
     }
 
     /* SETTERS */
+
     public void setRutinaActual(Rutina rutinaActual) {
         this.rutinaActual.setValue(rutinaActual);
     }
@@ -103,24 +108,46 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
     }
 
     /* FUNCIONES */
+
+    /**
+     * Obtiene la rutina del usuario actual en Firestore, a traves del Repositorio de rutinas.
+     *
+     * @param uid String que contiene el uid del usuario actual.
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<DocumentSnapshot> obtenerRutinaActualUsuario(String uid){
 
         return mRepositorioFirestoreRutinas.obtenerRutinaActualUsuario(uid);
 
     }
 
+    /**
+     * Comprueba si el usuario actual tiene al alguna rutina en Firestore, a traves del Repositorio de rutinas.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<DocumentSnapshot> comprobarSiExisteRutinaUsuarioActual(){
 
         return mRepositorioFirestoreRutinas.comprobarSiExisteRutinaUsuarioActual();
 
     }
 
+    /**
+     * Obtiene una lista todas las rutinas correspondientes al usuario actual en Firestore, a traves del Repositorio de rutinas.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<QuerySnapshot> obtenerListaRutinasUsuario(){
 
         return mRepositorioFirestoreRutinas.obtenerListaRutinasUsuario();
 
     }
 
+    /**
+     * Crea un nuevo historico en Firestore, a traves del Repositorio de historicos.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task crearHistoricoDia(){
 
         mDiaSeleccionado.setRutina(rutinaActual.getValue().getUid());
@@ -130,12 +157,22 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
 
     }
 
+    /**
+     * Actualiza la rutina actual en Firestore, a traves del Repositorio de rutinas.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task actualizarRutinaActualUsuario(){
 
         return mRepositorioFirestoreHistorico.añadirOActualizarDiaHistoricoFirebase(mDiaSeleccionado);
 
     }
 
+    /**
+     * Obtiene, si existe, el historico correspondiente al dia de hoy en Firestore, a traves del Repositorio de historicos.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<QuerySnapshot> obtenerHistoricosUsuarioHoy()
     {
 
@@ -143,23 +180,37 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
 
     }
 
+    /**
+     * Obtiene un historico o listado de historicos cuya fecha cumplan el rango en Firestore, a traves del Repositorio de rutinas.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<QuerySnapshot> obtenerHistoricosRangoFechas(ArrayList<String> dias){
 
         return mRepositorioFirestoreHistorico.obtenerHistoricosRangoFechas(dias);
 
     }
 
+    /**
+     * Elimina una rutina en Firestore, a traves del Repositorio de rutinas.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<Void> eliminarRutina(Rutina rutina){
 
         return mRepositorioFirestoreRutinas.eliminarRutinaFirestore(rutina);
 
     }
 
+    /**
+     * Obtiene un listado de historicos correspondientes al usuario actual en Firestore, a traves del Repositorio de historicos.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<QuerySnapshot> obtenerListaHistoricoUsuarioActual(){
 
         return mRepositorioFirestoreHistorico.obtenerListaHistoricoUsuarioActual();
 
     }
-
 
 }

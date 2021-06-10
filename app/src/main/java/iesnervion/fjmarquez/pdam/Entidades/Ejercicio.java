@@ -16,6 +16,7 @@ import iesnervion.fjmarquez.pdam.Utiles.GrupoMuscular;
 public class Ejercicio {
 
     /* ATRIBUTOS*/
+
     private String Uid;
     private String Nombre;
     private String Descripcion;
@@ -44,6 +45,7 @@ public class Ejercicio {
     }
 
     /* GETTERS */
+
     public String getUid() {
         return Uid;
     }
@@ -81,6 +83,7 @@ public class Ejercicio {
     }
 
     /* SETTERS */
+
     public void setUid(String uid) {
         Uid = uid;
     }
@@ -116,4 +119,5 @@ public class Ejercicio {
     public void setGif(String gif) {
         Gif = gif;
     }
+
 }

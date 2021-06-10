@@ -7,11 +7,13 @@ package iesnervion.fjmarquez.pdam.Entidades;
 public class Serie {
 
     /* ATRIBUTOS */
+
     private int Repeticiones;
     private double Peso;
     private boolean Terminada;
 
     /* CONSTRUCTORES */
+
     public Serie(int repeticiones, double peso, boolean terminada) {
         Repeticiones = repeticiones;
         Peso = peso;
@@ -23,6 +25,7 @@ public class Serie {
     }
 
     /* GETTERS */
+
     public int getRepeticiones() {
         return Repeticiones;
     }
@@ -32,6 +35,7 @@ public class Serie {
     }
 
     /* SETTERS */
+
     public void setPeso(double peso) {
         Peso = peso;
     }

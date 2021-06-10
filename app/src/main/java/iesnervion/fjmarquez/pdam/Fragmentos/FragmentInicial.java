@@ -21,7 +21,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,11 +48,13 @@ import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
 /**
- * Fragment principal de la aplicacion.
+ * Fragment principal de la aplicacion. En el se podran visualizar los ejercicios de cada dia,
+ * asi como iniciar y finalizar el dia.
  */
 public class FragmentInicial extends Fragment implements View.OnClickListener{
 
     /* ATRIBUTOS */
+
     private View mFragmentView;
 
     private ViewModelRutina mViewModelRutina;
@@ -78,6 +79,8 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
     private AlertDialog mAlertDialogTerminarRutina;
     private boolean dialogFinalizarDiaCreado;
 
+    /* CONSTRUCTOR */
+
     public FragmentInicial() {
 
     }
@@ -92,11 +95,16 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Instancio los ViewModels necesarios
+
         mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelRutina.class);
         mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
+        //Fecha hace un mes
         startDate = Calendar.getInstance();
         startDate.add(Calendar.WEEK_OF_MONTH, -1);
+
+        //Fecha dentro de un mes
         endDate = Calendar.getInstance();
         endDate.add(Calendar.WEEK_OF_MONTH, 1);
 
@@ -105,6 +113,7 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         mFragmentView = inflater.inflate(R.layout.fragment_inicial, container, false);
 
         mCLDescanso = mFragmentView.findViewById(R.id.clDescanso);
@@ -130,8 +139,9 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
         return mFragmentView;
     }
 
-
-
+    /**
+     * Comprueba si existe un historico con la fecha de hoy en Firestore.
+     */
     public void comprobarSiExisteHistorico(){
 
         mViewModelRutina.obtenerHistoricosUsuarioHoy().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -140,11 +150,15 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
                 if (task.isSuccessful()){
                     for (DocumentSnapshot  document: task.getResult()
                     ) {
+                        //Parseo del dia
                         Dia mDia = document.toObject(Dia.class);
+                        //Lo establezco como dia seleccionado
                         mViewModelRutina.setmDiaSeleccionado(mDia);
+                        //Configuro y relleno el recyclerView
                         configurarRecyclerViewEjerciciosDia();
                     }
                 }
+                //Si no existe ningun historico hoy, cargo el usuario para despues cargar el dia de la rutina correspondiente
                 if (task.getResult().isEmpty()){
                     obtenerDatosUsuario();
                 }
@@ -155,12 +169,17 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
 
     }
 
+    /**
+     * Configura las acciones del menu del Fragment Inicial
+     */
     public void accionesMenu(){
 
+        //Configura las acciones a realizar cuando se pulsa sobre un MenuItem
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
 
+                //Comprueba si el historico del dia esta iniciado o no, si esta iniciado el menu no respondera
                 if (mBtnComenzar.getVisibility() == View.VISIBLE ||
                     (mBtnComenzar.getVisibility() == View.GONE &&
                     mBtnFinalizar.getVisibility() == View.GONE)){
@@ -200,23 +219,26 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
                 .end()
                 .build();
 
+        //Evento del calendarioHorizontal, el cual se lanza cada vez que se selecciona un dia en el calendario
         mCalendarioHorizontal.setCalendarListener(new HorizontalCalendarListener() {
             @Override
             public void onDateSelected(Calendar date, int position) {
+                //Solamente respondera si el dia no esta iniciado
                 if (mViewModelRutina.getmDiaSeleccionado().getFecha() == null ||
                     mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
 
                     mViewModelRutina.setmFechaSeleccionada(date);
                     actualizarDiaActual(date);
 
+                    //Si el dia se corresponde con el de hoy comprueba si existe un historico para mostrar
                     if(fechaEsHoy(date)){
                         comprobarSiExisteHistorico();
+                    //Si el dia no se corresponde con el de hoy obtiene los datos de usuario y mas tarde obtiene su rutina
                     }else {
-                        //obtenerRutina();
                         obtenerDatosUsuario();
                     }
 
-                    //configurarRecyclerViewEjerciciosDia();
+                //Si el dia esta iniciado redirige al dia actual
                 }else {
                     mCalendarioHorizontal.goToday(false);
                 }
@@ -230,6 +252,7 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
     /**
      * Funcion que recibe un objeto Calendar y comprueba si ese objeto se corresponde con la fecha de hoy,
      * Devolviendo false en caso negativo y true en caso positivo.
+     *
      * @param fecha Objeto Calendar recibido, se comprobara si su fecha se corresponde con la del dia actual.
      * @return Devulve un valor booleano en funcion de si el parametro recibido coincide con la fecha actual.
      */
@@ -254,6 +277,7 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
     /**
      * Funcion que actualiza un TextView con una cadena de texto dependiendo del dia de la semana
      * en el objeto calendar recibido por parametros.
+     *
      * @param fecha Objeto Calendar, del cual extraeremos el dia de la semana correspondiente a la fecha.
      */
     public void actualizarDiaActual(Calendar fecha){
@@ -310,17 +334,13 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
         mAdaptadorEjerciciosDiaRutina.setOnItemClickListener(new AdaptadorEjerciciosDiaRutina.OnItemClickListener() {
             @Override
             public void realizarEjercicioListener(int position) {
-                //Si el dia ha sido iniciado y no ha finalizado se podran realizar los ejercicios
-                //Date c = mViewModelRutina.getmDiaSeleccionado().getInicio();
-                //boolean b = !mViewModelRutina.getmDiaSeleccionado().getFinalizado();
 
+                //Si el dia ha sido iniciado y no ha finalizado se podran realizar los ejercicios
                 if (mViewModelRutina.getmDiaSeleccionado().getFecha() != null &&
                         !mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
 
                     mViewModelRutina.setmEjercicioRealizar(position);
                     mViewModelUsuario.setmTipoFragmento(TipoFragmento.REALIZAR_EJERCICIO);
-
-                    Toast.makeText(getContext(), ""+mViewModelRutina.getmDiaSeleccionado().getEjercicios().get(position), Toast.LENGTH_SHORT).show();
 
                 }else {
 
@@ -357,20 +377,23 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
             //un boton para iniciar el dia
             if (fechaEsHoy(mViewModelRutina.getmFechaSeleccionada())){
 
+                //si el dia esta por iniciar, mostrara el boton para iniciarlo
                 if (mViewModelRutina.getmDiaSeleccionado().getFecha() == null && !mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
                     mBtnComenzar.setVisibility(View.VISIBLE);
+                //si el dia esta iniciado
                 }else {
-
+                    //Si el dia esta iniciado pero no finalizado
                     if (mViewModelRutina.getmDiaSeleccionado().getFecha() != null && !mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
                         mBtnComenzar.setVisibility(View.GONE);
                         mBtnFinalizar.setVisibility(View.VISIBLE);
+                    //Si el dia esta finalizado
                     }else {
                         mBtnComenzar.setVisibility(View.GONE);
                         mBtnFinalizar.setVisibility(View.GONE);
                     }
-
                 }
 
+            //Si el dia seleccionado no se corresponde con el de hoy
             }else {
 
                 mBtnComenzar.setVisibility(View.GONE);
@@ -408,15 +431,20 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
 
     }
 
+    /**
+     * Mediante ViewModelUsuario obtiene un objeto Usuario con los datos del usuario almacenados en Firestore.
+     */
     public void obtenerDatosUsuario(){
 
             mViewModelUsuario.obtenerUsuarioFirestore().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(Task<DocumentSnapshot> task) {
                     if (task.isSuccessful() && task.getResult().exists()){
-
+                        //Parseo el resultado
                         Usuario usuario = task.getResult().toObject(Usuario.class);
+                        //Almaceno el resultado en ViewModelUsuario
                         mViewModelUsuario.setmUsuario(usuario);
+                        //Obtengo la rutina del usuario
                         obtenerRutina();
 
                     }
@@ -431,7 +459,6 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
      */
     public void obtenerRutina(){
 
-        //if (mViewModelRutina.getRutinaActual().getValue().getDias() == null || ){
             mViewModelRutina.obtenerRutinaActualUsuario(mViewModelUsuario.getmUsuario().getRutina()).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(Task<DocumentSnapshot> task) {
@@ -442,11 +469,11 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
 
                         if (documento.exists()){
 
-                            //Parseo la respuesta de Firestore a un objeto de tipo Rutina
+                            //Parseo la respuesta de Firestore a un objeto de tipo Rutina y la almaceno en ViewModelRutina
                             mViewModelRutina.setRutinaActual(documento.toObject(Rutina.class));
-                            mViewModelRutina.getRutinaActual().getValue().setUid(documento.getId());
-                            obtenerDiaSeleccionado();
-                            configurarRecyclerViewEjerciciosDia();
+                            mViewModelRutina.getRutinaActual().getValue().setUid(documento.getId());//seteo el uid del documento al objeto Rutina
+                            obtenerDiaSeleccionado();//Obtengo el dia seleccionado de la rutina
+                            configurarRecyclerViewEjerciciosDia();//Configuro y relleno el Recyclerview
 
                         }
 
@@ -458,12 +485,6 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
 
                 }
             });
-        /*}else {
-
-            obtenerDiaSeleccionado();
-            configurarRecyclerViewEjerciciosDia();
-
-        }*/
 
     }
 
@@ -476,9 +497,11 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
         String inicio = DateFormat.format("dd-MM-yyyy", Calendar.getInstance()).toString();
         mViewModelRutina.getmDiaSeleccionado().setFecha(inicio);
         mViewModelRutina.getmDiaSeleccionado().setRutina(mViewModelRutina.getRutinaActual().getValue().getUid());
+        //Creo el historico en Firestore
         mViewModelRutina.crearHistoricoDia().addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(Task task) {
+                //Cambio la visibilidad de los botones
                 mBtnComenzar.setVisibility(View.GONE);
                 mBtnFinalizar.setVisibility(View.VISIBLE);
                 Snackbar.make(getView(), R.string.dia_iniciado, Snackbar.LENGTH_LONG).show();
@@ -493,10 +516,12 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
     public void finalizarDia(){
 
         mViewModelRutina.getmDiaSeleccionado().setFinalizado(true);
+        //Actualizo el historico en Firestore
         mViewModelRutina.actualizarRutinaActualUsuario().addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(Task task) {
                 if (task.isSuccessful()){
+                    //Oculto el boton finalizar
                     mBtnFinalizar.setVisibility(View.GONE);
                 }else {
                     Snackbar.make(getView(), R.string.dia_finalizado, Snackbar.LENGTH_LONG).show();
@@ -563,18 +588,15 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
         switch (v.getId()){
 
             case R.id.btnComenzar:
-                Toast.makeText(getContext(), "Comenzar", Toast.LENGTH_SHORT).show();
                 iniciarDia();
                 break;
 
             case R.id.btnFinalizar:
-                Toast.makeText(getContext(), "Finalizar", Toast.LENGTH_SHORT).show();
                 mostrarDialogoFinalizarDia();
                 break;
 
         }
 
     }
-
 
 }

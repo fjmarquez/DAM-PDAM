@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
@@ -32,6 +31,7 @@ import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 public class FragmentDetalleEjercicio extends Fragment implements View.OnClickListener{
 
     /* ATRIBUTOS */
+
     private ViewModelEjercicios mViewModelRutina;
     private ViewModelUsuario mViewModelUsuario;
 
@@ -50,7 +50,7 @@ public class FragmentDetalleEjercicio extends Fragment implements View.OnClickLi
 
     }
 
-    public static FragmentDetalleEjercicio newInstance(String param1, String param2) {
+    public static FragmentDetalleEjercicio newInstance() {
         FragmentDetalleEjercicio fragment = new FragmentDetalleEjercicio();
 
         return fragment;
@@ -60,6 +60,7 @@ public class FragmentDetalleEjercicio extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //Instancio los ViewModelNecesarios
         mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelEjercicios.class);
         mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
@@ -96,10 +97,14 @@ public class FragmentDetalleEjercicio extends Fragment implements View.OnClickLi
         Glide.with(getContext()).asGif()
                 .load(e.getGif())
                 .into(mIVGifEjercicioDetalles);
+
         mTVNombreEjercicioDetalles.setText(e.getNombre());
         mTVDescripcionEjercicioDetalles.setText(e.getDescripcion());
         mCHGrupoMuscularEjercicioDetalles.setText(Utiles.capitalizar(e.getGrupoMuscular().name()));
         mCHDificultadEjercicioDetalles.setText(Utiles.capitalizar(e.getDificultad().name()));
+
+        //Establece el color del Chip encargado de mostrar la dificultad del ejercicio.
+        //El color dependera de la dificultad o de si es un ejercicio custom.
         if(e.getDificultad() == DificultadEjercicio.PRINCIPIANTE){
             mCHDificultadEjercicioDetalles.setChipBackgroundColorResource(R.color.principiante_transparente);
         }else if (e.getDificultad() == DificultadEjercicio.INTERMEDIO){
@@ -109,6 +114,8 @@ public class FragmentDetalleEjercicio extends Fragment implements View.OnClickLi
         }else {
             mCHDificultadEjercicioDetalles.setChipBackgroundColorResource(R.color.custom_transparente);
         }
+
+        //Establecera el texto del Chip destinado a mostrar el material necesario para la realizacion del ejercicio.
         if (e.getMaterial()) {
             mCHMaterialEjercicioDetalles.setText(R.string.material_necesario);
         }else if (e.getBandasElasticas()){
@@ -123,7 +130,6 @@ public class FragmentDetalleEjercicio extends Fragment implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnAñadirEjercicioDetalle:
-                Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ibRetrocederListaEjercicios:
                 mViewModelUsuario.setmTipoFragmento(TipoFragmento.EJERCICIOS);

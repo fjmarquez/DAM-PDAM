@@ -1,10 +1,7 @@
 package iesnervion.fjmarquez.pdam.Fragmentos;
 
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -12,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,13 +27,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorHistorico;
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
@@ -46,16 +37,14 @@ import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
-import static java.time.temporal.ChronoUnit.DAYS;
-
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentListaHistorico#newInstance} factory method to
- * create an instance of this fragment.
+ * En este Fragment se mostrara un listado con los historicos disponibles, tendra opcion de ver los detalles de un historico
+ * y de filtrar por fecha, asi como limpiar el filtro.
  */
 public class FragmentListaHistorico extends Fragment {
 
     /* ATRIBUTOS */
+
     private View mFragmentView;
 
     private ViewModelUsuario mViewModelUsuario;
@@ -71,6 +60,8 @@ public class FragmentListaHistorico extends Fragment {
     private final int DAYms = 86400000;
 
     private MaterialToolbar mToolbar;
+
+    /* CONSTRUCTOR */
 
     public FragmentListaHistorico() {
 
@@ -110,8 +101,12 @@ public class FragmentListaHistorico extends Fragment {
 
     }
 
+    /**
+     * Establece las funcionalidades del menu correspondiente al Fragment.
+     */
     public void accionesMenu(){
 
+        //Configuro la funcionalidad del icono de navegacion
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,6 +114,7 @@ public class FragmentListaHistorico extends Fragment {
             }
         });
 
+        //Configuro la funcionalidad de los MenuItems correspondientes
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -138,21 +134,28 @@ public class FragmentListaHistorico extends Fragment {
 
     }
 
+    /**
+     * Muestra un DatePicker, el cual permite seleccionar un dia o un rango de dias, para luego filtrar el listado de historicos.
+     */
     public void mostrarDatePickerRange(){
 
-        mMaterialDatePicker = MaterialDatePicker.Builder.dateRangePicker().setTitleText("Selecciona el intervalo de fechas").build();
+        mMaterialDatePicker = MaterialDatePicker.Builder.dateRangePicker().setTitleText(getText(R.string.mensaje_date_picker_range)).build();
 
-        //capturar fecha/rango seleccionado
+        //Evento que se dispara al pulsar el boton "Guardar"
         mMaterialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
             @Override
             public void onPositiveButtonClick(Object selection) {
+                //Obtengo las fechas correspondiente al rango de fechas seleccionado en milisegundos
                 long millisPrimeraFecha = Long.valueOf(((androidx.core.util.Pair)selection).first.toString());
                 long millisSegundaFecha = Long.valueOf(((androidx.core.util.Pair)selection).second.toString());
 
+                //Calculo la diferencia de dias, restando ambas fechas obtenidas y dividiendo entre los milisegundos correspondientes a un dia
                 int diferenciaDias = Integer.parseInt(String.valueOf((millisSegundaFecha-millisPrimeraFecha)/DAYms));
 
+                //almacenare aqui las fechas que entren en el rango
                 ArrayList<String> dias = new ArrayList<>();
 
+                //Itero dependiendo de los dias de diferencia y obtengo una fecha por cada dia de diferencia
                 for (int i = 0; i <= diferenciaDias; i++){
                     Calendar diaIteracion = Calendar.getInstance();
                     diaIteracion.setTimeInMillis(millisPrimeraFecha + (DAYms * i));
@@ -161,17 +164,22 @@ public class FragmentListaHistorico extends Fragment {
                     dias.add(fecha);
                 }
 
+                //Obtiene los historicos incluidos en el rango de fecha obtenido
                 mViewModelRutina.obtenerHistoricosRangoFechas(dias).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()){
+
+                            //reinicio la lista de historico
                             mViewModelRutina.setmListaHistorico(new ArrayList<>());
 
                             for (DocumentSnapshot document: task.getResult()
                             ) {
+                                //parseo los resultados
                                 Dia mDia = document.toObject(Dia.class);
                                 mViewModelRutina.getmListaHistorico().add(mDia);
                             }
+
                         }
                         configurarRecyclerViewHistorico();
                     }
@@ -180,25 +188,28 @@ public class FragmentListaHistorico extends Fragment {
             }
         });
 
+        //Muestro el calendario
         mMaterialDatePicker.show(getFragmentManager(), null);
 
     }
 
+    /**
+     * Configura y rellena el RecyclerView encargado de listar historicos.
+     */
     public void configurarRecyclerViewHistorico(){
 
-        //if (mLayoutManager == null && mRVHistoricoAdaptador == null){
-            mLayoutManager = new LinearLayoutManager(getContext());
-            mRVHistoricoAdaptador = new AdaptadorHistorico(mViewModelRutina.getmListaHistorico());
-            mRVHistorico.setLayoutManager(mLayoutManager);
-            mRVHistorico.setAdapter(mRVHistoricoAdaptador);
-        //}else {
-        //    mRVHistoricoAdaptador.notifyDataSetChanged();
-        //}
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRVHistoricoAdaptador = new AdaptadorHistorico(mViewModelRutina.getmListaHistorico());
+        mRVHistorico.setLayoutManager(mLayoutManager);
+        mRVHistorico.setAdapter(mRVHistoricoAdaptador);
 
         configuracionVisualRecyclerViewHistorico();
 
     }
 
+    /**
+     * Modifica la apariencia visual del RecyclerView encargado de listar historicos.
+     */
     public void configuracionVisualRecyclerViewHistorico(){
 
         if (mViewModelRutina.getmListaHistorico().size() == 0){
@@ -217,16 +228,21 @@ public class FragmentListaHistorico extends Fragment {
 
     }
 
+    /**
+     * Obtiene un listado de historicos correspondiente al usuario actual de Firestore
+     */
     public void obtenerListaHistorico(){
 
         mViewModelRutina.obtenerListaHistoricoUsuarioActual().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
+                    //reinicio la lista de historicos
                     mViewModelRutina.setmListaHistorico(new ArrayList<>());
 
                     for (DocumentSnapshot document: task.getResult()
                     ) {
+                        //parseo los resultador obtenidos
                         Dia mDia = document.toObject(Dia.class);
                         mViewModelRutina.getmListaHistorico().add(mDia);
                         configurarRecyclerViewHistorico();

@@ -19,6 +19,12 @@ import java.util.ArrayList;
 import iesnervion.fjmarquez.pdam.Entidades.Serie;
 import iesnervion.fjmarquez.pdam.R;
 
+/**
+ * Clase usada como adaptador para un RecyclerView, la cual mediante su constructor recibira un ArrayList de Series.
+ * A diferencia del AdaptadorSeriesDialogo, este muestra una lista de series y sus correspondientes EditText para
+ * modificar tanto Repeticiones como peso de cada una de las series. Estas modificaciones podran ser fijadas, convirtiendose
+ * asi los EditText en TextView.
+ */
 public class AdaptadorSeriesRealizarEjercicio extends RecyclerView.Adapter<AdaptadorSeriesRealizarEjercicio.RVSeriesRealizarEjercicioViewHolder> {
 
     public static ArrayList<Serie> listaSeries;
@@ -43,6 +49,7 @@ public class AdaptadorSeriesRealizarEjercicio extends RecyclerView.Adapter<Adapt
     public AdaptadorSeriesRealizarEjercicio.RVSeriesRealizarEjercicioViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_series_realizar_ejercicio, parent, false);
+
         AdaptadorSeriesRealizarEjercicio.RVSeriesRealizarEjercicioViewHolder vh = new AdaptadorSeriesRealizarEjercicio.RVSeriesRealizarEjercicioViewHolder(v, mListener);
 
         return vh;
@@ -53,9 +60,12 @@ public class AdaptadorSeriesRealizarEjercicio extends RecyclerView.Adapter<Adapt
 
         Serie serieActual = this.listaSeries.get(position);
 
+        //Nombre de la serie
         holder.getmTVNombreSerieRealizarEjercicio().setText("Serie " + (position + 1));
+        //Numero de repeticiones
         holder.getmETRepeticionesSerieRealizarEjercicio().getEditText().setText(""+serieActual.getRepeticiones());
         holder.getmTVRepeticionesSerieRealizarEjercicio().setText(""+serieActual.getRepeticiones()+ " Reps.");
+        //Numero de Kilos por repeticion
         holder.getmETKilosSerieRealizarEjercicio().getEditText().setText(""+serieActual.getPeso());
         holder.getmTVKilosSerieRealizarEjercicio().setText(""+serieActual.getPeso()+" Kgs.");
 

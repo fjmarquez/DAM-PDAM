@@ -43,6 +43,7 @@ import iesnervion.fjmarquez.pdam.ViewModels.ViewModelEjercicios;
 public class FragmentDiasRutina extends Fragment implements View.OnClickListener{
 
     /* ATRIBUTOS */
+
     private View mFragmentView;
     private RecyclerView mRVDiasSeleccionados;
     private AdaptadorDias mAdaptadorDias;
@@ -73,6 +74,8 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     private ViewModelRutina mViewModelRutina;
     private ViewModelUsuario mViewModelUsuario;
 
+    /*  CONSTRUCTOR */
+
     public FragmentDiasRutina() {
 
     }
@@ -80,14 +83,16 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     public static FragmentDiasRutina newInstance() {
 
         FragmentDiasRutina fragment = new FragmentDiasRutina();
+
         return fragment;
 
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
+        //Instancio los ViewModel necesarios
         mViewModelEjercicios = new ViewModelProvider(getActivity()).get(ViewModelEjercicios.class);
         mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
         mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelRutina.class);
@@ -122,6 +127,11 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
         mRVDiasSeleccionados = mFragmentView.findViewById(R.id.rvDias);
         mRVDiasSeleccionados.setHasFixedSize(true);
 
+        /*
+        * Controlo si lo que vamos a hacer es crear una rutina (mostrarDialogdias) o editar una ya existente
+        * (rellenarRecyclerViewDias)
+        */
+
         if (mViewModelEjercicios.getDiasRutina().getValue() == null || mViewModelEjercicios.getDiasRutina().getValue().getDias().size() == 0) {
             mostrarDialogDias();
         } else {
@@ -136,10 +146,17 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     public void onClick(View v) {
 
         switch (v.getId()){
+            //Vuelve a mostrar el dialogo para la seleccion de los dias de la rutina
             case R.id.btnCambiarDias:
                 mostrarDialogDias();
                 break;
+            /*
+            * En caso de estar creando una rutina, se mostrar un dialog destinado a obtener el nombre que le deseas poner
+            * a la rutina y despues guardar esta en firebase. En caso de estar editando una rutina, se guardara automaticamente
+            * sin mostrar el dialogo para recopilar el nombre.
+            */
             case R.id.btnGuardarRutina:
+                //Se comprueba que todos los dias de la rutina tienen al menos un ejercicio
                 if(comprobarRutinaAntesGuardar()){
                     if(mViewModelEjercicios.getDiasRutina().getValue().getUid() != null){
                         mNombreRutina = mViewModelEjercicios.getDiasRutina().getValue().getNombre();
@@ -155,6 +172,11 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
     }
 
+    /**
+     * Crea o muestra un dialogo personalizado, cuya funcion es obtener el nombre de la rutina.
+     * Posee dos botones, el de aceptar procedera a guardar la rutina en firestore y el de cancelar cerrar el dialogo,
+     * cancelando asi la operacion de guardado.
+     */
     public void mostrarDialogNombreRutina(){
 
         if (mAlertDialogNombreRutina == null || !dialogNombreRutinaCreado) {
@@ -184,10 +206,13 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
             mAlertDialogNombreRutina.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //Comprueba si la longitud del nombre introducido es mayor que 0
                     if (comprobarNombreRutina()) {
                         if (mViewModelEjercicios.getDiasRutina().getValue().getUid() == null){
+                            //Almacena el nombre introducido en una variable a nivel de Fragment
                             recopilarNombreRutina();
                         }
+                        //Compruebo si el usuario tiene mas rutinas en Firestore
                         comprobarRutinasExistentes();
                         mAlertDialogNombreRutina.dismiss();
                     }
@@ -208,12 +233,22 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
     }
 
+    /**
+     * Almacena el nombre de la rutina, el cual obtiene de un EditText, en una variable a nivel de Fragment.
+     */
     public void recopilarNombreRutina(){
 
         mNombreRutina = mETNombreRutina.getEditText().getText().toString();
 
     }
 
+    /**
+     * Comprueba si el nombre introducido en el EditText destinado a recopilar el nombre de rutina tiene una longitud
+     * de mas de 0. Devolvera una valor booleano, el cual sera positivo en caso de cumplir los requisitos y false en caso
+     * de no cumplirlos.
+     *
+     * @return Boolean destinado a indicar si el nombre de la rutina introducido cumple con los requisitos establecidos.
+     */
     public boolean comprobarNombreRutina(){
 
         boolean respuesta = true;
@@ -231,20 +266,27 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
     }
 
+    /**
+     * Limpia los errores del TextInputLayout destinado a obtener el nombre de la rutina
+     */
     public void limpiarErroresDialogNombreRutina(){
 
         mETNombreRutina.setError(null);
 
     }
 
+    /**
+     * Comprueba mediante el ViewModelRutina si el usuario actual dispone de mas rutinas en Firestore.
+     */
     public void comprobarRutinasExistentes(){
 
         mViewModelRutina.obtenerListaRutinasUsuario().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(Task<QuerySnapshot> task) {
-                String uid = null;
+                String uid = null; //uid sera null si el usuario tiene alguna otra rutina en Firestore
                 if (task.isSuccessful()){
                     if (task.getResult().getDocuments().size() == 0){
+                        //uid tendra como valor el uid del usuario actual si esta es la primera rutina del usuario en Firestore
                         uid = mViewModelUsuario.usuarioActual().getUid();
                     }
 
@@ -266,14 +308,16 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
             @Override
             public void onComplete(Task task) {
                 if(task.isSuccessful()){
+                    //Si uid es distinto de null quiere decir que es la primera rutina del usuario en firestore
                     if (uid != null){
                         obtenerUsuarioRutinaActual(uid);
+                        Snackbar.make(getView(), R.string.guardado_exito, Snackbar.LENGTH_SHORT).show();
                     }else{
                         mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                        Snackbar.make(getView(), R.string.editador_exito, Snackbar.LENGTH_SHORT).show();
                     }
-                    Snackbar.make(getView(), R.string.guardado_exito, Snackbar.LENGTH_SHORT).show();
+
                 }else {
-                    //fallo/error al guardar
                     Snackbar.make(getView(), R.string.guardado_fallo, Snackbar.LENGTH_SHORT).show();
                 }
 
@@ -282,9 +326,16 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
     }
 
+    /**
+     * Mediante ViewModelUsuario obtiene el objeto Usuario correspondiente al usuario actual.
+     *
+     * @param uidRutina
+     */
     public void obtenerUsuarioRutinaActual(String uidRutina){
 
+        //Solo se llevara a cabo si el uid de la rutina es null, lo cual quiere decir que es la primera rutina del usuario
         if (mViewModelRutina.getRutinaActual().getValue().getUid() == null){
+            //si aun no tengo los datos del usuario en ViewModelUsuario los obtengo antes de seguir
             if(mViewModelUsuario.getmUsuario() == null){
 
                 mViewModelUsuario.obtenerUsuarioFirestore().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -302,6 +353,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
                     }
                 });
 
+            //Si el uid de la rutina es distinto de null actualizaremos el campo rutina del usuario
             }else{
 
                 mViewModelUsuario.getmUsuario().setRutina(uidRutina);
@@ -315,6 +367,9 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
     }
 
+    /**
+     * Actualiza el usuario con la nueva rutina asignada en Firestore.
+     */
     public void actualizarUsuarioConRutina(){
 
         mViewModelUsuario.añadirOActualizarUsuarioFirestore(mViewModelUsuario.getmUsuario()).addOnCompleteListener(new OnCompleteListener() {
@@ -333,6 +388,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
     /**
      * Comprueba que todos los dias introducidos en la rutina por el usuario tienen ejercicios asignados.
+     *
      * @return  Devuelve un booleano que en funcion de si un dia tiene ejercicios o no sera true o false.
      */
     public Boolean comprobarRutinaAntesGuardar(){
@@ -353,7 +409,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
     }
 
     /**
-     * Muestra un Dialog personalizado, el cual permite al usuario seleccionar los dias de entreno que desea.
+     * Crea o muestra un Dialog personalizado, el cual permite al usuario seleccionar los dias de entreno que desea.
      */
     public void mostrarDialogDias(){
 
@@ -379,8 +435,9 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
                 @Override
                 public void onClick(View v) {
                     mViewModelEjercicios.getDiasRutina().getValue().setDias(new ArrayList<>());
-
+                    //Compruebo si el usuario a seleccionado al menos un dia
                     if (recopilarCheckBoxesDias()) {
+                        //Si el usuario a seleccionado al menos un dia relleno la lista de dias
                         rellenarRecyclerViewDias();
                         mAdaptadorDias.notifyDataSetChanged();
                         mAlertDialogDias.cancel();
@@ -390,6 +447,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
                 }
             });
+
         }else {
 
             mAlertDialogDias.show();
@@ -414,13 +472,14 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
         mAdaptadorDias.setOnItemClickListener(new AdaptadorDias.OnItemClickListener() {
             @Override
             public void añadirListener(int position) {
+                //almaceno en ViewModelRutina el dia de la semana sobre el que vamos a añadir los ejercicios
                 mViewModelEjercicios.setDiaSemanaSeleccionado(position);
                 mViewModelUsuario.setmTipoFragmento(TipoFragmento.EJERCICIOS);
             }
 
             @Override
             public void mostrarListener(int position) {
-
+                //el codigo correspondiente a esta accion se encuentra en AdaptadorDias
             }
         });
 
@@ -428,6 +487,7 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
 
     /**
      * Recopila los valores de los CheckBoxes del dialogo destinado a seleccionar los dias de entreno.
+     *
      * @return Devuelve un valor Boolean, el cual sera false si no se selecciona ningun CheckBox o true
      * si se ha seleccionado al menos un CheckBox.
      */

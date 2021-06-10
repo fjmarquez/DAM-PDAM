@@ -11,6 +11,7 @@ import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 public class Dia {
 
     /* ATRIBUTOS */
+
     private DiaSemana Dia;
     private ArrayList<Ejercicio> Ejercicios;
     private String Fecha;
@@ -20,6 +21,7 @@ public class Dia {
     private String Uid;
 
     /* CONSTRUCTORES */
+
     public Dia(DiaSemana dia, ArrayList<Ejercicio> ejercicios, String usuario, String rutina) {
         Dia = dia;
         Ejercicios = ejercicios;
@@ -35,6 +37,7 @@ public class Dia {
     }
 
     /* GETTERS */
+
     public DiaSemana getDia() {
         return Dia;
     }
@@ -64,6 +67,7 @@ public class Dia {
     }
 
     /* SETTERS */
+
     public void setDia(DiaSemana dia) {
         Dia = dia;
     }

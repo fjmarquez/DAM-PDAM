@@ -45,6 +45,7 @@ public class AdaptadorEjerciciosSimple extends RecyclerView.Adapter<AdaptadorEje
     public AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ejercicio_simple, parent, false);
+
         AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder vh = new AdaptadorEjerciciosSimple.RVEjerciciosSimpleViewHolder(v, mListener);
 
         return vh;
@@ -55,7 +56,9 @@ public class AdaptadorEjerciciosSimple extends RecyclerView.Adapter<AdaptadorEje
 
         Ejercicio ejercicioActual = this.listaEjercicios.get(position);
 
+        //Nombre del ejercicio
         holder.getmTVNombreEjercicioSimple().setText(ejercicioActual.getNombre());
+        //Dificultad del ejercicio capitalizada
         holder.getmTVDificulatadEjercicioSimple().setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
         holder.getmTVDificulatadEjercicioSimple().setTextColor(holder.getmTVDificulatadEjercicioSimple().getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
 

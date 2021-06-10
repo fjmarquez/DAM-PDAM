@@ -16,6 +16,10 @@ import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 
+/**
+ * Clase usada como adaptador para un RecyclerView, la cual mediante su constructor recibira un ArrayList de Dias.
+ * A diferencia del AdaptadorDias, este muestra la fecha en la que se llevo a cabo el dia y el numero de ejercicios que este tiene.
+ */
 public class AdaptadorHistorico extends RecyclerView.Adapter<AdaptadorHistorico.RVHistoricoViewHolder>{
 
     private ArrayList<Dia> listaDias;
@@ -42,6 +46,7 @@ public class AdaptadorHistorico extends RecyclerView.Adapter<AdaptadorHistorico.
         v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_historico, parent, false);
 
         RVHistoricoViewHolder vh = new RVHistoricoViewHolder(v, mListener);
+
         return vh;
     }
 
@@ -60,7 +65,10 @@ public class AdaptadorHistorico extends RecyclerView.Adapter<AdaptadorHistorico.
     public void onBindViewHolder(@NonNull RVHistoricoViewHolder holder, int position) {
 
         Dia historicoActual = this.listaDias.get(position);
+
+        //Fecha historico
         holder.getTvDiaHistorico().setText(historicoActual.getFecha());
+        //Numero de ejercicios
         holder.getTvNumeroEjerciciosHistorico().setText(historicoActual.getEjercicios().size() + " ejercicios realizados");
 
         AdaptadorEjerciciosSimpleHistorico adaptadorEjerciciosSimpleHistorico = new AdaptadorEjerciciosSimpleHistorico(historicoActual.getEjercicios());

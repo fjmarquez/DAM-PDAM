@@ -17,9 +17,13 @@ import iesnervion.fjmarquez.pdam.Entidades.Dia;
 
 public class RepositorioFirestoreHistorico {
 
+    /* ATRIBUTOS */
+
     RepositorioFirestoreUsuario mRepoUsuario;
     FirebaseFirestore mFirestoreDB;
     CollectionReference mHistoricoColRef;
+
+    /* CONSTRUCTOR */
 
     public RepositorioFirestoreHistorico() {
 
@@ -29,6 +33,13 @@ public class RepositorioFirestoreHistorico {
 
     }
 
+    /**
+     * Añade o actualiza un dia como historico en Firestore.
+     *
+     * @param dia Dia a añadir o actualizar en Firestore
+     * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
+     * correctamente o no).
+     */
     public Task añadirOActualizarDiaHistoricoFirebase(Dia dia){
 
         DocumentReference mHistoricoDocRef = mHistoricoColRef.document(dia.getUid());
@@ -37,18 +48,30 @@ public class RepositorioFirestoreHistorico {
 
     }
 
+    /**
+     * Obtiene el historico correspondiente al dia de hoy.
+     *
+     * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
+     * correctamente o no).
+     */
     public Task<QuerySnapshot> obtenerHistoricosUsuarioHoy(){
 
         String hoy = DateFormat.format("dd-MM-yyyy", Calendar.getInstance()).toString();
-        //String usuario = mRepoUsuario.usuarioActual().getUid();
 
-        Query query = mHistoricoColRef.whereEqualTo("usuario", mRepoUsuario.usuarioActual().getUid())
-                                        .whereEqualTo("fecha", hoy);
+        Query query = mHistoricoColRef.whereEqualTo("usuario", mRepoUsuario.usuarioActual().getUid()) //usuario igual a uid del usuario actual
+                                        .whereEqualTo("fecha", hoy); //fecha igual a la fecha de hoy
 
         return query.get();
 
     }
 
+    /**
+     * Obtiene todos los historicos cuya fecha se encuentre en el rango de fechas recibidas.
+     *
+     * @param dias ArrayList<String> con todos los dias del rango
+     * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
+     * correctamente o no).
+     */
     public Task<QuerySnapshot> obtenerHistoricosRangoFechas(ArrayList<String> dias){
 
         Query query = mHistoricoColRef.whereIn("fecha", dias);
@@ -57,6 +80,12 @@ public class RepositorioFirestoreHistorico {
 
     }
 
+    /**
+     * Obtiene todos los historicos cuya fecha se encuentre en el rango de fechas recibidas.
+     *
+     * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
+     * correctamente o no).
+     */
     public Task<QuerySnapshot> obtenerListaHistoricoUsuarioActual(){
 
         Query query = mHistoricoColRef.whereEqualTo("usuario", mRepoUsuario.usuarioActual().getUid());

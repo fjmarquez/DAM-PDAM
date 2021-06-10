@@ -18,6 +18,10 @@ import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
 
+/**
+ * Clase usada como adaptador para un RecyclerView, la cual mediante su constructor recibira un ArrayList de Ejercicios.
+ * A diferencia del AdaptadorEjercicios muestra un boton diferente destinado a comenzar la realizacion del ejercicio.
+ */
 public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder> {
 
     public static ArrayList<Ejercicio> listaEjercicios;
@@ -40,6 +44,7 @@ public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<Adaptador
     public AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ejercicio_dia_rutina, parent, false);
+
         AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder vh = new AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder(v, mListener);
 
         return vh;
@@ -52,12 +57,14 @@ public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<Adaptador
 
         Ejercicio ejercicioActual = this.listaEjercicios.get(position);
 
-
+        //Gif del ejercicio
         Glide.with(holder.getmIVGIFEjercicio().getContext()).asBitmap()
                 .load(ejercicioActual.getGif())
                 .into(holder.getmIVGIFEjercicio());
 
+        //Nombre del ejercicio
         holder.getmTVNombreEjercicio().setText(ejercicioActual.getNombre());
+        //Dificultad del ejercicio capitalizada
         holder.getmTVDificulatadEjercicio().setText(Utiles.capitalizar(ejercicioActual.getGrupoMuscular().name()));
         holder.getmTVDificulatadEjercicio().setTextColor(holder.getmTVDificulatadEjercicio().getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
 

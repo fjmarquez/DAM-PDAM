@@ -24,14 +24,14 @@ import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 
 public class RepositorioFirestoreUsuario {
 
+    /* ATRIBUTOS */
+
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     FirebaseFirestore mFirestoreDB;
     CollectionReference mUsuariosColRef;
 
-    /**
-     * Constuctor de la clase.
-     */
+    /* CONSTRUCTOR */
     public RepositorioFirestoreUsuario() {
         this.mAuth = FirebaseAuth.getInstance();
         this.mFirestoreDB = FirebaseFirestore.getInstance();
@@ -41,6 +41,7 @@ public class RepositorioFirestoreUsuario {
     /**
      * Obtiene el usuario que actualmente esta autenticado mediante Firebase en nuestra aplicacion.
      * En caso de no existir ningun usuario autenticado en ese momento devolvera null.
+     *
      * @return  Devuelve un FirebaseUser con la informacion de usuario, puede ser null.
      */
     public FirebaseUser usuarioActual(){
@@ -55,6 +56,7 @@ public class RepositorioFirestoreUsuario {
 
     /**
      * Comprueba si el usuario actual completo el formulario post-registro.
+     *
      * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
      * correctamente o no).
      */
@@ -68,6 +70,7 @@ public class RepositorioFirestoreUsuario {
 
     /**
      * Añade al usuario a la base de datos de Firestore una vez este rellena el formulario post-registro.
+     *
      * @param usuario Objeto Usuario con la informacion del usuario registrado.
      * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
      * correctamente o no).
@@ -80,6 +83,12 @@ public class RepositorioFirestoreUsuario {
 
     }
 
+    /**
+     * Obtiene la informacion correspondiente al usuario actual en Firestore.
+     *
+     * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
+     * correctamente o no).
+     */
     public Task<DocumentSnapshot> obtenerUsuarioFirestore(){
 
         DocumentReference mUsuarioDocRef = mUsuariosColRef.document(usuarioActual().getUid());
@@ -90,6 +99,7 @@ public class RepositorioFirestoreUsuario {
 
     /**
      * Registra un nuevo usuario en Firebase Authentication con su email y su correspondiente contraseña.
+     *
      * @param Email Email introducido por el usuario en el formulario de login.
      * @param Contraseña    Contraseña introducida por el usuario en el formulario de login.
      * @return  Devuelve una tarea, mediante la cual podra realizar alguna accion cuando esta sea completada (puede finalizar
@@ -103,6 +113,7 @@ public class RepositorioFirestoreUsuario {
 
     /**
      * Inicia sesion con el usuario cuyo email y contraseña coincidan con las recibidas por parametros.
+     *
      * @param Email Email introducido por el usuario en el formulario de login
      * @param Contraseña Contraseña introducida por el usuario en el formulario de login
      * @return Devuelve una tarea, mediante la cual podremos realizar alguna accion cuando esta sea completada (puede finalizar
@@ -114,6 +125,7 @@ public class RepositorioFirestoreUsuario {
 
     /**
      * Se autentica en Google usando un token.
+     *
      * @param idToken Token mediante el que autenticarse en Google.
      * @param context Contexto desde donde lanzaremos en Intent necesario para autenticarse con Google.
      * @return Devuelve un intent que sera lanzado y cuya respuesta sera recopilada desde startForActivityResult.
@@ -133,6 +145,7 @@ public class RepositorioFirestoreUsuario {
 
     /**
      * Obtiene el token de una cuenta de Google autenticada previamente y se registra/logea con esos datos.
+     *
      * @param idToken Token de la cuenta de Google del usuario.
      * @return Devuelve una tarea, mediante la cual podremos realizar alguna accion cuando esta sea completada (puede finalizar
      * correctamente o no)
@@ -148,6 +161,7 @@ public class RepositorioFirestoreUsuario {
     /**
      * Mediante Firebase Authentication envia un correo para reestablecer la contraseña del usuario cuyo email coincida con el
      * recibido.
+     *
      * @param Email Email introducido por el usuario en el formulario de login.
      * @return Devuelve una tarea, mediante la cual podremos realizar alguna accion cuando esta sea completada (puede finalizar
      * correctamente o no)

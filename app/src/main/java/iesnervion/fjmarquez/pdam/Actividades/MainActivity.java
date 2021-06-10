@@ -126,31 +126,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // TODO: 17/04/2021 comprobar si hay alguna sesion iniciada, si la hay mandar directamente a la app, y si no la hay mandar al login
-
     /**
      * Establece el fragment que debe ser el primero en mostrarse y lo carga en el fragment container.
      */
     public void fragmentInicial(){
+        //Comprueba que existe un usuario actualmente, si no existe redirige al login
         if (mViewModelUsuario.usuarioActual() != null) {
 
+            //Compruba si existe un documento usuario en firestore con el uid del usuario actual
             mViewModelUsuario.usuarioExisteFirebase().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()){
                         DocumentSnapshot documento = task.getResult();
+                        //si existe un usuario en firestore
                         if (documento.exists()){
 
                             mViewModelRutina.comprobarSiExisteRutinaUsuarioActual().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(Task<DocumentSnapshot> task) {
                                     if (task.isSuccessful()){
+                                        //si el usuario actual ya creo su primera rutina
                                         if (task.getResult().exists()){
+                                            //se redirige al fragment inicial
                                             if (!mFragmentInicial){
                                                 cambiarFragment(mFragmentoInicial, false);
                                                 mFragmentInicial = true;
                                             }
+                                        //si el usuario existe en firestore pero no creo su primera rutina
                                         }else{
+                                            //se redirige al fragment Dias Rutinas para que el usuario defina su rutina
                                             if (!mFragmentInicial){
                                                 cambiarFragment(mFragmentoDiasRutina, false);
                                                 mFragmentInicial = true;
@@ -159,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
-                            //cambiarFragment(mFragmentoDiasRutina, false);
+                        //si no existe un usuario en firestore
                         } else {
+                            //se redirige al fragment post-registro para recopilar la info necesaria y crear un documento usuario
                             if (!mFragmentInicial){
                                 cambiarFragment(mFragmentPostRegistro, false);
                                 mFragmentInicial = true;
@@ -170,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+        //si no existe usuario actual se redirige al login
         }else {
             cambiarFragment(mFragmentLogin, false);
         }
@@ -196,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
                     .replace(mContenedorGeneral.getId(), fragment)
                     .commit();
         }
-
 
     }
 

@@ -13,12 +13,12 @@ import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 
 public class RepositorioFirestoreEjercicios {
 
+    /* ATRIBUTOS */
+
     private FirebaseFirestore mDbFirestore;
     private CollectionReference mEjerciciosColRef;
 
-    /**
-     * Constructor de la clase
-     */
+    /* CONSTRUCTOR */
     public RepositorioFirestoreEjercicios() {
 
         mDbFirestore = FirebaseFirestore.getInstance();
@@ -28,6 +28,7 @@ public class RepositorioFirestoreEjercicios {
 
     /**
      * Obtiene todos los registros dentro de la coleccion de Ejercicios que tenemos en Firestore.
+     *
      * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
      * correctamente o no).
      */
@@ -41,6 +42,7 @@ public class RepositorioFirestoreEjercicios {
 
     /**
      * Obtiene un unico ejercicio cuyo UID coincida con el recibidor por parametros.
+     *
      * @param EjercicioUID String que contiene el UID de un ejercicio.
      * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
      * correctamente o no).

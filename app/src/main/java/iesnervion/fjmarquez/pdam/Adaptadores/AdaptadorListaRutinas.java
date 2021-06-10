@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
 import iesnervion.fjmarquez.pdam.R;
 
+/**
+ * Clase usada como adaptador para un RecyclerView, la cual mediante su constructor recibira un ArrayList de Rutinas.
+ */
 public class AdaptadorListaRutinas extends RecyclerView.Adapter<AdaptadorListaRutinas.RVRutinaViewHolder>{
 
     public static ArrayList<Rutina> listaRutinas;
@@ -40,7 +43,9 @@ public class AdaptadorListaRutinas extends RecyclerView.Adapter<AdaptadorListaRu
         v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lista_rutinas, parent, false);
 
         AdaptadorListaRutinas.RVRutinaViewHolder vh = new AdaptadorListaRutinas.RVRutinaViewHolder(v, mListener);
+
         return vh;
+
     }
 
     @Override
@@ -58,7 +63,10 @@ public class AdaptadorListaRutinas extends RecyclerView.Adapter<AdaptadorListaRu
     public void onBindViewHolder(@NonNull AdaptadorListaRutinas.RVRutinaViewHolder holder, int position) {
 
         Rutina rutinaActual = this.listaRutinas.get(position);
+
+        //Nombre de la rutina
         holder.getTvRutina().setText(rutinaActual.getNombre());
+        //Numero de dias establecidos en la rutina
         holder.getTvNumeroDias().setText(rutinaActual.getDias().size() + " dias");
 
     }

@@ -46,13 +46,11 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
     @Override
     public AdaptadorDias.RVDiasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v;
-        //if (getItemViewType(viewType) == 0){
-            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia, parent, false);
-       // }else {
-        //    v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia_2, parent, false);
-       // }
+
+        v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia, parent, false);
 
         RVDiasViewHolder vh = new RVDiasViewHolder(v, mListener);
+
         return vh;
     }
 
@@ -71,7 +69,9 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
     public void onBindViewHolder(@NonNull AdaptadorDias.RVDiasViewHolder holder, int position) {
 
         Dia diaActual = this.listaDias.get(position);
+        //Nombre del dia capitalizado
         holder.getTvDia().setText(Utiles.capitalizar(diaActual.getDia().name()));
+        //Numero de ejercicios añadidos al dia
         holder.getTvNumeroEjercicios().setText(diaActual.getEjercicios().size() + " ejercicios añadidos");
 
         AdaptadorEjerciciosSimple adaptadorEjerciciosSimple = new AdaptadorEjerciciosSimple(diaActual.getEjercicios());

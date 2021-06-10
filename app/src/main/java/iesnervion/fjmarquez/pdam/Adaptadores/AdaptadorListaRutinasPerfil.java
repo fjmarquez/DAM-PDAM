@@ -17,6 +17,10 @@ import java.util.ArrayList;
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
 import iesnervion.fjmarquez.pdam.R;
 
+/**
+ * Clase usada como adaptador para un AutoCompleteTextView, la cual mediante su constructor recibira un ArrayList de Rutinas.
+ * A diferencia de AdaptadorListaRutinas este adaptador es especifico para usar en un AutoCompleteTextView.
+ */
 public class AdaptadorListaRutinasPerfil extends ArrayAdapter<Rutina> {
 
     private ArrayList<Rutina> listaRutinas;
@@ -47,6 +51,7 @@ public class AdaptadorListaRutinasPerfil extends ArrayAdapter<Rutina> {
         Rutina rutina = getItem(position);
 
         if(rutina != null){
+            //Nombre de la rutina
             nombreRutina.setText(rutina.getNombre());
         }
 

@@ -35,6 +35,7 @@ import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     /* ATRIBUTOS */
+
     private Button mBtnInciarSesion;
     private Button mBtnRegistrar;
     private Button mBtnRegistrarGoogle;
@@ -52,6 +53,8 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     private ViewModelUsuario mViewModelUsuario;
 
+    /* CONSTRUCTOR */
+
     public FragmentLogin() {
 
     }
@@ -65,8 +68,8 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
         //Inicializo el ViewModel
         mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
@@ -98,6 +101,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     /**
      * Eventos onClick de los elementos del Fragment.
+     *
      * @param v Vista que contiene los elementos del Fragment.
      */
     @Override
@@ -105,14 +109,17 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
             switch (v.getId()){
 
+                //Inicia sesion en Firebase
                 case R.id.BTNIniciarSesion:
                     if(comprobarCampos(false, false)){
                         mViewModelUsuario.iniciarSesionConUsuarioYContraseña(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
+
+                                    //TODO comprobar si el usuario tiene sus datos almacenados y si tiene alguna rutina
+
                                     mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
-                                    //mViewModel.setmTipoFragmento(TipoFragmento.POST_REGISTRO);
                                 }else{
                                     mostrarDialogError(false, true, false);
                                 }
@@ -120,7 +127,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
                         });
                     }
                     break;
-
+                //Registra un usuario en Firebase
                 case R.id.BTNRegistrarse:
                     if(comprobarCampos(false, true)){
                         mViewModelUsuario.registrarNuevoUsuario(mUsuario, mContraseña).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -135,12 +142,12 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
                         });
                     }
                     break;
-
+                //Registra a un usuario en Firebase usando sus credenciales en Google
                 case R.id.BTNRegistrarseGoogle:
                     Intent i = mViewModelUsuario.autenticacionGoogle(getString(R.string.default_web_client_id), getContext());
                     startActivityForResult(i, CODE_GOOGLE_SIGN);
                     break;
-
+                //Manda un mail para modificar la contraseña del usuario
                 case R.id.BTNRecordarContraseña:
                     if (comprobarCampos(true, false)){
                         mViewModelUsuario.mandarMailRecuperarContraseña(mUsuario).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -161,6 +168,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     /**
      * Obtiene el resultado de un intent lanzado.
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -197,6 +205,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
     /**
      * Comprueba que los diferentes campos del formulario cumplen las expresiones regulares dependiendo de la
      * accion que se vaya a realizar.
+     *
      * @param esRecordarContraseña Booleano que indica que la accion a realizar en enviar un correo para
      *                             reestablecer la contraseña del usuario.
      * @param esRegistro Booleano que indica que la accion a realizar es el registro de un nuevo usuario.
@@ -235,6 +244,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
     /**
      * Comprueba los diferentes campos del formulario de login segun la accion que se quiera llevar a cabo y
      * muestra los errores correspondientes.
+     *
      * @param esRecordarContraseña Booleano que indica que la accion a realizar en enviar un correo para
      *                             reestablecer la contraseña del usuario.
      * @param esRegistro Booleano que indica que la accion a realizar es un nuevo registro.
@@ -278,7 +288,8 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     /**
      * Comprueba mendiante una Expresion Regular que el email introducido por el usuario es valido.
-     * @return
+     *
+     * @return Devuelve un booleano dependiendo de si cumple la expresion regular o no.
      */
     public boolean esMail(){
 
@@ -288,7 +299,8 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     /**
      * Comprueba mediante una Expresion Regular que la contraseña introducida por el usuario es segura.
-     * @return
+     *
+     * @return Devuelve un booleano dependiendo de si cumple la expresion regular o no.
      */
     public boolean esContraseñaSegura(){
 
@@ -308,6 +320,7 @@ public class FragmentLogin extends Fragment implements View.OnClickListener{
 
     /**
      * Muestra un dialogo con un mensaje de error si durante el registro/logeo se produce algun error.
+     *
      * @param esRegistro Booleano que indica si el error que vamos a mostrar esta relacionado con el registro de usuarios.
      * @param esLogin Booleano que inidica si el error que vamos a mostrar esta relacionado con el logeo.
      * @param esContraseñaOlvidada Booleano que indica si el error que vamos a mostrar esta relacionado

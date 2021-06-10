@@ -18,12 +18,20 @@ import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     /* ATRIBUTOS */
+
     private RepositorioFirestoreUsuario mRepositorioUsuarios;
     private MutableLiveData<TipoFragmento> mTipoFragmento = new MutableLiveData<TipoFragmento>();
     private TipoFragmento mUltimoFragmento;
     private Usuario mUsuario;
 
+    /* CONSTRUCTOR */
+
+    public ViewModelUsuario() {
+        mRepositorioUsuarios = new RepositorioFirestoreUsuario();
+    }
+
     /* SETTERS */
+
     public void setmTipoFragmento(TipoFragmento mTipoFragmento) {
 
         this.mTipoFragmento.setValue(mTipoFragmento);
@@ -40,6 +48,7 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
     }
 
     /* GETTERS */
+
     public MutableLiveData<TipoFragmento> getmTipoFragmento() {
 
         return mTipoFragmento;
@@ -52,11 +61,6 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     public TipoFragmento getmUltimoFragmento() {
         return mUltimoFragmento;
-    }
-
-    /* CONSTRUCTOR */
-    public ViewModelUsuario() {
-        mRepositorioUsuarios = new RepositorioFirestoreUsuario();
     }
 
     /* FUNCIONES */
@@ -73,18 +77,34 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     }
 
+    /**
+     * Comprueba si un usuario de Firebase tiene almacenado sus datos en Firestore, a traves del Repositorio de usuarios.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<DocumentSnapshot> usuarioExisteFirebase(){
 
         return mRepositorioUsuarios.usuarioExisteFirestore();
 
     }
 
+    /**
+     * Añade o actualiza un usuario en Firestore, a traves del Repositorio de usuarios.
+     *
+     * @param usuario Objeto Usuario a añadir/actualizar.
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task añadirOActualizarUsuarioFirestore(Usuario usuario){
 
         return mRepositorioUsuarios.añadirOActualizarUsuarioFirestore(usuario);
 
     }
 
+    /**
+     * Obtiene el usuario actual en Firestore, a traves del Repositorio de usuarios.
+     *
+     * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
+     */
     public Task<DocumentSnapshot> obtenerUsuarioFirestore(){
 
         return mRepositorioUsuarios.obtenerUsuarioFirestore();
