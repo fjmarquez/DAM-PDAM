@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:maxWidth="200dp"
         android:layout_height="wrap_content"
-        android:text="@string/bienvenido_post_registro"
+        android:text="@string/ejercicio_custom_dialog_titulo"
         android:textColor="@color/gris"
         android:textSize="14dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,11 +28,10 @@
         android:text="hola"
         android:textColor="@color/gris_claro"
         android:textSize="12dp"
+        android:layout_marginRight="25dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvNombreEjercicioSimple"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp">
+        app:layout_constraintEnd_toStartOf="@+id/ibQuitarEjercicio"
+        app:layout_constraintTop_toTopOf="parent">
 
     </TextView>
 

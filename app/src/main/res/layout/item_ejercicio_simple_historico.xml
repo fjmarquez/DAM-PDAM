@@ -6,18 +6,29 @@
     android:layout_marginTop="2dp"
     android:layout_marginBottom="2dp">
 
+    <View
+        android:id="@+id/separadorEjerciciosHistorico"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gris_muy_claro"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <TextView
         android:id="@+id/tvNombreEjercicioSimpleHistorico"
         android:layout_width="wrap_content"
-        android:maxWidth="250dp"
+        android:maxWidth="200dp"
         android:layout_height="wrap_content"
-        android:text="@string/bienvenido_post_registro"
+        android:text="@string/ejercicio_custom_dialog_titulo"
         android:textColor="@color/gris"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="14dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="15dp">
+        app:layout_constraintTop_toBottomOf="@id/separadorEjerciciosHistorico"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="2dp">
 
     </TextView>
 
@@ -25,14 +36,43 @@
         android:id="@+id/tvSeriesEjercicioSimpleHistorico"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="hola"
-        android:textSize="12dp"
+        android:text="@string/ejercicio_custom_dialog_titulo"
         android:textColor="@color/gris_claro"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="15dp">
+        android:textSize="12dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintBottom_toBottomOf="@id/tvNombreEjercicioSimpleHistorico"
+        app:layout_constraintEnd_toStartOf="@+id/ibVerInfoEjercicio"
+        app:layout_constraintTop_toBottomOf="@id/separadorEjerciciosHistorico"
+        >
 
     </TextView>
+
+    <ImageButton
+        android:id="@+id/ibVerInfoEjercicio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/blanco"
+        android:backgroundTint="@color/transparente"
+        android:src="@drawable/ic_round_expand_more_24"
+        android:tint="@color/color_principal"
+        app:layout_constraintBottom_toBottomOf="@id/tvNombreEjercicioSimpleHistorico"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/separadorEjerciciosHistorico"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="16dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSeriesEjercicioHistorico"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/tvNombreEjercicioSimpleHistorico"
+        android:paddingTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -150,12 +150,13 @@ public class FragmentListaRutinas extends Fragment {
                 Rutina rutina = mRVRutinasAdaptador.listaRutinas.get(position);
                 if (mViewModelRutina.getmListaRutinasUsuario().size() > 1){
                     if (!mViewModelUsuario.getmUsuario().getRutina().equals(rutina.getUid())){
-                        mostrarDialogoEliminarRutina(rutina);
+                        mViewModelRutina.setmRutinaEliminar(position);
+                        mostrarDialogoEliminarRutina();
                     }else{
-                        Snackbar.make(getView(), R.string.fallo_eliminar_rutina_actual, Snackbar.LENGTH_SHORT);
+                        Snackbar.make(getView(), R.string.fallo_eliminar_rutina_actual, Snackbar.LENGTH_SHORT).show();
                     }
                 }else {
-                    Snackbar.make(getView(), R.string.fallo_eliminar_unica_rutina, Snackbar.LENGTH_SHORT);
+                    Snackbar.make(getView(), R.string.fallo_eliminar_unica_rutina, Snackbar.LENGTH_SHORT).show();
                 }
 
             }
@@ -165,10 +166,8 @@ public class FragmentListaRutinas extends Fragment {
 
     /**
      * Muestra o crea un dialogo que preguntara al usuario si desea eliminar la rutina.
-     *
-     * @param rutina Objeto Rutina a eliminar
      */
-    public void mostrarDialogoEliminarRutina(Rutina rutina){
+    public void mostrarDialogoEliminarRutina(){
 
         if (mAlertDialogEliminarRutina == null || !dialogEliminarRutinaCreado) {
 
@@ -196,7 +195,7 @@ public class FragmentListaRutinas extends Fragment {
             mAlertDialogEliminarRutina.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    eliminarRutina(rutina);
+                    eliminarRutina(mViewModelRutina.getmRutinaEliminar());
                     mAlertDialogEliminarRutina.dismiss();
                 }
             });
@@ -220,8 +219,8 @@ public class FragmentListaRutinas extends Fragment {
      *
      * @param rutina Objeto Rutina a eliminar.
      */
-    public void eliminarRutina(Rutina rutina){
-        mViewModelRutina.eliminarRutina(rutina).addOnCompleteListener(new OnCompleteListener<Void>() {
+    public void eliminarRutina(int rutina){
+        mViewModelRutina.eliminarRutina(mViewModelRutina.getmListaRutinasUsuario().get(rutina)).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(Task<Void> task) {
 

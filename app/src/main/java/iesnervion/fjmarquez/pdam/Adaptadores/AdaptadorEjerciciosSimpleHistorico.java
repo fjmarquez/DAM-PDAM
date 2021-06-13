@@ -3,9 +3,11 @@ package iesnervion.fjmarquez.pdam.Adaptadores;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -20,9 +22,18 @@ import iesnervion.fjmarquez.pdam.R;
 public class AdaptadorEjerciciosSimpleHistorico extends RecyclerView.Adapter<AdaptadorEjerciciosSimpleHistorico.RVEjerciciosSimpleHistoricoViewHolder> {
 
     private ArrayList<Ejercicio> listaEjercicios;
+    public AdaptadorEjerciciosSimpleHistorico.OnItemClickListener mListener;
 
     public AdaptadorEjerciciosSimpleHistorico(ArrayList<Ejercicio> listaEjercicios) {
         this.listaEjercicios = listaEjercicios;
+    }
+
+    public interface OnItemClickListener{
+        void quitarListener(int position);
+    }
+
+    public void setOnItemClickListener(AdaptadorEjerciciosSimpleHistorico.OnItemClickListener listener){
+        mListener = listener;
     }
 
     @NonNull
@@ -31,7 +42,7 @@ public class AdaptadorEjerciciosSimpleHistorico extends RecyclerView.Adapter<Ada
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_ejercicio_simple_historico, parent, false);
 
-        RVEjerciciosSimpleHistoricoViewHolder vh = new RVEjerciciosSimpleHistoricoViewHolder(v);
+        RVEjerciciosSimpleHistoricoViewHolder vh = new RVEjerciciosSimpleHistoricoViewHolder(v, mListener);
 
         return vh;
     }
@@ -46,6 +57,11 @@ public class AdaptadorEjerciciosSimpleHistorico extends RecyclerView.Adapter<Ada
         //Numero de series
         holder.getmTVSeriesEjercicioSimple().setText(ejercicioActual.getSeries().size() + " series");
 
+        AdaptadorSerieEjercicioHistorico adaptadorSerieEjercicioHistorico = new AdaptadorSerieEjercicioHistorico(ejercicioActual.getSeries());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(holder.getmRVSeriesEjercicio().getContext());
+        holder.getmRVSeriesEjercicio().setLayoutManager(linearLayoutManager);
+        holder.getmRVSeriesEjercicio().setAdapter(adaptadorSerieEjercicioHistorico);
+
     }
 
     @Override
@@ -57,14 +73,28 @@ public class AdaptadorEjerciciosSimpleHistorico extends RecyclerView.Adapter<Ada
 
         private TextView mTVNombreEjercicioSimple;
         private TextView mTVSeriesEjercicioSimple;
+        private ImageButton mIBVerInfoEjercicio;
+        private RecyclerView mRVSeriesEjercicio;
 
         /* CONSTRUCTOR */
 
-        public RVEjerciciosSimpleHistoricoViewHolder(@NonNull View itemView) {
+        public RVEjerciciosSimpleHistoricoViewHolder(@NonNull View itemView, final AdaptadorEjerciciosSimpleHistorico.OnItemClickListener listener) {
             super(itemView);
 
             mTVNombreEjercicioSimple = itemView.findViewById(R.id.tvNombreEjercicioSimpleHistorico);
             mTVSeriesEjercicioSimple = itemView.findViewById(R.id.tvSeriesEjercicioSimpleHistorico);
+            mRVSeriesEjercicio = itemView.findViewById(R.id.rvSeriesEjercicioHistorico);
+            mIBVerInfoEjercicio = itemView.findViewById(R.id.ibVerInfoEjercicio);
+            mIBVerInfoEjercicio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mRVSeriesEjercicio.getVisibility() == View.GONE){
+                        mRVSeriesEjercicio.setVisibility(View.VISIBLE);
+                    }else{
+                        mRVSeriesEjercicio.setVisibility(View.GONE);
+                    }
+                }
+            });
 
         }
 
@@ -78,6 +108,14 @@ public class AdaptadorEjerciciosSimpleHistorico extends RecyclerView.Adapter<Ada
             return mTVSeriesEjercicioSimple;
         }
 
+        public ImageButton getmIBVerInfoEjercicio() {
+            return mIBVerInfoEjercicio;
+        }
+
+        public RecyclerView getmRVSeriesEjercicio() {
+            return mRVSeriesEjercicio;
+        }
+
         /* SETTERS */
 
         public void setmTVNombreEjercicioSimple(TextView mTVNombreEjercicioSimple) {
@@ -86,6 +124,14 @@ public class AdaptadorEjerciciosSimpleHistorico extends RecyclerView.Adapter<Ada
 
         public void setmTVSeriesEjercicioSimple(TextView mTVSeriesEjercicioSimple) {
             this.mTVSeriesEjercicioSimple = mTVSeriesEjercicioSimple;
+        }
+
+        public void setmIBVerInfoEjercicio(ImageButton mIBVerInfoEjercicio) {
+            this.mIBVerInfoEjercicio = mIBVerInfoEjercicio;
+        }
+
+        public void setmRVSeriesEjercicio(RecyclerView mRVSeriesEjercicio) {
+            this.mRVSeriesEjercicio = mRVSeriesEjercicio;
         }
     }
 }

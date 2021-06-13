@@ -3,6 +3,7 @@ package iesnervion.fjmarquez.pdam.Fragmentos;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -212,9 +213,12 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
                             //Almacena el nombre introducido en una variable a nivel de Fragment
                             recopilarNombreRutina();
                         }
+
+                        comprobarSiExisteNombreRutina();
+
                         //Compruebo si el usuario tiene mas rutinas en Firestore
-                        comprobarRutinasExistentes();
-                        mAlertDialogNombreRutina.dismiss();
+                        //comprobarRutinasExistentes();
+                        //mAlertDialogNombreRutina.dismiss();
                     }
                 }
             });
@@ -230,6 +234,29 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
             mAlertDialogNombreRutina.show();
 
         }
+
+    }
+
+    public void comprobarSiExisteNombreRutina(){
+
+        mViewModelRutina.comprobarSiExisteNombreRutina(mNombreRutina).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+
+                    limpiarErroresDialogNombreRutina();
+
+                    if (task.getResult().isEmpty()){
+                        //Compruebo si el usuario tiene mas rutinas en Firestore
+                        comprobarRutinasExistentes();
+                        mAlertDialogNombreRutina.dismiss();
+                    }else {
+                        mETNombreRutina.setError(getText(R.string.nombre_rutina_existente));
+                    }
+
+                }
+            }
+        });
 
     }
 
@@ -308,14 +335,17 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
             @Override
             public void onComplete(Task task) {
                 if(task.isSuccessful()){
-                    //Si uid es distinto de null quiere decir que es la primera rutina del usuario en firestore
-                    if (uid != null){
+                    //si uid es diferente al uid del usuario actual y la rutina tiene un uid diferente de null, estamos editando.
+                    //en caso contrario estamos guardando una nueva rutina
+                    if (uid != mViewModelUsuario.usuarioActual().getUid() && mViewModelEjercicios.getDiasRutina().getValue().getUid() != null){
+                        Snackbar.make(getView(), R.string.editador_exito, Snackbar.LENGTH_SHORT).show();
+                        mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                    }else{
                         obtenerUsuarioRutinaActual(uid);
                         Snackbar.make(getView(), R.string.guardado_exito, Snackbar.LENGTH_SHORT).show();
-                    }else{
-                        mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
-                        Snackbar.make(getView(), R.string.editador_exito, Snackbar.LENGTH_SHORT).show();
                     }
+
+
 
                 }else {
                     Snackbar.make(getView(), R.string.guardado_fallo, Snackbar.LENGTH_SHORT).show();
@@ -342,11 +372,13 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
                     @Override
                     public void onComplete(Task<DocumentSnapshot> task) {
                         if (task.isSuccessful() && task.getResult().exists()){
-
                             Usuario usuario = task.getResult().toObject(Usuario.class);
-                            usuario.setRutina(uidRutina); //id de la nueva rutina creada
-                            mViewModelUsuario.setmUsuario(usuario);
-                            actualizarUsuarioConRutina();
+                            if(uidRutina != null){
+                                usuario.setRutina(uidRutina); //id de la nueva rutina creada
+                                mViewModelUsuario.setmUsuario(usuario);
+                                actualizarUsuarioConRutina();
+                            }
+
 
                         }
 
@@ -356,8 +388,12 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
             //Si el uid de la rutina es distinto de null actualizaremos el campo rutina del usuario
             }else{
 
-                mViewModelUsuario.getmUsuario().setRutina(uidRutina);
-                actualizarUsuarioConRutina();
+
+                if (uidRutina != null){
+                    mViewModelUsuario.getmUsuario().setRutina(uidRutina);
+                    actualizarUsuarioConRutina();
+                }
+
 
             }
         }else {
@@ -377,7 +413,10 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
             public void onComplete(Task task) {
                 if (task.isSuccessful()){
                     Snackbar.make(getView(), R.string.rutina_asignada, Snackbar.LENGTH_SHORT).show();
-                    mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                    if (mViewModelUsuario.getmTipoFragmento().getValue() != TipoFragmento.PANTALLA_INICIO){
+                        mViewModelUsuario.setmTipoFragmento(TipoFragmento.PANTALLA_INICIO);
+                    }
+
                 }else{
                     Snackbar.make(getView(), R.string.error_rutina_asignada, Snackbar.LENGTH_SHORT).show();
                 }
@@ -480,6 +519,18 @@ public class FragmentDiasRutina extends Fragment implements View.OnClickListener
             @Override
             public void mostrarListener(int position) {
                 //el codigo correspondiente a esta accion se encuentra en AdaptadorDias
+            }
+
+            @Override
+            public void quitarListener(int position) {
+                if (mAdaptadorDias.listaDias.size() > 1){
+                    mAdaptadorDias.listaDias.remove(position);
+                    mAdaptadorDias.notifyDataSetChanged();
+                }else {
+
+                    Snackbar.make(getView(), getText(R.string.no_puede_quitar_ultimo_dia), Snackbar.LENGTH_SHORT).show();
+
+                }
             }
         });
 

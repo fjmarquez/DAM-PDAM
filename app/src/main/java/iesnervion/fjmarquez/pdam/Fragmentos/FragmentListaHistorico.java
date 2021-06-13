@@ -23,12 +23,14 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.common.collect.Lists;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorHistorico;
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
@@ -164,32 +166,44 @@ public class FragmentListaHistorico extends Fragment {
                     dias.add(fecha);
                 }
 
-                //Obtiene los historicos incluidos en el rango de fecha obtenido
-                mViewModelRutina.obtenerHistoricosRangoFechas(dias).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
+                //reinicio la lista de historico
+                mViewModelRutina.setmListaHistorico(new ArrayList<>());
+                int tamañoMax = 10;
+                for (int i = 0; i < dias.size(); i += tamañoMax) {
+                    int f = Math.min(i + tamañoMax, dias.size());
 
-                            //reinicio la lista de historico
-                            mViewModelRutina.setmListaHistorico(new ArrayList<>());
+                    List<String> subListaFechas = dias.subList(i, f);
 
-                            for (DocumentSnapshot document: task.getResult()
-                            ) {
-                                //parseo los resultados
-                                Dia mDia = document.toObject(Dia.class);
-                                mViewModelRutina.getmListaHistorico().add(mDia);
-                            }
+                    //llamar a firebase aqui
+                    obtenerHistoricoRangoFechas(subListaFechas);
 
-                        }
-                        configurarRecyclerViewHistorico();
-                    }
-                });
-
+                }
             }
         });
 
         //Muestro el calendario
         mMaterialDatePicker.show(getFragmentManager(), null);
+
+    }
+
+    public void obtenerHistoricoRangoFechas(List<String> dias){
+
+        mViewModelRutina.obtenerHistoricosRangoFechas(dias).addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+
+                    for (DocumentSnapshot document: task.getResult()
+                    ) {
+                        //parseo los resultados
+                        Dia mDia = document.toObject(Dia.class);
+                        mViewModelRutina.getmListaHistorico().add(mDia);
+                    }
+
+                }
+                configurarRecyclerViewHistorico();
+            }
+        });
 
     }
 
@@ -202,6 +216,12 @@ public class FragmentListaHistorico extends Fragment {
         mRVHistoricoAdaptador = new AdaptadorHistorico(mViewModelRutina.getmListaHistorico());
         mRVHistorico.setLayoutManager(mLayoutManager);
         mRVHistorico.setAdapter(mRVHistoricoAdaptador);
+        mRVHistoricoAdaptador.setOnItemClickListener(new AdaptadorHistorico.OnItemClickListener() {
+            @Override
+            public void mostrarListener(int position) {
+
+            }
+        });
 
         configuracionVisualRecyclerViewHistorico();
 
@@ -245,8 +265,10 @@ public class FragmentListaHistorico extends Fragment {
                         //parseo los resultador obtenidos
                         Dia mDia = document.toObject(Dia.class);
                         mViewModelRutina.getmListaHistorico().add(mDia);
-                        configurarRecyclerViewHistorico();
                     }
+
+                    configurarRecyclerViewHistorico();
+
                 }else {
 
                     Snackbar.make(getView(), getText(R.string.mensaje_error_lista_historicos), Snackbar.LENGTH_SHORT).show();

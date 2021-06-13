@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorSeriesDialogo;
 import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.Entidades.Serie;
 import iesnervion.fjmarquez.pdam.R;
@@ -29,6 +30,30 @@ import iesnervion.fjmarquez.pdam.R;
 import static android.content.ContentValues.TAG;
 
 public class Utiles {
+
+    /**
+     * Comprueba que todas las series de la lista de series tienen asignado como repeticiones un numero mayor que 0. Devuelve un booleano en funcion de si cumple la condicion o no.
+     *
+     * @return Boolean que tendra valor true si se cumple la condicion y false en caso contrario
+     */
+    public static boolean comprobarSeriesDialog(){
+
+        boolean respuesta = true;
+
+        for (Serie serie:
+                AdaptadorSeriesDialogo.listaSeries){
+
+            if (serie.getRepeticiones() == 0){
+
+                respuesta = false;
+
+            }
+
+        }
+
+        return respuesta;
+
+    }
 
     public static ArrayList<Serie> seriesPorDefecto(){
 

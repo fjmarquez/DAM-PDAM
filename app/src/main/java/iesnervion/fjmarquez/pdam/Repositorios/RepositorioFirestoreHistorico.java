@@ -72,9 +72,10 @@ public class RepositorioFirestoreHistorico {
      * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
      * correctamente o no).
      */
-    public Task<QuerySnapshot> obtenerHistoricosRangoFechas(ArrayList<String> dias){
+    public Task<QuerySnapshot> obtenerHistoricosRangoFechas(List<String> dias){
 
-        Query query = mHistoricoColRef.whereIn("fecha", dias);
+        Query query = mHistoricoColRef.whereIn("fecha", dias)
+                                        .whereEqualTo("usuario", mRepoUsuario.usuarioActual().getUid());
 
         return query.get();
 

@@ -28,6 +28,22 @@ public class RepositorioFirestoreRutinas {
     }
 
     /**
+     * Comprueba si existe alguna rutina que pertenezca al usuario actual y tenga el mismo nombre que recibe como parametros
+     *
+     * @param nombre String que contiene el nombre que el suuario desea darle a su rutina
+     * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar
+     * correctamente o no).
+     */
+    public Task<QuerySnapshot> comprobarSiExisteNombreRutina(String nombre){
+
+        Query query = mRutinaColRef.whereEqualTo("usuario", mRepoUsuario.usuarioActual().getUid())
+                                    .whereEqualTo("nombre", nombre);
+
+        return query.get();
+
+    }
+
+    /**
      * Comprueba si existe alguna rutina que pertenezca al usuario actual
      *
      * @return Devuelve una tarea, mediante la cual podra realizar una accion cuando esta sea completada (puede finalizar

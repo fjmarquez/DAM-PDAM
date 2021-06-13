@@ -44,6 +44,7 @@ import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelEjercicios;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
@@ -62,6 +63,7 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
     private RecyclerView.LayoutManager mLayoutManager;
 
     private ViewModelUsuario mViewModelUsuario;
+    private ViewModelEjercicios mViewModelEjercicios;
 
     private Calendar startDate;
     private Calendar endDate;
@@ -99,6 +101,7 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
 
         mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelRutina.class);
         mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
+        mViewModelEjercicios = new ViewModelProvider(getActivity()).get(ViewModelEjercicios.class);
 
         //Fecha hace un mes
         startDate = Calendar.getInstance();
@@ -328,7 +331,7 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
 
         mLayoutManager = new LinearLayoutManager(getContext());
         mRVEjerciciosDiaRutina.setLayoutManager(mLayoutManager);
-        mAdaptadorEjerciciosDiaRutina = new AdaptadorEjerciciosDiaRutina(mViewModelRutina.getmDiaSeleccionado().getEjercicios());
+        mAdaptadorEjerciciosDiaRutina = new AdaptadorEjerciciosDiaRutina(mViewModelRutina.getmDiaSeleccionado());
         mRVEjerciciosDiaRutina.setAdapter(mAdaptadorEjerciciosDiaRutina);
 
         mAdaptadorEjerciciosDiaRutina.setOnItemClickListener(new AdaptadorEjerciciosDiaRutina.OnItemClickListener() {
@@ -342,11 +345,22 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
                     mViewModelRutina.setmEjercicioRealizar(position);
                     mViewModelUsuario.setmTipoFragmento(TipoFragmento.REALIZAR_EJERCICIO);
 
+                }else if(mViewModelRutina.getmDiaSeleccionado().getFinalizado()){
+
+                    Snackbar.make(getView(), R.string.dia_ya_finalizado, Snackbar.LENGTH_LONG).show();
+
                 }else {
 
                     Snackbar.make(getView(), R.string.no_ha_iniciado_dia, Snackbar.LENGTH_LONG).show();
 
                 }
+            }
+
+            @Override
+            public void clickListener(int position) {
+                mViewModelEjercicios.setEjercicioSeleccionado(mViewModelRutina.getmDiaSeleccionado().getEjercicios().get(position));
+                mViewModelEjercicios.setPermitirAñadirEjercicio(false);
+                mViewModelUsuario.setmTipoFragmento(TipoFragmento.DETALLE_EJERCICIO);
             }
         });
 
@@ -497,6 +511,7 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
         String inicio = DateFormat.format("dd-MM-yyyy", Calendar.getInstance()).toString();
         mViewModelRutina.getmDiaSeleccionado().setFecha(inicio);
         mViewModelRutina.getmDiaSeleccionado().setRutina(mViewModelRutina.getRutinaActual().getValue().getUid());
+        mAdaptadorEjerciciosDiaRutina.notifyDataSetChanged();
         //Creo el historico en Firestore
         mViewModelRutina.crearHistoricoDia().addOnCompleteListener(new OnCompleteListener() {
             @Override
@@ -516,6 +531,7 @@ public class FragmentInicial extends Fragment implements View.OnClickListener{
     public void finalizarDia(){
 
         mViewModelRutina.getmDiaSeleccionado().setFinalizado(true);
+        mAdaptadorEjerciciosDiaRutina.notifyDataSetChanged();
         //Actualizo el historico en Firestore
         mViewModelRutina.actualizarRutinaActualUsuario().addOnCompleteListener(new OnCompleteListener() {
             @Override

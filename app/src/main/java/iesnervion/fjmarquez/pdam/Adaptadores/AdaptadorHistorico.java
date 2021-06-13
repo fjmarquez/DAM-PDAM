@@ -26,7 +26,6 @@ public class AdaptadorHistorico extends RecyclerView.Adapter<AdaptadorHistorico.
     public AdaptadorHistorico.OnItemClickListener mListener;
 
     public interface OnItemClickListener{
-        void añadirListener(int position);
         void mostrarListener(int position);
     }
 
@@ -77,6 +76,8 @@ public class AdaptadorHistorico extends RecyclerView.Adapter<AdaptadorHistorico.
         holder.getRvEjerciciosSimpleHistorico().setAdapter(adaptadorEjerciciosSimpleHistorico);
 
     }
+
+
 
     @Override
     public int getItemCount() {

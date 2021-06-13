@@ -10,11 +10,10 @@ public class Serie {
 
     private int Repeticiones;
     private double Peso;
-    private boolean Terminada;
 
     /* CONSTRUCTORES */
 
-    public Serie(int repeticiones, double peso, boolean terminada) {
+    public Serie(int repeticiones, double peso) {
         Repeticiones = repeticiones;
         Peso = peso;
     }

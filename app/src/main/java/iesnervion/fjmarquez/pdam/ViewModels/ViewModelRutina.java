@@ -8,6 +8,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
@@ -29,6 +30,7 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
     private Dia mDiaSeleccionado;
     private int mEjercicioRealizar;
     private Calendar mFechaSeleccionada;
+    private int mRutinaEliminar;
 
     /* CONSTRUCTOR */
 
@@ -43,6 +45,7 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
         mRepositorioFirestoreHistorico = new RepositorioFirestoreHistorico();
         mDiaSeleccionado = new Dia();
         mEjercicioRealizar = -1;
+        mRutinaEliminar = -1;
 
     }
 
@@ -76,6 +79,10 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
         return mListaHistorico;
     }
 
+    public int getmRutinaEliminar() {
+        return mRutinaEliminar;
+    }
+
     /* SETTERS */
 
     public void setRutinaActual(Rutina rutinaActual) {
@@ -105,6 +112,10 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
 
     public void setmListaHistorico(ArrayList<Dia> mListaHistorico) {
         this.mListaHistorico = mListaHistorico;
+    }
+
+    public void setmRutinaEliminar(int mRutinaEliminar) {
+        this.mRutinaEliminar = mRutinaEliminar;
     }
 
     /* FUNCIONES */
@@ -185,7 +196,7 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
      *
      * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
      */
-    public Task<QuerySnapshot> obtenerHistoricosRangoFechas(ArrayList<String> dias){
+    public Task<QuerySnapshot> obtenerHistoricosRangoFechas(List<String> dias){
 
         return mRepositorioFirestoreHistorico.obtenerHistoricosRangoFechas(dias);
 
@@ -210,6 +221,12 @@ public class ViewModelRutina extends androidx.lifecycle.ViewModel{
     public Task<QuerySnapshot> obtenerListaHistoricoUsuarioActual(){
 
         return mRepositorioFirestoreHistorico.obtenerListaHistoricoUsuarioActual();
+
+    }
+
+    public Task<QuerySnapshot> comprobarSiExisteNombreRutina(String nombre){
+
+        return mRepositorioFirestoreRutinas.comprobarSiExisteNombreRutina(nombre);
 
     }
 

@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,12 +27,13 @@ import iesnervion.fjmarquez.pdam.Utiles.Utiles;
  */
 public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasViewHolder>{
 
-    private static ArrayList<Dia> listaDias;
+    public static ArrayList<Dia> listaDias;
     public OnItemClickListener mListener;
 
     public interface OnItemClickListener{
         void añadirListener(int position);
         void mostrarListener(int position);
+        void quitarListener(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -104,6 +106,7 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
         private TextView tvNumeroEjercicios;
         private Button btnAñadir;
         private Button btnMostrar;
+        private ImageButton btnQuitar;
         private RecyclerView rvEjerciciosSimple;
 
         /* CONSTRUCTOR */
@@ -145,9 +148,21 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
                             listener.añadirListener(postition);
                         }
                     }
-
                 }
             });
+            btnQuitar = itemView.findViewById(R.id.btnQuitarDia);
+            btnQuitar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int postition = getAdapterPosition();
+                        if (postition != RecyclerView.NO_POSITION){
+                            listener.quitarListener(postition);
+                        }
+                    }
+                }
+            });
+
 
 
         }
@@ -174,6 +189,10 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
             return rvEjerciciosSimple;
         }
 
+        public ImageButton getBtnQuitar() {
+            return btnQuitar;
+        }
+
         /* SETTERS */
 
         public void setTvDia(TextView tvDia) {
@@ -194,6 +213,10 @@ public class AdaptadorDias extends RecyclerView.Adapter<AdaptadorDias.RVDiasView
 
         public void setRvEjerciciosSimple(RecyclerView rvEjerciciosSimple) {
             this.rvEjerciciosSimple = rvEjerciciosSimple;
+        }
+
+        public void setBtnQuitar(ImageButton btnQuitar) {
+            this.btnQuitar = btnQuitar;
         }
     }
 

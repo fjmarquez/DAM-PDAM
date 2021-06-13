@@ -47,6 +47,8 @@
     <string name="cambiar_dias_rutina">Dias</string>
     <string name="rutina_asignada">Rutina asignada correctamente</string>
     <string name="error_rutina_asignada">Error al asignar rutina</string>
+    <string name="no_puede_quitar_ultimo_dia">No puedes quitar el unico dia de tu rutina</string>
+    <string name="nombre_rutina_existente">Ya tienes una rutina con ese mismo nombre</string>
 
     <!-- DIALOG DIAS FRAGMENT DIAS -->
     <string name="titulo_dialog_dias_semana">¿Qué dias quieres entrenar?</string>
@@ -80,6 +82,7 @@
     <string name="boton_quitar">-</string>
     <string name="boton_añadir_ejercicio">Añadir</string>
     <string name="max_ejercicios_superado">Has llegado al maximo de ejercicios por dia.</string>
+    <string name="ejercicio_ya_añadido">Ya has añadido este ejercicio</string>
 
     <!-- DIALOG FILTROS LISTA EJERCICIOS-->
     <string name="titulo_dialogo_filtros">Filtros</string>
@@ -118,6 +121,7 @@
 
     <!-- FRAGMENT INICIAL -->
     <string name="no_ha_iniciado_dia">Aun no has iniciado el dia.</string>
+    <string name="dia_ya_finalizado">El dia ya ha finalizado</string>
     <string name="dia_iniciado">Dia iniciado</string>
     <string name="dia_finalizado">Dia finalizado</string>
     <string name="descanso">Descanso</string>

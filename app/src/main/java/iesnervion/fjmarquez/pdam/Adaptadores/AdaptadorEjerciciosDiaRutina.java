@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
+import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.Utiles;
@@ -24,19 +25,20 @@ import iesnervion.fjmarquez.pdam.Utiles.Utiles;
  */
 public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<AdaptadorEjerciciosDiaRutina.RVEjerciciosDiaRutinaViewHolder> {
 
-    public static ArrayList<Ejercicio> listaEjercicios;
+    public static Dia diaActualRutina;
     public AdaptadorEjerciciosDiaRutina.OnItemClickListener mListener;
 
     public interface OnItemClickListener{
         void realizarEjercicioListener(int position);
+        void clickListener(int position);
     }
 
     public void setOnItemClickListener(AdaptadorEjerciciosDiaRutina.OnItemClickListener listener){
         mListener = listener;
     }
 
-    public AdaptadorEjerciciosDiaRutina(ArrayList<Ejercicio> listaEjercicios) {
-        this.listaEjercicios = listaEjercicios;
+    public AdaptadorEjerciciosDiaRutina(Dia diaActualRutina) {
+        this.diaActualRutina = diaActualRutina;
     }
 
     @NonNull
@@ -55,12 +57,23 @@ public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<Adaptador
 
         holder.setIsRecyclable(true);
 
-        Ejercicio ejercicioActual = this.listaEjercicios.get(position);
+        Ejercicio ejercicioActual = this.diaActualRutina.getEjercicios().get(position);
 
         //Gif del ejercicio
-        Glide.with(holder.getmIVGIFEjercicio().getContext()).asBitmap()
-                .load(ejercicioActual.getGif())
-                .into(holder.getmIVGIFEjercicio());
+        if (ejercicioActual.getDificultad() != null){
+            Glide.with(holder.getmIVGIFEjercicio().getContext()).asBitmap()
+                    .load(ejercicioActual.getGif())
+                    .into(holder.getmIVGIFEjercicio());
+        }else {
+            holder.getmIVGIFEjercicio().setImageResource(R.mipmap.custom_ejercicio);
+        }
+
+        if (diaActualRutina.getFecha() != null && !diaActualRutina.getFinalizado()){
+            holder.getmIBRealizarEjercicio().setVisibility(View.VISIBLE);
+        }else {
+            holder.getmIBRealizarEjercicio().setVisibility(View.INVISIBLE);
+        }
+
 
         //Nombre del ejercicio
         holder.getmTVNombreEjercicio().setText(ejercicioActual.getNombre());
@@ -69,11 +82,13 @@ public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<Adaptador
         holder.getmTVDificulatadEjercicio().setTextColor(holder.getmTVDificulatadEjercicio().getContext().getResources().getColor(Utiles.colorDificultad(ejercicioActual.getDificultad())));
 
 
+
+
     }
 
     @Override
     public int getItemCount() {
-        return this.listaEjercicios.size();
+        return this.diaActualRutina.getEjercicios().size();
     }
 
     public static class RVEjerciciosDiaRutinaViewHolder extends RecyclerView.ViewHolder {
@@ -103,6 +118,19 @@ public class AdaptadorEjerciciosDiaRutina extends RecyclerView.Adapter<Adaptador
                     }
                 }
             });
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int postition = getAdapterPosition();
+                        if (postition != RecyclerView.NO_POSITION){
+                            listener.clickListener(postition);
+                        }
+                    }
+                }
+            });
+
 
         }
 

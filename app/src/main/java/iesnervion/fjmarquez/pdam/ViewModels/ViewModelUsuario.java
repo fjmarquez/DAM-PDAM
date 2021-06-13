@@ -28,6 +28,7 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     public ViewModelUsuario() {
         mRepositorioUsuarios = new RepositorioFirestoreUsuario();
+        mUltimoFragmento = null;
     }
 
     /* SETTERS */
@@ -82,7 +83,7 @@ public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
      *
      * @return Devuelve una tarea, la cual controlaremos en el Fragment correspondiente.
      */
-    public Task<DocumentSnapshot> usuarioExisteFirebase(){
+    public Task<DocumentSnapshot> usuarioExisteFirestore(){
 
         return mRepositorioUsuarios.usuarioExisteFirestore();
 

@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onChanged(TipoFragmento tipoFragmento) {
 
-            mViewModelUsuario.setmUltimoFragmento(tipoFragmento);
-
             switch (tipoFragmento){
                 case LOGIN:
                     cambiarFragment(mFragmentLogin, false);
@@ -52,7 +50,11 @@ public class MainActivity extends AppCompatActivity {
                     cambiarFragment(mFragmentoInicial, false);
                     break;
                 case DIAS_RUTINA:
-                    cambiarFragment(mFragmentoDiasRutina, false);
+                    if (mViewModelUsuario.getmUltimoFragmento() == TipoFragmento.LISTA_RUTINAS){
+                        cambiarFragment(mFragmentoDiasRutina, true);
+                    }else {
+                        cambiarFragment(mFragmentoDiasRutina, false);
+                    }
                     break;
                 case EJERCICIOS:
                     cambiarFragment(mFragmentoListaEjercicios, true);
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 case LISTA_RUTINAS:
                     cambiarFragment(mFragmentListaRutinas, true);
             }
+
+            mViewModelUsuario.setmUltimoFragmento(tipoFragmento);
 
         }
     };
@@ -134,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         if (mViewModelUsuario.usuarioActual() != null) {
 
             //Compruba si existe un documento usuario en firestore con el uid del usuario actual
-            mViewModelUsuario.usuarioExisteFirebase().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            mViewModelUsuario.usuarioExisteFirestore().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if (task.isSuccessful()){

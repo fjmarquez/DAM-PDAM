@@ -68,7 +68,7 @@ public class FragmentListaEjercicios extends Fragment {
     private ConstraintLayout mCLExistenCoincidencias;
     private ImageView mIVNoExiste;
 
-    private ViewModelEjercicios mViewModelRutina;
+    private ViewModelEjercicios mViewModelEjercicios;
     private ViewModelUsuario mViewModelUsuario;
 
     private MaterialToolbar mToolbar;
@@ -92,6 +92,7 @@ public class FragmentListaEjercicios extends Fragment {
     private String mNombreEjercicioCustom;
     private String mDescripcionEjercicioCustom;
     private GrupoMuscular mGrupoMuscularEjercicioCustom;
+    private boolean dialogEjercicioCustomCreado;
 
     private ArrayList<Serie> mSeriesDialog;
     private AlertDialog mAlertDialogSeries;
@@ -117,7 +118,7 @@ public class FragmentListaEjercicios extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-        mViewModelRutina = new ViewModelProvider(getActivity()).get(ViewModelEjercicios.class);
+        mViewModelEjercicios = new ViewModelProvider(getActivity()).get(ViewModelEjercicios.class);
         mViewModelUsuario = new ViewModelProvider(getActivity()).get(ViewModelUsuario.class);
 
     }
@@ -142,6 +143,7 @@ public class FragmentListaEjercicios extends Fragment {
         mETNombreEjercicioCustom = mDialogEjercicioCustomView.findViewById(R.id.etNombreEjercicioCustom);
         mETDescripcionEjercicioCustom = mDialogEjercicioCustomView.findViewById(R.id.etDescripcionEjercicioCustom);
         mACTVGrupoMuscularEjercicioCustom = mDialogEjercicioCustomView.findViewById(R.id.acGrupoMuscularEjercicioCustom);
+        dialogEjercicioCustomCreado = false;
 
         mToolbar = mFragmentView.findViewById(R.id.mtEjercicios);
         mETBuscadorEjercicio = mFragmentView.findViewById(R.id.etBuscarEjercicio);
@@ -165,8 +167,9 @@ public class FragmentListaEjercicios extends Fragment {
      */
     public void mostrarDialogEjercicioCustom(){
 
-        if(mAlertDialogEjercicioCustom == null) {
+        if(mAlertDialogEjercicioCustom == null || !dialogEjercicioCustomCreado) {
 
+            dialogEjercicioCustomCreado = true;
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
             builder.setTitle(getText(R.string.ejercicio_custom_dialog_titulo))
                     .setView(mDialogEjercicioCustomView)
@@ -293,7 +296,7 @@ public class FragmentListaEjercicios extends Fragment {
         ejercicioCustom.setDescripcion(mDescripcionEjercicioCustom);
         ejercicioCustom.setGrupoMuscular(mGrupoMuscularEjercicioCustom);
         ejercicioCustom.setDificultad(null);//Si la dificultad se setea a null quiero indica que es un ejercicio personalizado
-        mViewModelRutina.setEjercicioSeleccionado(ejercicioCustom);
+        mViewModelEjercicios.setEjercicioSeleccionado(ejercicioCustom);
 
     }
 
@@ -321,7 +324,7 @@ public class FragmentListaEjercicios extends Fragment {
      */
     public void rellenarChipGroups(){
 
-            mViewModelRutina.incrementarmChipsCreados();
+            mViewModelEjercicios.incrementarmChipsCreados();
 
             //Creo los Chips para los grupos musculares
             for (GrupoMuscular grupo:
@@ -376,7 +379,7 @@ public class FragmentListaEjercicios extends Fragment {
             public void afterTextChanged(Editable s) {
                 //Cuando el texto introducido en el EditText se haya modificado y su longuitud sea 0,
                 //se reseteara el RecyclerView de ejercicios limpiando asi el filtrado.
-                if (s.length() == 0 && mViewModelRutina.getListadoEjerciciosMaster().size() > mViewModelRutina.getListadoEjercicios().size()){
+                if (s.length() == 0 && mViewModelEjercicios.getListadoEjerciciosMaster().size() > mViewModelEjercicios.getListadoEjercicios().size()){
                     //resetearRecyclerViewEjercicios();
                 }
             }
@@ -401,11 +404,11 @@ public class FragmentListaEjercicios extends Fragment {
                     case R.id.buscarEjercicio:
                         String busqueda = mETBuscadorEjercicio.getText().toString();
                         if(!busqueda.isEmpty()){
-                            ArrayList<Ejercicio> ejercicios = new ArrayList<>(mViewModelRutina.getListadoEjerciciosMaster());
+                            ArrayList<Ejercicio> ejercicios = new ArrayList<>(mViewModelEjercicios.getListadoEjerciciosMaster());
                             for ( Ejercicio ejercicio:
                                     ejercicios) {
                                 if (!ejercicio.getNombre().toLowerCase().contains(busqueda.toLowerCase())){
-                                    mViewModelRutina.getListadoEjercicios().remove(ejercicio);
+                                    mViewModelEjercicios.getListadoEjercicios().remove(ejercicio);
                                 }
                             }
                             mRVEjerciciosAdaptador.notifyDataSetChanged();
@@ -435,7 +438,7 @@ public class FragmentListaEjercicios extends Fragment {
     public void mostrarDialogoFiltros(){
 
         //Si ya ha sido creado evitamos crearlo otra vez y solamente lo mostramos usando .show()
-        if (mAlertDialogFiltros == null|| !dialogFiltrosCreado) {
+        if (mAlertDialogFiltros == null || !dialogFiltrosCreado) {
 
             dialogFiltrosCreado = true;
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
@@ -476,7 +479,7 @@ public class FragmentListaEjercicios extends Fragment {
                 @Override
                 public void onClick(View v) {
                     //Limpio el ArrayList de Ejercicios y aplico los filtros seleccionados por el usuario
-                    mViewModelRutina.getListadoEjercicios().clear();
+                    mViewModelEjercicios.getListadoEjercicios().clear();
                     filtrarPorGrupoMuscular();
                     filtrarPorDificultad();
                     filtrarPorMaterial();
@@ -509,26 +512,26 @@ public class FragmentListaEjercicios extends Fragment {
      */
     public void filtrarPorGrupoMuscular(){
         List<Integer> selectedChips = mCGFiltroGrupoMuscular.getCheckedChipIds();
-        int tamañoInicioFiltro = mViewModelRutina.getListadoEjercicios().size();
+        int tamañoInicioFiltro = mViewModelEjercicios.getListadoEjercicios().size();
         for(int i = 0; i < selectedChips.size(); i++){
 
-            int posicionChip = selectedChips.get(i)-1-mViewModelRutina.obtenerIdsChipCreados();
+            int posicionChip = selectedChips.get(i)-1- mViewModelEjercicios.obtenerIdsChipCreados();
 
             if(/*mViewModelRutina.getListadoEjercicios().size() == 0 || selectedChips.size() > 1*/ tamañoInicioFiltro == 0){
                 for (Ejercicio ejercicio:
-                        mViewModelRutina.getListadoEjerciciosMaster()) {
+                        mViewModelEjercicios.getListadoEjerciciosMaster()) {
                     if(ejercicio.getGrupoMuscular() == (GrupoMuscular.values()[posicionChip])){
-                        mViewModelRutina.getListadoEjercicios().add(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().add(ejercicio);
                     }
                 }
 
             }else{
 
-                ArrayList<Ejercicio> copiaEjerciciosFiltrados = new ArrayList<>(mViewModelRutina.getListadoEjercicios());
+                ArrayList<Ejercicio> copiaEjerciciosFiltrados = new ArrayList<>(mViewModelEjercicios.getListadoEjercicios());
                 for (Ejercicio ejercicio:
                         copiaEjerciciosFiltrados) {
                     if(ejercicio.getGrupoMuscular() != (GrupoMuscular.values()[posicionChip])){
-                        mViewModelRutina.getListadoEjercicios().remove(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().remove(ejercicio);
                     }
                 }
 
@@ -542,28 +545,28 @@ public class FragmentListaEjercicios extends Fragment {
      */
     public void filtrarPorDificultad(){
         List<Integer> selectedChips = mCGFiltroDificultad.getCheckedChipIds();
-        int tamañoInicioFiltro = mViewModelRutina.getListadoEjercicios().size();
+        int tamañoInicioFiltro = mViewModelEjercicios.getListadoEjercicios().size();
         for(int i = 0; i < selectedChips.size(); i++){
 
-            int posicionChip = selectedChips.get(i)-1-GrupoMuscular.values().length-mViewModelRutina.obtenerIdsChipCreados();
+            int posicionChip = selectedChips.get(i)-1-GrupoMuscular.values().length- mViewModelEjercicios.obtenerIdsChipCreados();
 
             if(/*mViewModelRutina.getListadoEjercicios().size() == 0*/ tamañoInicioFiltro == 0) {
 
                 for (Ejercicio ejercicio :
-                        mViewModelRutina.getListadoEjerciciosMaster()) {
+                        mViewModelEjercicios.getListadoEjerciciosMaster()) {
                     if (ejercicio.getDificultad() == (DificultadEjercicio.values()[posicionChip])) {
-                        mViewModelRutina.getListadoEjercicios().add(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().add(ejercicio);
                     }
                 }
             }else {
 
-                ArrayList<Ejercicio> copiaEjerciciosFiltrados = new ArrayList<>(mViewModelRutina.getListadoEjercicios());
+                ArrayList<Ejercicio> copiaEjerciciosFiltrados = new ArrayList<>(mViewModelEjercicios.getListadoEjercicios());
                 for (Ejercicio ejercicio :
                         copiaEjerciciosFiltrados) {
                     //int x = selectedChips.get(i)-6;
                     //String s = DificultadEjercicio.values()[selectedChips.get(i)-6].name();
                     if (ejercicio.getDificultad() != (DificultadEjercicio.values()[posicionChip])) {
-                        mViewModelRutina.getListadoEjercicios().remove(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().remove(ejercicio);
                     }
                 }
             }
@@ -575,38 +578,38 @@ public class FragmentListaEjercicios extends Fragment {
      */
     public void filtrarPorMaterial(){
         List<Integer> selectedChips = mCGFiltroMaterial.getCheckedChipIds();
-        int tamañoInicioFiltro = mViewModelRutina.getListadoEjercicios().size();
+        int tamañoInicioFiltro = mViewModelEjercicios.getListadoEjercicios().size();
         for(int i = 0; i < selectedChips.size(); i++){
 
-            int posicionChip = selectedChips.get(i)-1-GrupoMuscular.values().length-DificultadEjercicio.values().length-mViewModelRutina.obtenerIdsChipCreados();
+            int posicionChip = selectedChips.get(i)-1-GrupoMuscular.values().length-DificultadEjercicio.values().length- mViewModelEjercicios.obtenerIdsChipCreados();
 
             if (tamañoInicioFiltro == 0){
 
                 for (Ejercicio ejercicio:
-                        mViewModelRutina.getListadoEjerciciosMaster()) {
+                        mViewModelEjercicios.getListadoEjerciciosMaster()) {
                     if(Materiales.values()[posicionChip] == Materiales.BANDAS_ELASTICAS && ejercicio.getBandasElasticas()){
-                        mViewModelRutina.getListadoEjercicios().add(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().add(ejercicio);
                     }
                     if(Materiales.values()[posicionChip] == Materiales.GIMNASIO && ejercicio.getMaterial()){
-                        mViewModelRutina.getListadoEjercicios().add(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().add(ejercicio);
                     }
                     if(Materiales.values()[posicionChip] == Materiales.SIN_MATERIAL && !ejercicio.getMaterial() && !ejercicio.getBandasElasticas()){
-                        mViewModelRutina.getListadoEjercicios().add(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().add(ejercicio);
                     }
                 }
 
             }else {
 
                 for (Ejercicio ejercicio:
-                        mViewModelRutina.getListadoEjerciciosMaster()) {
+                        mViewModelEjercicios.getListadoEjerciciosMaster()) {
                     if(Materiales.values()[selectedChips.get(i)-DificultadEjercicio.values().length-GrupoMuscular.values().length-1] != Materiales.BANDAS_ELASTICAS && ejercicio.getBandasElasticas()){
-                        mViewModelRutina.getListadoEjercicios().remove(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().remove(ejercicio);
                     }
                     if(Materiales.values()[selectedChips.get(i)-DificultadEjercicio.values().length-GrupoMuscular.values().length-1] != Materiales.GIMNASIO && ejercicio.getMaterial()){
-                        mViewModelRutina.getListadoEjercicios().remove(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().remove(ejercicio);
                     }
                     if(Materiales.values()[selectedChips.get(i)-DificultadEjercicio.values().length-GrupoMuscular.values().length-1] != Materiales.SIN_MATERIAL && !ejercicio.getMaterial()){
-                        mViewModelRutina.getListadoEjercicios().remove(ejercicio);
+                        mViewModelEjercicios.getListadoEjercicios().remove(ejercicio);
                     }
                 }
 
@@ -620,22 +623,22 @@ public class FragmentListaEjercicios extends Fragment {
      */
     public void rellenarRecyclerViewEjercicios(){
 
-        if (mViewModelRutina.getListadoEjerciciosMaster() == null){
+        if (mViewModelEjercicios.getListadoEjerciciosMaster() == null){
 
-            mViewModelRutina.obtenerEjerciciosFirestore().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            mViewModelEjercicios.obtenerEjerciciosFirestore().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful()){
-                        mViewModelRutina.setListadoEjercicios(new ArrayList<>());
+                        mViewModelEjercicios.setListadoEjercicios(new ArrayList<>());
                         //Itero los resultados obtenidos en la consulta, los parseo y los añado a la lista
                         for (QueryDocumentSnapshot document: task.getResult()
                         ) {
                             //Parseo el resultado obtenido a un objeto Ejercicio
                             Ejercicio mEjercicio = document.toObject(Ejercicio.class);
                             mEjercicio.setUid(document.getId());
-                            mViewModelRutina.getListadoEjercicios().add(mEjercicio);
+                            mViewModelEjercicios.getListadoEjercicios().add(mEjercicio);
                         }
-                        mViewModelRutina.setListadoEjerciciosMaster(new ArrayList<>(mViewModelRutina.getListadoEjercicios()));
+                        mViewModelEjercicios.setListadoEjerciciosMaster(new ArrayList<>(mViewModelEjercicios.getListadoEjercicios()));
                         configurarAdaptadorEjercicios();
                     }
                 }
@@ -656,7 +659,7 @@ public class FragmentListaEjercicios extends Fragment {
     public void configurarAdaptadorEjercicios(){
 
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mRVEjerciciosAdaptador = new AdaptadorEjercicios(mViewModelRutina.getListadoEjercicios());
+        mRVEjerciciosAdaptador = new AdaptadorEjercicios(mViewModelEjercicios.getListadoEjercicios());
         mRVEjercicios.setLayoutManager(mLayoutManager);
         mRVEjercicios.setAdapter(mRVEjerciciosAdaptador);
 
@@ -670,37 +673,42 @@ public class FragmentListaEjercicios extends Fragment {
                         .getDias()
                         .get(mViewModelRutina.getDiaSemanaSeleccionado())
                         .getEjercicios().contains(mViewModelRutina.getListadoEjercicios().get(position)))*/
-                mViewModelRutina.setEjercicioSeleccionado(mViewModelRutina.getListadoEjercicios().get(position));
+                mViewModelEjercicios.setEjercicioSeleccionado(mViewModelEjercicios.getListadoEjercicios().get(position));
                 if (!comprobarEjercicioDia()){
                     mostrarDialogoSeries();
                 }else {
-                    Snackbar.make(getView(), "Ya has añadido este ejercicio", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(getView(), getText(R.string.ejercicio_ya_añadido), Snackbar.LENGTH_LONG).show();
                 }
             }
 
             //Evento onClick que nos llevara a una vista detallada del ejericicio sobre el que hemos pulsado.
             @Override
             public void clickListener(int position) {
-                mViewModelRutina.setEjercicioSeleccionado(mViewModelRutina.getListadoEjercicios().get(position));
+                mViewModelEjercicios.setEjercicioSeleccionado(mViewModelEjercicios.getListadoEjercicios().get(position));
+                mViewModelEjercicios.setPermitirAñadirEjercicio(true);
                 mViewModelUsuario.setmTipoFragmento(TipoFragmento.DETALLE_EJERCICIO);
             }
         });
 
     }
 
+    /**
+     * Comprueba si un ejercicio ha sido añadido ya a un dia, devolvera un booleano.
+     * @return Boolean que en caso de ser negativo indicara que el ejercicio no ha sido añadido a ese dia antes.
+     */
     public boolean comprobarEjercicioDia(){
 
         boolean respuesta = false;
 
-        if (mViewModelRutina.getDiasRutina().getValue().getDias().get(mViewModelRutina.getDiaSemanaSeleccionado()).getEjercicios().size() > 0)
+        if (mViewModelEjercicios.getDiasRutina().getValue().getDias().get(mViewModelEjercicios.getDiaSemanaSeleccionado()).getEjercicios().size() > 0)
         {
             for (Ejercicio e:
-                    mViewModelRutina.getDiasRutina().getValue().getDias().get(mViewModelRutina.getDiaSemanaSeleccionado()).getEjercicios()) {
+                    mViewModelEjercicios.getDiasRutina().getValue().getDias().get(mViewModelEjercicios.getDiaSemanaSeleccionado()).getEjercicios()) {
 
-                String uid1 = mViewModelRutina.getEjercicioSeleccionado().getUid();
+                String uid1 = mViewModelEjercicios.getEjercicioSeleccionado().getUid();
                 String uid2 = e.getUid();
 
-                if (mViewModelRutina.getEjercicioSeleccionado().getUid().equals(e.getUid()) ){
+                if (mViewModelEjercicios.getEjercicioSeleccionado().getUid().equals(e.getUid()) ){
 
                     respuesta = true;
 
@@ -713,9 +721,12 @@ public class FragmentListaEjercicios extends Fragment {
 
     }
 
+    /**
+     * Esta funcion se encargara de modificar la apariencia visual de la pantalla.
+     */
     public void configuracionVisualRecyclerViewEjercicios(){
 
-        if (mViewModelRutina.getListadoEjercicios().size() == 0){
+        if (mViewModelEjercicios.getListadoEjercicios().size() == 0){
 
             mRVEjercicios.setVisibility(View.INVISIBLE);
             mCLExistenCoincidencias.setVisibility(View.VISIBLE);
@@ -738,11 +749,11 @@ public class FragmentListaEjercicios extends Fragment {
     public void resetearRecyclerViewEjercicios(){
 
         //Necesito hacer esta iteracion porque una asignacion haria perder a mViewModelRutina.getListadoEjercicios() su actual referencia
-        mViewModelRutina.getListadoEjercicios().clear();
+        mViewModelEjercicios.getListadoEjercicios().clear();
         for (Ejercicio ejercicio:
-                mViewModelRutina.getListadoEjerciciosMaster()) {
-            if(!mViewModelRutina.getListadoEjercicios().contains(ejercicio)){
-                mViewModelRutina.getListadoEjercicios().add(ejercicio);
+                mViewModelEjercicios.getListadoEjerciciosMaster()) {
+            if(!mViewModelEjercicios.getListadoEjercicios().contains(ejercicio)){
+                mViewModelEjercicios.getListadoEjercicios().add(ejercicio);
             }
         }
         mRVEjerciciosAdaptador.notifyDataSetChanged();
@@ -804,13 +815,13 @@ public class FragmentListaEjercicios extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    if (comprobarSeriesDialog()){
+                    if (Utiles.comprobarSeriesDialog()){
                         //asignamos las series especificadas al ejercicios seleccionado
-                        mViewModelRutina.getEjercicioSeleccionado().setSeries(AdaptadorSeriesDialogo.listaSeries);
+                        mViewModelEjercicios.getEjercicioSeleccionado().setSeries(AdaptadorSeriesDialogo.listaSeries);
                         //si los ejercicios son menos de 10 en el dia seleccionado se añadira el nuevo ejercicio al dia
-                        if (mViewModelRutina.getDiasRutina().getValue().getDias().get(mViewModelRutina.getDiaSemanaSeleccionado()).getEjercicios().size() < 10){
+                        if (mViewModelEjercicios.getDiasRutina().getValue().getDias().get(mViewModelEjercicios.getDiaSemanaSeleccionado()).getEjercicios().size() < 10){
                             //añadirmos el ejercicio seleccionado con sus correspondientes series al dia correspondiente de la rutina
-                            mViewModelRutina.getDiasRutina().getValue().getDias().get(mViewModelRutina.getDiaSemanaSeleccionado()).getEjercicios().add(mViewModelRutina.getEjercicioSeleccionado());
+                            mViewModelEjercicios.getDiasRutina().getValue().getDias().get(mViewModelEjercicios.getDiaSemanaSeleccionado()).getEjercicios().add(mViewModelEjercicios.getEjercicioSeleccionado());
                         }else{
                             Snackbar.make(getView(), R.string.max_ejercicios_superado, Snackbar.LENGTH_LONG).show();
                         }
@@ -846,25 +857,6 @@ public class FragmentListaEjercicios extends Fragment {
 
         //Esta linea permite desplegar el teclado al poner el foco sobre un EditText dentro del Dialog
         mAlertDialogSeries.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-
-    }
-
-    public boolean comprobarSeriesDialog(){
-
-        boolean respuesta = true;
-
-        for (Serie serie:
-                AdaptadorSeriesDialogo.listaSeries){
-
-            if (serie.getRepeticiones() == 0){
-
-                respuesta = false;
-
-            }
-
-        }
-
-        return respuesta;
 
     }
 

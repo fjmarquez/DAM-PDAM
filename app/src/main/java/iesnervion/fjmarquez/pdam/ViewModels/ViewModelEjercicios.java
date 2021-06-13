@@ -29,6 +29,7 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
     private RepositorioFirestoreRutinas mRepositorioFirestoreRutinas;
     private int mChipsCreados;
     private final int SUM_ENUMS_FILTRO = GrupoMuscular.values().length + DificultadEjercicio.values().length + Materiales.values().length;
+    private boolean permitirAñadirEjercicio;
 
     /* CONSTRUTORES */
 
@@ -42,6 +43,7 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
         mRepositorioFirestoreEjercicios = new RepositorioFirestoreEjercicios();
         mRepositorioFirestoreRutinas = new RepositorioFirestoreRutinas();
         mChipsCreados = -1;
+        permitirAñadirEjercicio = true;
 
     }
 
@@ -65,6 +67,10 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
 
     public void setEjercicioSeleccionado(Ejercicio ejercicioSeleccionado) {
         EjercicioSeleccionado = ejercicioSeleccionado;
+    }
+
+    public boolean isPermitirAñadirEjercicio() {
+        return permitirAñadirEjercicio;
     }
 
     /* GETTERS*/
@@ -91,6 +97,10 @@ public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
 
     public Ejercicio getEjercicioSeleccionado() {
         return EjercicioSeleccionado;
+    }
+
+    public void setPermitirAñadirEjercicio(boolean permitirAñadirEjercicio) {
+        this.permitirAñadirEjercicio = permitirAñadirEjercicio;
     }
 
     /* FUNCIONES */
