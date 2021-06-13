@@ -15,6 +15,9 @@ import java.util.List;
 
 import iesnervion.fjmarquez.pdam.Entidades.Dia;
 
+/**
+ * Clase mediante la cual se obtiene y persiste la información relativa a registros historicos.
+ */
 public class RepositorioFirestoreHistorico {
 
     /* ATRIBUTOS */

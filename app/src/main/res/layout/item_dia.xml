@@ -24,7 +24,7 @@
                 android:backgroundTint="@color/transparente"
                 android:src="@drawable/ic_baseline_close_24"
                 android:tint="@color/color_principal"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="30dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 

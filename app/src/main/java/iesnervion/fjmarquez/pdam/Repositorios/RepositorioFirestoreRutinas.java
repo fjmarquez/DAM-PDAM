@@ -10,6 +10,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
 
+/**
+ * Clase mediante la cual se obtiene y persiste la información relativa a registros rutinas.
+ */
 public class RepositorioFirestoreRutinas {
 
     /* ATRIBUTOS */

@@ -32,6 +32,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -100,6 +101,8 @@ public class FragmentListaEjercicios extends Fragment {
     private AdaptadorSeriesDialogo mRVSeriesDialogoAdaptador;
     private boolean dialogSeriesCreado;
 
+    private LinearProgressIndicator mLinearProgressIndicator;
+
     /* CONSTRUCTOR */
 
     public FragmentListaEjercicios() {
@@ -152,6 +155,9 @@ public class FragmentListaEjercicios extends Fragment {
         mRVSeries = mDialogSeriesView.findViewById(R.id.rvSeries);
         dialogSeriesCreado = false;
 
+        mLinearProgressIndicator = mFragmentView.findViewById(R.id.progressBarEjercicios);
+        mLinearProgressIndicator.setVisibility(View.VISIBLE);
+
         mRVEjercicios = mFragmentView.findViewById(R.id.rvEjercicios);
         mRVEjercicios.setHasFixedSize(true);
         rellenarRecyclerViewEjercicios();
@@ -173,7 +179,7 @@ public class FragmentListaEjercicios extends Fragment {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
             builder.setTitle(getText(R.string.ejercicio_custom_dialog_titulo))
                     .setView(mDialogEjercicioCustomView)
-                    .setCancelable(false)
+                    .setCancelable(true)
                     .setPositiveButton(getText(R.string.boton_crear_ejercicio_custom), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -444,7 +450,7 @@ public class FragmentListaEjercicios extends Fragment {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
             builder.setTitle(getText(R.string.titulo_dialogo_filtros))
                     .setView(mDialogFiltrosView)
-                    .setCancelable(false)
+                    .setCancelable(true)
                     .setPositiveButton(getText(R.string.boton_filtrar), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -640,6 +646,7 @@ public class FragmentListaEjercicios extends Fragment {
                         }
                         mViewModelEjercicios.setListadoEjerciciosMaster(new ArrayList<>(mViewModelEjercicios.getListadoEjercicios()));
                         configurarAdaptadorEjercicios();
+                        mLinearProgressIndicator.setVisibility(View.GONE);
                     }
                 }
             });

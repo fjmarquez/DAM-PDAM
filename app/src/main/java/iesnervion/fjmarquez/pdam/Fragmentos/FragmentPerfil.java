@@ -29,10 +29,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import iesnervion.fjmarquez.pdam.Adaptadores.AdaptadorListaRutinasPerfil;
+import iesnervion.fjmarquez.pdam.Entidades.Dia;
 import iesnervion.fjmarquez.pdam.Entidades.Rutina;
 import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 import iesnervion.fjmarquez.pdam.R;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
+import iesnervion.fjmarquez.pdam.ViewModels.ViewModelEjercicios;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelRutina;
 import iesnervion.fjmarquez.pdam.ViewModels.ViewModelUsuario;
 
@@ -48,6 +50,7 @@ public class FragmentPerfil extends Fragment {
 
     private ViewModelUsuario mViewModelUsuario;
     private ViewModelRutina mViewModelRutina;
+    private ViewModelEjercicios mViewModelEjercicios;
 
     private AlertDialog mAlertDialogCerrarSesion;
     private boolean dialogCerrarSesionCreado;
@@ -392,9 +395,6 @@ public class FragmentPerfil extends Fragment {
 
                     case R.id.guardarPerfilMenu:
                         mostrarDialogoGuardarCambiosPerfil();
-                        break;
-
-                    case R.id.cambiarMailPerfilMenu:
                         break;
 
                     case R.id.cerrarSesionPerfilMenu:

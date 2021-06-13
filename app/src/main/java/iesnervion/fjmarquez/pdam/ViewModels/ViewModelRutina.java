@@ -16,7 +16,10 @@ import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreRutinas;
 import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreHistorico;
 import iesnervion.fjmarquez.pdam.Utiles.DiaSemana;
 
-
+/**
+ * ViewModel destinado a mantener la informacion necesaria sobre los entrenamientos e historicos.
+ * Ademas de persistir y obtener dicha informacion mediante el Repositorio de rutinas e historicos.
+ */
 public class ViewModelRutina extends androidx.lifecycle.ViewModel{
 
     /* ATRIBUTOS */

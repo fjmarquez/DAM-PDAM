@@ -29,6 +29,9 @@ import iesnervion.fjmarquez.pdam.R;
 
 import static android.content.ContentValues.TAG;
 
+/**
+ * Clase que contiene funciones estaticas que se usan desde varias clases diferentes a modo de utilidades.
+ */
 public class Utiles {
 
     /**

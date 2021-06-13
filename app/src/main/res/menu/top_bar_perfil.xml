@@ -17,11 +17,6 @@
         app:showAsAction="ifRoom"/>
 
         <item
-            android:id="@+id/cambiarMailPerfilMenu"
-            android:title="@string/cambiar_mail_perfil"
-            android:contentDescription="@string/cambiar_mail_perfil"/>
-
-        <item
             android:id="@+id/cerrarSesionPerfilMenu"
             android:title="@string/cerrar_sesion_perfil"
             android:contentDescription="@string/cerrar_sesion_perfil"/>

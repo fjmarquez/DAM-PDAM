@@ -22,6 +22,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 
+/**
+ * Clase mediante la cual se obtiene y persiste la informacion relativa a usuarios.
+ */
 public class RepositorioFirestoreUsuario {
 
     /* ATRIBUTOS */

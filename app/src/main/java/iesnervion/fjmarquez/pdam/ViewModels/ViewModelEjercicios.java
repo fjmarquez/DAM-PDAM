@@ -16,6 +16,10 @@ import iesnervion.fjmarquez.pdam.Utiles.DificultadEjercicio;
 import iesnervion.fjmarquez.pdam.Utiles.GrupoMuscular;
 import iesnervion.fjmarquez.pdam.Utiles.Materiales;
 
+/**
+ * ViewModel destinado a mantener la informacion necesaria sobre los ejercicios y la creacion/edicion de rutinas.
+ * Ademas de persistir y obtener dicha informacion mediante el Repositorio de ejercicios.
+ */
 public class ViewModelEjercicios extends androidx.lifecycle.ViewModel{
 
     /* ATRIBUTOS */

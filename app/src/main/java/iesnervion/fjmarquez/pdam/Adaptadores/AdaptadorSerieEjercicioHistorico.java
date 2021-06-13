@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import iesnervion.fjmarquez.pdam.Entidades.Serie;
 import iesnervion.fjmarquez.pdam.R;
 
+/**
+ * Clase destinada a rellenar un RecyclerView con las series de un ejercicio perteneciente a un registro historico de entreanamiento.
+ */
 public class AdaptadorSerieEjercicioHistorico extends RecyclerView.Adapter<AdaptadorSerieEjercicioHistorico.RVSeriesEjercicioHistoricoViewHolder> {
 
     private ArrayList<Serie> listaSeries;

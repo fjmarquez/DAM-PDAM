@@ -14,7 +14,10 @@ import iesnervion.fjmarquez.pdam.Entidades.Usuario;
 import iesnervion.fjmarquez.pdam.Repositorios.RepositorioFirestoreUsuario;
 import iesnervion.fjmarquez.pdam.Utiles.TipoFragmento;
 
-
+/**
+ * ViewModel destinado a mantener la informacion necesaria sobre el usuario y a persistir y obtener esta
+ * mediante el Repositorio de usuarios.
+ */
 public class ViewModelUsuario extends androidx.lifecycle.ViewModel {
 
     /* ATRIBUTOS */

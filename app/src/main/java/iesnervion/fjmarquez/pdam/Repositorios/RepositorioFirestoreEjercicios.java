@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 import iesnervion.fjmarquez.pdam.Entidades.Ejercicio;
 
+/**
+ * Clase mediante la cual se obtiene y persiste la informacion relativa a ejercicios.
+ */
 public class RepositorioFirestoreEjercicios {
 
     /* ATRIBUTOS */
